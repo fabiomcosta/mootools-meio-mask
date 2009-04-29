@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>MeioMask Mootools Specs</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="../assets/js-spec/Specs.css" />
+		<script type="text/javascript" src="../assets/js-spec/JSSpec.js"></script>
+		<script type="text/javascript" src="../assets/js-spec/DiffMatchPatch.js"></script>
+		<script type="text/javascript" src="../assets/js-spec/Builder.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			Builder.build('../', {
+				assets: {
+					'mootools': ['mootools-core']
+				},
+				source: [
+					'moo.meio.mask.inits',
+					'moo.meio.mask.MaskGlobals',
+					'moo.meio.mask.Mask',
+					'moo.meio.mask.MaskType',
+					'moo.meio.mask.MaskType.fixed',
+					'moo.meio.mask.MaskType.infinite',
+					'moo.meio.mask.MaskType.reverse',
+					'moo.meio.mask.MaskType.regexp',
+					'moo.meio.mask.Array',
+					'moo.meio.mask.Element',
+					'moo.meio.mask.Properties.mask',
+					'moo.meio.mask.String'
+				],
+				tests: {
+					'meio': ['moo.meio.mask']
+				}
+			});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta name="robots" content="index,follow" />
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>meioMask - a Mootools Mask Plugin</title>
+		<meta name="keywords" content="mootools, mask, iphone, plugin, meiomask, mascara, javascript, input, form, text, format" />
+
+		<link rel="stylesheet" href="../assets/syntax-highlighter/SyntaxHighlighter.css" type="text/css" />
+		<link rel="stylesheet" href="../assets/syntax-highlighter/docs.css" type="text/css" />
+		<script type="text/javascript" src="../assets/syntax-highlighter/shCore.js"></script>
+		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushJScript.js"></script>
+		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushPhp.js"></script>
+		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushXml.js"></script>
+		
+		<script type="text/javascript" src="../assets/mootools/mootools-core.js"></script>
+		<script type="text/javascript" src="../assets/js-spec/Builder.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			Builder.build('../', {
+				'assets': {
+					'mootools': ['mootools-core']
+				},
+				'source': [
+					'moo.meio.mask.inits',
+					'moo.meio.mask.MaskGlobals',
+					'moo.meio.mask.Mask',
+					'moo.meio.mask.MaskType',
+					'moo.meio.mask.MaskType.fixed',
+					'moo.meio.mask.MaskType.infinite',
+					'moo.meio.mask.MaskType.reverse',
+					'moo.meio.mask.MaskType.regexp',
+					'moo.meio.mask.Array',
+					'moo.meio.mask.Element',
+					'moo.meio.mask.Properties.mask',
+					'moo.meio.mask.String'
+				]
+			});
+			dp.SyntaxHighlighter.ClipboardSwf = 'clipboard.swf';
+			dp.SyntaxHighlighter.HighlightAll('code');
+		</script>
+		<script type="text/javascript" >
+			//var meiomask = new meio.Mask();
+			/*(function($){
+				$(
+					function(){
+						$('input:text').setMask();
+					}
+				);
+			})(jQuery);*/
+		</script>
+	</head>
+	<body>
+		<div id="content">
+	
+		<h2>Menu</h2>
+		<ul>
+			<li><a title="Download it!" href="#mm_download">Download it!</a></li>
+			<li><a title="Features" href="#mm_features">Features</a></li>
+			<li><a title="Compatibility" href="#mm_compatibility">Compatibility</a></li>
+			<li><a title="Usage" href="#mm_usage">Usage</a></li>
+			<li><a title="Options" href="#mm_options">Options</a></li>
+			<li><a title="FixedChars" href="#mm_fixedchars">FixedChars</a></li>
+			<li><a title="Rules" href="#mm_rules">Rules</a></li>
+			<li><a title="Masks" href="#mm_masks">Masks</a></li>
+			<li><a title="Demos" href="#mm_demos">Demos</a>
+				<ul>
+					<li><a title="Standalone" href="#mm_standalone">Standalone</a></li>
+					<li><a title="With Metadata Plugin" href="#mm_metadata">With Metadata Plugin</a></li>
+					<li><a title="Paste Feature Demo" href="#mm_paste">Paste Feature</a></li>
+					<li><a title="Change on-the-fly" href="#mm_change_on_the_fly">Change on-the-fly</a></li>
+					<li><a title="The $.mask.string() Function" href="#mm_mask_string">The $.mask.string() Function</a></li>
+					<li><a title="Applied to a Readonly Input" href="#mm_readonly">Applied to a Readonly Input</a></li>
+					<li><a title="The Callbacks" href="#mm_callback">The Callbacks</a></li>
+					<li><a title="Signed Reverse Masks" href="#mm_signed">Signed Reverse Masks</a></li>
+				</ul>
+			</li>
+		</ul>
+	
+		<h2 id="mm_download">meioMask download</h2>
+		<ul>
+			<li><a title="Download it!" href="moo.meiomask.js">Download meioMask 1.0.3</a></li>
+			<li><a title="Download it!" href="moo.meiomask.compressed.js">Download meioMask compressed 1.0.3 (YUI Compressor)</a></li>
+		</ul>
+	
+		<p>Encoding is important if you are going to use the mask with special characters like áéã (rule '@', see below for more). If you are going to allow these characters at your masked inputs and your page enconding is not UTF8, then you should add the charset attribute with value UTF8 to your script tag, like so:</p>
+		<pre name="code" class="html">&lt;script type=&quot;text/javascript&quot; src=&quot;jquery.meiomask.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;</pre>
+	
+		<br />
+		<p><a href="http://developer.yahoo.com/yui/compressor/">YUI Compressor</a></p>
+	
+		<h2 id="mm_features">meioMask features</h2>
+	
+		<ul>
+		    <li>Accepts paste event;</li>
+		    <li>Haves fixed and reverse mask types ( allow number mask );</li>
+		    <li>You can still use your hotkeys and others (ex: ctrl+t, ctrl+f5, TAB ...);</li>
+		    <li>Supports <a href="http://docs.jquery.com/Plugins/Metadata/metadata">metadata</a> plugin;</li>
+			<li>Works with iPhone;</li>
+			<li>Allow default values;</li>
+			<li>Haves callbacks for invalid inputs, valid and overflow;</li>
+			<li>Haves function to mask strings;</li>
+		    <li>And much more!</li>
+		</ul>
+	
+		<h2 id="mm_compatibility">meioMask compatibility</h2>
+		<p>meioMask has been developed with Mootools 1.2.1 and has been tested on all major browsers:</p>
+		<ul>
+		    <li>Firefox (Win,Mac,Linux);</li>
+		    <li>IE6,IE7,IE8Beta2 (Win);</li>
+		    <li>Chrome (Win);</li>
+		    <li>Safari (Win,Mac,iPhone, yes, it supports iPhone!);</li>
+		    <li>Opera (Win,Mac).</li>
+		</ul>
+
+		<h2 id="mm_usage">meioMask usage</h2>
+	
+		<p>It's a snap to use:</p>
+	
+		<pre name="code" class="html">&lt;!--include mootools library and meioMask plugin --&gt;
+	&lt;script type=&quot;text/javascript&quot; src=&quot;mootools.js&quot;&gt;&lt;/script&gt; 
+	&lt;script type=&quot;text/javascript&quot; src=&quot;moo.meiomask.js&quot; charset=&quot;utf-8&quot; &gt;&lt;/script&gt;
+	&lt;script type=&quot;text/javascript&quot; &gt;
+		(function($){
+			// call setMask function on the document.ready event
+			$(
+				function(){
+					$('input:text').setMask(options); // options are explained bellow and are optional
+				}
+			);
+		})(jQuery);
+	&lt;/script&gt;</pre>
+	
+		<h2 id="mm_options">meioMask options</h2>
+	
+		<p>It haves the options bellow that will be applyed by default if you don't specify any.</p>
+	
+		<pre name="code" class="javascript">$.mask.options = options : {
+		attr: 'alt', // an attr to look for the mask name or the mask itself
+		mask : null, // the mask to be used on the input
+		type : 'fixed', // the mask of this mask
+		defaultValue : '', // the default value for this input
+		onInvalid : function(){}, // called when receive wrong input
+		onValid : function(){}, // called when receive correct input
+		onOverflow : function(){} // called when the input should receive more input
+	};</pre>
+	
+		<h2 id="mm_fixedchars">meioMask fixed characters</h2>
+	
+		<p>By default meiomask haves some fixed characters that can be used to make the masks. You can change the regular expression that matches the fixed chars by changing the 'fixedChars' string. The default one is shown bellow:</p>
+		<pre name="code" class="javascript">$.mask.fixedChars = '[(),.:/ -]';</pre>
+	
+		<h2 id="mm_rules">meioMask rules</h2>
+	
+		<p>Rules are symbolic characters that match a certain regular expression. meioMask haves some defined rules but you may add yours to the rules object.</p>
+		<p>Making masks will be explained further, and you'll understand how to glue all this stuff :P.</p>
+
+		<p>meioMask defined rules:</p>
+		<pre name="code" class="javascript">$.mask.rules =  {
+		'z': /[a-z]/,
+		'Z': /[A-Z]/,
+		'a': /[a-zA-Z]/,
+		'*': /[0-9a-zA-Z]/,
+		'@': /[0-9a-zA-ZçÇáàãéèíìóòõúùü]/
+	};</pre>
+	
+		<p class="red">!! There are still the number rules. They will be created 'on-the-fly' so if you create a rule that is a number it will be overwritten!</p>
+		<p>Number rules are:</p>
+	
+		<pre name="code" class="javascript">$.mask.rules =  {
+		'0': /[0]/,
+		'1': /[0-1]/,
+		'2': /[0-2]/,
+		'3': /[0-3]/,
+		'4': /[0-4]/,
+		'5': /[0-5]/,
+		'6': /[0-6]/,
+		'7': /[0-7]/,
+		'8': /[0-8]/,
+		'9': /[0-9]/
+	};</pre>
+	
+		<h2 id="mm_masks">meioMask masks</h2>
+	
+		<p>Defined masks:</p>
+	
+	<pre name="code" class="javascript">$.mask.masks : {
+		'phone'		: { mask : '(99) 9999-9999' },
+		'phone-us'	: { mask : '(999) 9999-9999' },
+		'cpf'		: { mask : '999.999.999-99' },
+		'cnpj'		: { mask : '99.999.999/9999-99' },
+		'date'		: { mask : '39/19/9999' }, //uk date
+		'date-us'	: { mask : '19/39/9999' },
+		'cep'		: { mask : '99999-999' },
+		'time'		: { mask : '29:59' },
+		'cc'		: { mask : '9999 9999 9999 9999' }, //credit card mask
+		'integer'	: { mask : '999.999.999.999', type : 'reverse' },
+		'decimal'	: { mask : '99,999.999.999.999', type : 'reverse', defaultValue: '000' },
+		'decimal-us'	: { mask : '99.999,999,999,999', type : 'reverse', defaultValue: '000' },
+		'signed-decimal'	: { mask : '99,999.999.999.999', type : 'reverse', defaultValue : '+000' },
+		'signed-decimal-us' : { mask : '99,999.999.999.999', type : 'reverse', defaultValue : '+000' }
+	}</pre>
+
+	
+		<p>You may add yours to the $.mask.masks Object. Like this:</p>
+	
+		<pre name="code" class="javascript">$.mask.masks.msk = {mask: '999'}</pre>
+	
+		<p>This code will add a mask called 'msk' to the masks Object. Now you can use an input with the 'attr' atribute set to this new mask. Like this:</p>
+	
+		<script type="text/javascript">
+			meio.MaskGlobals.masks.msk = { mask : '999' };
+		</script>
+	
+		<form action="index_submit" method="get">
+			<fieldset>
+				<legend>Input with the 'msk' Mask</legend>
+				<label for="msk">Msk:</label>
+				<input type="text" id="msk" alt="msk" />
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; alt=&quot;msk&quot; /&gt;</pre>
+			</fieldset>
+		</form>
+		<p>All the <a href="#mm_options">options</a> from the plugin are accepted to be used at a mask you define.</p>
+	
+		<p>If you want to add more than one mask it will be better to do this:</p>
+		<pre name="code" class="javascript">$.mask.masks = $.extend($.mask.masks,{
+		msk:{ mask: '999' },
+		other_msk:{ mask: '6666' },
+		another_one:{ mask: '7777' , type:'reverse' }
+	});</pre>
+	
+	
+		<h2 id="mm_demos">meioMask demos</h2>
+	
+		<h3 id="mm_standalone">standalone</h3>
+		<form action="index_submit" method="get">
+			<fieldset>
+				<legend>Example form with defined masks</legend>
+				<label for="cpf">Credit Card:</label>
+				<input type="text" id="cc" name="cc" alt="cc" />
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; id=&quot;cc&quot; name=&quot;cc&quot; alt=&quot;cc&quot; /&gt;</pre>
+			
+				<script type="text/javascript" charset="utf-8">
+			
+					//meio.MaskGlobals.init().masks.regtest = { 'mask' : '^[0-9A-Z]{0,4}$' , 'type' : 'regexp' };
+					//$('cc').mask('regtest');
+			
+				</script>
+			
+				<label for="time_example">Time:</label>
+				<input type="text" id="time_example" alt="time" />
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; id=&quot;time_example&quot; alt=&quot;time&quot; /&gt;</pre>
+			
+				<label for="decimal">Decimal number:</label>
+				<input type="text" id="decimal" name="some_name" value="12345" alt="decimal" />
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; id=&quot;decimal&quot; value=&quot;12345&quot; name=&quot;some_name&quot; alt=&quot;decimal&quot; /&gt;</pre>
+			
+			</fieldset>
+		</form>
+	
+		<h2 id="mm_paste">meioMask paste feature demo</h2>
+		<p>We now will see the paste feature of this plugin, and how nice it is. I want you to copy some texts and paste them on the input. You'll see that it just pastes what is corret for the field.</p>
+		<form action="index_submit" method="get">
+			<fieldset>
+				<legend>Example form for the paste feature</legend>
+				<label for="cpf">Phone example:</label>
+				<p>copy:  <strong>1234567890</strong>  and paste at the input</p>
+				<p>copy:  <strong>(12) 3456-7890</strong>  and paste at the input</p>
+				<p>copy:  <strong>12abcdef34567890</strong>  and paste at the input</p>
+				<input type="text" id="phone" name="phone" alt="phone" />
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; id=&quot;phone&quot; name=&quot;phone&quot; alt=&quot;phone&quot; /&gt;</pre>
+			</fieldset>
+		</form>
+		<p>They will all give the same result! Imagine your visitor using it! It's the way he want's it to be!</p>
+	
+	
+		<h3 id="mm_metadata">with metadata plugin</h3>
+		<p>You can always change metadata plugin settings. See they're page for more information.</p>
+		<p><a href="http://docs.jquery.com/Plugins/Metadata/metadata">Metadata Plugin page</a></p>
+		<p>Metadata will always overwrite the 'attr' value. Look these examples to make it more clear.</p>
+		<form action="index_submit" method="get">
+			<fieldset>
+				<legend>Example form with masks using metadata plugin</legend>
+				<label for="metadata1">Mask '555-666':</label>
+				<input type="text" id="metadata1" alt='{"mask":"9","type":"infinite"}' />
+				<span>metadata overwrote the '(99) 666' mask set at alt attribute</span>
+			
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; id=&quot;metadata1&quot; class=&quot;{mask:'555-666'}&quot;  alt=&quot;(99) 666&quot; /&gt;</pre>
+			
+				<label for="metadata1">Mask '555-666':</label>
+				<input type="text" id="metadata1" alt='{"mask":"555-666"}' />
+				<span>metadata overwrote the 'phone' mask set at alt attribute</span>
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; id=&quot;metadata1&quot; class=&quot;{mask:'555-666'}&quot;  alt=&quot;phone&quot; /&gt;</pre>
+			
+				<label for="cpf">Mask '666-888':</label>
+				<input type="text" name="some_name" alt='{"mask":"555-666"}' />
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; class=&quot;{mask:'666-888'}&quot; /&gt;</pre>
+		    
+			</fieldset>
+		</form>
+	
+		<h3 id="mm_change_on_the_fly">change mask on-the-fly</h3>
+		<form action="index_submit" method="get">
+			<fieldset>
+				<legend>Example form with the change-on-the-fly feature</legend>
+				<label for="change_mask">Mask '(99) 666':</label>
+				<input type="text" id="change_mask" alt="(99) 666" maxlength="10" />
+				<pre name="code" class="html">&lt;input type=&quot;text&quot; id=&quot;change_mask&quot; alt=&quot;(99) 666&quot; maxlength=&quot;10&quot; /&gt;</pre>
+			
+				<ul>
+					<li><a onclick="$('change_mask').set('mask','***:***').set('value',''); return false;" href="#">Change mask to '***:***'</a></li>
+					<li><a onclick="$('change_mask').set('mask','(aaa) **-9999').set('value',''); return false;" href="#">Change mask to '(aaa) **-9999'</a></li>
+	 				<li><a onclick="$('change_mask').erase('mask').set('value',''); return false;" href="#">unset the mask</a></li>
+				</ul>
+			
+				<p>You can use it like you do with most of jQuery functions, chaining other functions. At this example the code for the first button is:</p>
+			
+				<pre name="code" class="javascript">$('#change_mask').setMask('***:***').val('');</pre>
+			
+				<p>This code sets the mask for all the elements that matches the selector '#change_mask' to '***:***' and then set it's value to ''.</p>
+			
+			</fieldset>
+		</form>
+	
+		<h3 id="mm_mask_string">mask string example</h3>
+	
+		<form action="index_submit" method="get">
+			<fieldset>
+			
+				<legend>Example that shows the $.mask.string() function</legend>
+				<label for="dumb_input">Enter any input:</label>
+				<input type="text" id="dumb_input" /><span style="padding-left:10px;color:#0000FF;" id="masked_string"></span>
+				<pre name="code" class="html">
+					&lt;input type=&quot;text&quot; id=&quot;dumb_input&quot; /&gt;
+				</pre>
+				<ul>
+					<li><a id="lmask_string1" href="#">Mask input value to '99/99/99'</a></li>
+					<li><a id="lmask_string2" href="#">Mask input value to 'phone'</a></li>
+					<li><a id="lmask_string3" href="#">Mask input value to {mask:'999.999,999',type:'reverse'}</a></li>
+					<li><a id="lmask_string4" href="#">Mask input value to 'signed-decimal'</a></li>
+				</ul>
+				<pre name="code" class="javascript">
+					(function($) {
+						$('#lmask_string1').click(function(){
+							$('#masked_string').text( 'Masked value: "'+$.mask.string( $('#dumb_input').val(), '99/99/99' )+'"' );
+							return false;
+						});
+						$('#lmask_string2').click(function(){
+							$('#masked_string').text( 'Masked value: "'+$.mask.string( $('#dumb_input').val(), 'phone' )+'"' );
+							return false;
+						});
+						$('#lmask_string3').click(function(){
+							$('#masked_string').text( 'Masked value: "'+$.mask.string( $('#dumb_input').val(), {mask:'999.999,999',type:'reverse'} )+'"' );
+							return false;
+						});
+						$('#lmask_string4').click(function(){
+							$('#masked_string').text( 'Masked value: "'+$.mask.string( $('#dumb_input').val(), 'signed-decimal' )+'"' );
+							return false;
+						});
+					})(jQuery);
+				</pre>
+			
+			
+				<script type="text/javascript">
+
+					$('lmask_string1').addEvent('click',function(){
+						$('masked_string').set('html' , 'Masked value: "'+$('dumb_input').get('value').mask( '99/99/99' )+'"' );
+						return false;
+					});
+				
+					$('lmask_string2').addEvent('click',function(){
+						$('masked_string').set('html' , 'Masked value: "'+$('dumb_input').get('value').mask( 'phone' )+'"' );
+						return false;
+					});
+					$('lmask_string3').addEvent('click',function(){
+						$('masked_string').set('html' , 'Masked value: "'+$('dumb_input').get('value').mask( {mask:'999.999,999',type:'reverse'} )+'"' );
+						return false;
+					});
+					$('lmask_string4').addEvent('click',function(){
+						$('masked_string').set('html' , 'Masked value: "'+$('dumb_input').get('value').mask( 'signed-decimal' )+'"' );
+						return false;
+					});
+
+				</script>
+			
+			
+			</fieldset>
+		</form>
+	
+	
+		<h3 id="mm_readonly">read-only inputs</h3>
+	
+		<form action="index_submit" method="get">
+			<fieldset>
+				<legend>Example that shows a readonly input working as it should (some plugins breaks this!)</legend>
+				<label for="readonly_input">Mask '999.999.999,99':</label>
+				<input type="text" readonly="readonly" alt="decimal" />
+				<pre name="code" class="html">
+					&lt;input type=&quot;text&quot; readonly=&quot;readonly&quot; alt=&quot;decimal&quot; /&gt;
+				</pre>
+			</fieldset>
+		</form>
+	
+		<h3 id="mm_callback">callbacks example</h3>
+	
+		<form action="index_submit" method="get">
+			<fieldset>
+				<legend>Example with a input and defined callbacks</legend>
+				<label for="cb_test_input">Mask '99.99-99/99':</label>
+				<input type="text" id="cb_test_input" />
+				<span id="cb_alerts"></span>
+				<pre name="code" class="html">
+					&lt;input type=&quot;text&quot; id=&quot;cb_test_input&quot; /&gt;
+				</pre>
+				<p>And the javascript:</p>
+				<pre name="code" class="javascript">
+					$('#cb_test_input').setMask({mask:'99.99-99/99',
+						onInvalid:function(c,nKey){
+							$('#cb_alerts').text('You can\'t input "'+c+'" in here. It\'s keynumber is "'+nKey+'".');
+							$(this).css('background','red');
+						},
+						onValid: function(c,nKey){
+							$('#cb_alerts').text('"'+c+'" is ok. It\'s keynumber is "'+nKey+'".');
+							$(this).css('background','#40FF3F');
+						},
+						onOverflow: function(c,nKey){
+							$('#cb_alerts').text("You can't enter more characters but your input might be ok!");
+							$(this).css('background','green');
+						}
+					});
+				</pre>
+			</fieldset>
+		</form>
+	
+		<h3 id="mm_signed">signed masks example</h3>
+	
+		<form action="index_submit" method="get">
+			<fieldset>
+				<legend>Example with signed masks ('-' and '+' keys will change they're signal)</legend>
+				<label for="signed_mask1">Mask 'signed-decimal':</label>
+				<input type="text" alt="signed-decimal" />
+				<pre name="code" class="html">
+					&lt;input type=&quot;text&quot; alt=&quot;signed-decimal&quot; /&gt;
+				</pre>
+				<label for="signed_mask2">Mask 'signed-decimal' with negative value at input:</label>
+				<input type="text" value="-4445" alt="signed-decimal" />
+				<pre name="code" class="html">
+					&lt;input type=&quot;text&quot; value=&quot;-4445&quot; alt=&quot;signed-decimal&quot; /&gt;
+				</pre>
+			
+				<label for="signed_mask3">Mask '999.999,99', reverse, with defaultValue='-000' (this example uses the metadata plugin):</label>
+				<input type="text" class="{mask:'99,999.999',type:'reverse',defaultValue:'-000'}" />
+				<pre name="code" class="html">
+					&lt;input type=&quot;text&quot; class=&quot;{mask:'99,999.999',type:'reverse',defaultValue:'-000'}&quot; /&gt;
+				</pre>
+			</fieldset>
+		</form>
+	
+	</div>
+
+	
+	<script type="text/javascript">
+
+		
+	
+		$('cb_test_input').set('mask',{mask:'99.99-99/99',defaultValue:'000',
+			onInvalid:function($el,c,nKey){
+				$('cb_alerts').set('text' , 'You can\'t input "'+c+'" in here. It\'s keynumber is "'+nKey+'".');
+				$el.setStyle('background','red');
+			},
+			onValid: function($el,c,nKey){
+				$('cb_alerts').set('text' , '"'+c+'" is ok. It\'s keynumber is "'+nKey+'".');
+				$el.setStyle('background','#40FF3F');
+			},
+			onOverflow: function($el,c,nKey){
+				$('cb_alerts').set('text' , "You can't enter more characters but your input might be ok!");
+				$el.setStyle('background','green');
+			}
+		});
+	
+		$$('input[type=text]').each(function($el){
+			$el.set('mask');
+		});
+	
+	
+	</script>
+	</body>
+</html>
