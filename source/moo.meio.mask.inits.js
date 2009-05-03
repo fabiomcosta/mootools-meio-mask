@@ -1,15 +1,7 @@
-/* $Id: moo.meiomask.js 52 2008-12-08 02:09:39Z fabiomcosta $ */
 /**
- * @version 1.0.0 $Rev: 52 $
- * The MIT License
- * Copyright (c) 2008 Fabio M. Costa http://www.meiocodigo.com
- */
-/**
- * moo.meiomask.js
- * $URL: http://svn.assembla.com/svn/meiomask/moo.meiomask.js $
- * @author: $Author: fabiomcosta $
- * @version 1.0.0 $Rev: 52 $
- * @lastchange: $Date: 2008-12-08 00:09:39 -0200 (Mon, 08 Dec 2008) $
+ * moo.meio.mask.js
+ * @author: fabiomcosta
+ * @version 1.0
  *
  * Created by Fabio M. Costa on 2008-09-16. Please report any bug at http://www.meiocodigo.com
  *
