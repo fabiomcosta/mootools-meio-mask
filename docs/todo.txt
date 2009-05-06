@@ -1,25 +1,19 @@
-TODO FEATURES:
-* allow a default value to be at the input if you try to delete everything; OK!
-* a callback should be called when you input something that is incorrect, something is correct and the mask is full; OK!
-* make a function that will mask a string just like it does with the inputs; OK!
-* allow the setMask function to be used as setMask({mask:"3213",type:"reverse"}) and stuff. OK!
-* the value from the input will be masked at the time it's applied; OK!
-* allow negative numbers to be written on number masks. OK
-* iphone support -- OK, TESTAR NOVAMENTE
-* set the signal at the default value, not at a new option. Will be easier to setup and when you need a number with signal you'll always
-need a default value, althoug you could have '-' as the input value... it would look weird. OK
+Things i don't like about it (will change till version 2.0):
 
-* FIX: 'phone-us' mask is now '(999) 999-9999';
-* CHANGE: change the 'infinite' mask name to 'repeat'; OK!
-* NEW: let 'repeat' have a maxLength; OK!
-* NEW: auto-tab focus form element from next form; OK! cool!
-* NEW: allow auto-tab, to focus the next form element when the input is completely filled; OK!
-* NEW: let the next input to be focused by auto-tab be selectable by a css selector; OK!
-* DEPRECATE: deprecated unmaskedVal. This function is too buggy... works for most cases but not all. The best way to do it is by doing it yourself. OK
-* FIX: fire the change event on reverse mask; OK
-* NEW: let masks have they're own fixedChars option, to give more flexibility; OK
-* fix usability bug that prevent correct character from being inputted;
-
+* Some crazy if's - This will need a total rewrite from the plugin;
+* Mask types should have in some way, different options for each of them, i mean, they should be threated separately, each of theyres event. It's being done done right now... but i feel that it can be even better;
+* Try not to polute the native objects with crazy and unusefull methods;
+* Make a cool and correct unmaskedVal function;
+* Work correctly with float and integer numbers, i mean like... if 90 is the value of the input it will mask to 90.00 not 0.90;
+* New mask type that works like this:
+	mask='9-9' and maxlength=5
+	'22' -> '2-2'
+	'222' -> '22-2'
+	'2222' -> '222-2'
+	Till it gets to 5.
+* RegexMask should be included too, it is still here at the mootools version, but with the paste bug, that will be easily fixed with the maxLength option, that will not be optional (can't force it but it will break paste if not present);
+* Try to add a placeholder option, not that necessary but it would be nice;
+* Change the way signaled masks work! That's so not pretty!
 
 Changelog:
 
@@ -61,5 +55,3 @@ v1.0
 <ul>
 	<li>initial release.</li>
 </ul>
-
-http://www.meiocodigo.com/2008/09/29/meiomask-jquery-form-mask-input-plugin/,http://www.meiocodigo.com/2008/09/29/meiomask-101-version-released/,http://www.meiocodigo.com/2008/09/20/meiomask-a-jquery-plugin-for-masking-inputs/

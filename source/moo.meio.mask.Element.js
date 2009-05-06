@@ -1,15 +1,16 @@
 Element.implement({
 	
+	// deprecated
 	unmaskedVal : function(){
-		return this.get('value').replace(meio.MaskGlobals.init().fixedCharsRegG,'');
+		return this.get('value').replace(meio.MaskGlobals.init().fixedCharsRegG, '');
 	},
 	
 	mask : function(options){
-        return this.set('mask',options);
+        return this.set('mask', options);
     },
 	
 	// http://www.bazon.net/mishoo/articles.epl?art_id=1292
-	setRange : function(start,end){
+	__setRange : function(start,end){
 		end = $pick(end,start);
 		if (this.setSelectionRange){
 			this.setSelectionRange(start, end);
@@ -24,7 +25,7 @@ Element.implement({
 	},
 
 	// adaptation from http://digitarald.de/project/autocompleter/
-	getRange : function(){
+	__getRange : function(){
 		if (!Browser.Engine.trident) return {start: this.selectionStart, end: this.selectionEnd};
 		var pos = {start: 0, end: 0},
 			range = document.selection.createRange();

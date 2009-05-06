@@ -1,24 +1,21 @@
 String.implement({
 	mask : function(options){
-		var globals = meio.MaskGlobals.init(),o = {};
-		switch( $type(options) ){
+		var globals = meio.MaskGlobals.init(), o = {};
+		switch($type(options)){
 			case 'string':
-				// then we see if it's a defined mask
-				if(globals.masks[options]) $extend(o,globals.masks[options]);
+				if(globals.masks[options]) $extend(o, globals.masks[options]);
 				else o.mask = options;
 				break;
 			case 'object':
-				$extend(o,options);
+				$extend(o, options);
 		}
 		
 		//insert signal if any
-		if( (o.type=='reverse') && o.defaultValue ){
+		if((o.type=='reverse') && o.defaultValue){
 			var signals = globals.signals;
-			// typeof signals[o.defaultValue.charAt(0)] != 'undefined'
-			// thats the only way i found to not see warnings on firefox
-			if( typeof signals[o.defaultValue.charAt(0)] != 'undefined' ){
+			if(typeof signals[o.defaultValue.charAt(0)] != 'undefined'){
 				var maybeASignal = this.charAt(0);
-				o.signal = options.signal = signals[maybeASignal] ? signals[maybeASignal] : signals[o.defaultValue.charAt(0)];
+				o.signal = options.signal = signals[maybeASignal]? signals[maybeASignal]: signals[o.defaultValue.charAt(0)];
 				o.defaultValue = options.defaultValue = o.defaultValue.substring(1);
 			}
 		}
@@ -26,9 +23,8 @@ String.implement({
 		if(!o.type) o.type = 'fixed';
 		var maskType = new meio.MaskType[o.type];
 
-		o.maskNonFixedChars = o.mask.replace(globals.fixedCharsRegG,'');
+		o.maskNonFixedChars = o.mask.replace(globals.fixedCharsRegG, '');
 		o.maskArray = o.mask.split('');
-		return maskType.__mask( this.split('') , globals , o );
-		
+		return maskType.__mask(this.split(''), globals, o);
 	}
 });
