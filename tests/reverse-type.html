@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>meioMask - a Mootools Mask Plugin</title>
+
+		<link rel="stylesheet" href="../assets/syntax-highlighter/SyntaxHighlighter.css" type="text/css" />
+		<link rel="stylesheet" href="../assets/syntax-highlighter/docs.css" type="text/css" />
+		<script type="text/javascript" src="../assets/syntax-highlighter/shCore.js"></script>
+		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushJScript.js"></script>
+		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushPhp.js"></script>
+		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushXml.js"></script>
+		
+		<script type="text/javascript" src="../assets/mootools/mootools-core.js"></script>
+		<script type="text/javascript" src="../assets/js-spec/Builder.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			Builder.build('../', {
+				'source': [
+					'moo.meio.mask.inits',
+					'moo.meio.mask.MaskGlobals',
+					'moo.meio.mask.Mask',
+					'moo.meio.mask.MaskType',
+					'moo.meio.mask.MaskType.fixed',
+					'moo.meio.mask.MaskType.infinite',
+					'moo.meio.mask.MaskType.reverse',
+					'moo.meio.mask.MaskType.regexp',
+					'moo.meio.mask.Array',
+					'moo.meio.mask.Element',
+					'moo.meio.mask.Properties.mask',
+					'moo.meio.mask.String'
+				]
+			});
+			dp.SyntaxHighlighter.ClipboardSwf = 'clipboard.swf';
+			dp.SyntaxHighlighter.HighlightAll('code');
+		</script>
+	</head>
+	<body>
+		<div id="content">
+	
+			<label for="decimal">Decimal number:</label>
+			<input type="text" id="decimal" name="some_name" value="12345" alt="decimal" />
+
+			<label for="metadata1">Mask '555-666':</label>
+			<input type="text" id="metadata1" alt='{"type":"reverse"}' />
+
+			<label for="signed_mask1">Mask 'signed-decimal':</label>
+			<input type="text" alt="signed-decimal" />
+
+			<label for="signed_mask2">Mask 'signed-decimal' with negative value at input:</label>
+			<input type="text" value="-4445" alt="signed-decimal" />
+		
+			<label for="signed_mask3">Mask '999.999,99', reverse, with defaultValue='-000' (this example uses the metadata plugin):</label>
+			<input type="text" class="{mask:'99,999.999',type:'reverse',defaultValue:'-000'}" />
+		</div>
+		<script type="text/javascript" >
+			$$('input[type=text]').set('mask');
+		</script>
+	</body>
+</html>
