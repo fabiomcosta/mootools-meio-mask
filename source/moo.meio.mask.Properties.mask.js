@@ -3,7 +3,7 @@ Element.Properties.mask = {
 	set: function(options){
 		options = $pick(options, {});
 		var mask = this.retrieve('mask');
-		return this.store('mask', mask? mask.change(options): new meio.Mask(this, options));
+		return this.store('mask', mask? mask.change(options): new Meio.Mask(this, options));
 	},
 	// sets the mask and return the mask object
 	get: function(options){

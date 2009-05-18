@@ -13,7 +13,8 @@ Things i don't like about it (will change till version 2.0):
 	Till it gets to 5.
 * RegexMask should be included too, it is still here at the mootools version, but with the paste bug, that will be easily fixed with the maxLength option, that will not be optional (can't force it but it will break paste if not present);
 * Try to add a placeholder option, not that necessary but it would be nice;
-* Change the way signaled masks work! That's so not pretty!
+* Change the way signaled masks work! That's so not pretty!;
+* Watch for a better fix on maxLength (try to avoid that maxLength == -1).
 
 Changelog:
 

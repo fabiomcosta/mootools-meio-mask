@@ -1,6 +1,6 @@
-meio.MaskType.regexp = new Class({
+Meio.MaskType.regexp = new Class({
     
-    Extends : meio.MaskType,
+    Extends : Meio.MaskType,
     
     initialize : function(mask){
         this.parent(mask);

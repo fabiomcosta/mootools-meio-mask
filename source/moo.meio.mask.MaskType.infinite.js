@@ -1,6 +1,6 @@
-meio.MaskType.infinite = new Class({
+Meio.MaskType.infinite = new Class({
     
-    Extends : meio.MaskType,
+    Extends : Meio.MaskType,
     
     _keyup : function(e,o){
     	return true;

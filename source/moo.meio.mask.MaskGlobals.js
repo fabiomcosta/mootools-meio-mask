@@ -1,18 +1,22 @@
 
-meio.MaskGlobals = new Hash({
+Meio.MaskGlobals = new Hash({
 
 	init: function(){
 		if(!this.inited){
 			var self = this,i,
-				keyRep = ( Browser.Platform.ipod ) ? this.iphoneKeyRepresentation : this.keyRepresentation;
-
+				keyRep = (Browser.Platform.ipod)? this.iphoneKeyRepresentation: this.keyRepresentation;
+			
 			for(i=0; i<=9; i++) this.rules[i] = new RegExp('[0-'+i+']');
-
+			
 			this.keyRep = keyRep;
 			this.ignoreKeys = [];
 			$each(keyRep, function(val,key){
 				self.ignoreKeys.push( key.toInt() );
 			});
+			
+			// http://unixpapa.com/js/key.html
+			// if only the keydown auto-repeats
+			this.onlyKeyDownRepeat = (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525));
 			this.inited = true;
 		}
 		return this;
@@ -52,31 +56,24 @@ meio.MaskGlobals = new Hash({
 		116: 'f5',
 		224: 'command'
 	},
-
+	
 	iphoneKeyRepresentation : {
 		10: 'go',
 		127: 'delete'
 	},
 
-	signals: {
-		'+': '',
-		'-': '-'
-	},
-
 	masks: {
-		'phone'				: { mask : '(99) 9999-9999' },
-		'phone-us'			: { mask : '(999) 999-9999' },
-		'cpf'				: { mask : '999.999.999-99' },
-		'cnpj'				: { mask : '99.999.999/9999-99' },
-		'date'				: { mask : '39/19/9999' },
-		'date-us'			: { mask : '19/39/9999' },
-		'cep'				: { mask : '99999-999' },
-		'time'				: { mask : '29:59' },
-		'cc'				: { mask : '9999 9999 9999 9999' },
-		'integer'			: { mask : '999.999.999.999', type : 'reverse' },
-		'decimal'			: { mask : '99,999.999.999.999', type : 'reverse', defaultValue : '000' },
-		'decimal-us'		: { mask : '99.999,999,999,999', type : 'reverse', defaultValue : '000' },
-		'signed-decimal'	: { mask : '99,999.999.999.999', type : 'reverse', defaultValue : '+000' },
-		'signed-decimal-us' : { mask : '99,999.999.999.999', type : 'reverse', defaultValue : '+000' }
+		'phone'				: { mask: '(99) 9999-9999' },
+		'phone-us'			: { mask: '(999) 999-9999' },
+		'cpf'				: { mask: '999.999.999-99' },
+		'cnpj'				: { mask: '99.999.999/9999-99' },
+		'date'				: { mask: '39/19/9999' },
+		'date-us'			: { mask: '19/39/9999' },
+		'cep'				: { mask: '99999-999' },
+		'time'				: { mask: '29:59' },
+		'cc'				: { mask: '9999 9999 9999 9999' },
+		'integer'			: { mask: '999.999.999.999', type: 'reverse', decimal: false },
+		'decimal'			: { mask: '999.999.999.999,99', type: 'reverse' },
+		'decimal-us'		: { mask: '999,999,999,999.99', type: 'reverse' }
 	}
 });

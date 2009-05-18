@@ -1,4 +1,4 @@
-meio.Mask = new Class({
+Meio.Mask = new Class({
 
 	Implements : [Options,Events],
 
@@ -7,6 +7,10 @@ meio.Mask = new Class({
 		mask : null,
 		type : 'fixed',
 		fixedChars: '[(),.:/ -]',
+		
+		selectOnFocus: true,
+		autoTab: true
+		
 		//onInvalid : $empty,
 		//onValid : $empty,
 		//onOverflow : $empty
@@ -16,9 +20,9 @@ meio.Mask = new Class({
 	},
 
 	initialize : function(el,options){
-		this.$el = $(el);
-		if(this.$el.get('tag') != 'input' || this.$el.get('type') != 'text') return;
-		this.globals = meio.MaskGlobals.init();
+		this.element = $(el);
+		if(this.element.get('tag') != 'input' || this.element.get('type') != 'text') return;
+		this.globals = Meio.MaskGlobals.init();
 		this.change(options);
 	},
 
@@ -27,7 +31,8 @@ meio.Mask = new Class({
 
 		// see whats the attr that we have to look
 		if(options.attr) this.options.attr = options.attr;
-		var attrValue = this.$el.get(this.options.attr),
+		
+		var attrValue = this.element.get(this.options.attr),
 			tmpMask;
 
 		// then we look for the 'attr' option
@@ -43,34 +48,38 @@ meio.Mask = new Class({
 		// merge options cause it will allways overwrite everything
 		if($type(options) == 'object') this.setOptions(options);
 		
-		if( this.options.mask ){
-			if(this.$el.retrieve('mask')) this.remove();
-			var mlStr = 'maxLength',
-				mlValue = this.$el.get(mlStr);
+		if(this.options.mask){
+			
+			if(this.element.retrieve('mask')) this.remove();
+			var mlValue = this.element.get('maxLength'),
+				fixedCharsRegG = new RegExp(this.options.fixedChars, 'g');
 				
 			this.setOptions({
+				fixedCharsReg: new RegExp(this.options.fixedChars),
+				fixedCharsRegG: fixedCharsRegG,
 				maxlength : mlValue,
 				maskArray : this.options.mask.split(''),
-				maskNonFixedChars : this.options.mask.replace(this.globals.fixedCharsRegG, '')
+				maskNonFixedChars : this.options.mask.replace(fixedCharsRegG, '')
 			});
-			if(this.$el.get('value') != '')
-				this.$el.set('value', this.$el.get('value').mask(this.options));
 			
-			this.$el.store('mask', this).erase(mlStr);
-			this.maskType = new meio.MaskType[this.options.type](this);
+			if(this.element.get('value') != '')
+				this.element.set('value', this.element.get('value').mask(this.options));
+			
+			this.element.store('mask', this).erase('maxLength');
+			this.maskType = new Meio.MaskType[this.options.type](this);
 		}
 		return this;
 	},
 	
 	// removes the mask
 	remove : function(){
-		var mask = this.$el.retrieve('mask');
+		var mask = this.element.retrieve('mask');
 		if(mask){
 			var maxLength = mask.options.maxlength;
-			if(maxLength != -1) this.$el.set('maxLength', maxLength);
+			if(maxLength != -1) this.element.set('maxLength', maxLength);
 			mask.maskType.eventsToBind.each(function(evt){
-				this.$el.removeEvent(evt, this[evt + 'Event']);
-			}.bind(mask.maskType));
+				this.element.removeEvent(evt, this[evt + 'Event']);
+			}, mask.maskType);
 		}
 		return this;
 	}

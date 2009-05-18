@@ -2,6 +2,7 @@
  * moo.meio.mask.js
  * @author: fabiomcosta
  * @version 1.0
+ * Inspired by iMask http://zendold.lojcomm.com.br/imask/
  *
  * Created by Fabio M. Costa on 2008-09-16. Please report any bug at http://www.meiocodigo.com
  *
@@ -31,7 +32,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-if (!$defined(meio)) var meio = {};
+if(typeof Meio == 'undefined') var Meio = {};
 
 $extend(Element.NativeEvents,{
 	'paste': 2, 'input': 2
