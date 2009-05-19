@@ -36,7 +36,7 @@ Meio.MaskGlobals = new Hash({
 	},
 	
 	keyRepresentation: {
-		8: 'backspace',
+		//8: 'backspace',
 		9: 'tab',
 		13: 'enter',
 		16: 'shift',
@@ -52,7 +52,7 @@ Meio.MaskGlobals = new Hash({
 		39: 'right',
 		40: 'down',
 		45: 'insert',
-		46: 'delete',
+		//46: 'delete',
 		116: 'f5',
 		224: 'command'
 	},
@@ -71,7 +71,7 @@ Meio.MaskGlobals = new Hash({
 		'date-us'			: { mask: '19/39/9999' },
 		'cep'				: { mask: '99999-999' },
 		'time'				: { mask: '29:59' },
-		'cc'				: { mask: '9999 9999 9999 9999' },
+		'cc'				: { mask: '9999   9999 9999 9999' },
 		'integer'			: { mask: '999.999.999.999', type: 'reverse', decimal: false },
 		'decimal'			: { mask: '999.999.999.999,99', type: 'reverse' },
 		'decimal-us'		: { mask: '999,999,999,999.99', type: 'reverse' }

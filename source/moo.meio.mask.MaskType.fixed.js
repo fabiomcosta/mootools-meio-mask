@@ -14,6 +14,8 @@ Meio.MaskType.fixed = new Class({
     },
     
     _keypress: function(e, o){
+	
+		if(this.ignore || e.control || e.meta || e.alt) return true;
 
     	var c = String.fromCharCode(e.code),
     		opt = this.mask.options,
@@ -21,9 +23,58 @@ Meio.MaskType.fixed = new Class({
     		valueArray = o.value.replace(opt.fixedCharsRegG, '').split(''),
     		extraPos = maskArray.__extraPositionsTill(o.range.start, opt.fixedCharsReg);
 		
-		if(o.removeKey) this.removeChar(e, o);
-		
-		if(this.ignore || e.control || e.meta || e.alt) return true;
+		if(o.specialKey){
+			var start = o.range.start, delta = 0;
+			if((o.range.end - o.range.start) == 0){
+				// no text selected
+				if(e.code==46){
+					//delete
+					//e.code==46 (delete)
+					for(var i = start; i < maskArray.length; i++){
+						if(opt.fixedCharsReg.test(o.valueArray[i])){
+							delta++;
+						}
+						else{
+							break;
+						}
+					}
+					
+				}
+				else{
+					// backspace
+					for(var i = start-1; i > 0; i--){
+						if(opt.fixedCharsReg.test(o.valueArray[i])){
+							delta--;
+						}
+						else{
+							break;
+						}
+					}
+				}
+			}
+			var start = o.range.start, end = 1;
+			if((o.range.end - o.range.start) == 0){
+				// no text selected
+				if(e.code==8){
+					(start)? start--: end = 0;
+				}
+			}
+			else{
+				end = o.range.end - start;
+			}
+			start += delta;
+			o.valueArray.splice(start, end);
+			this.element.set('value', this.__mask(o.valueArray, this.globals, opt, extraPos));
+			this.element.setRange(start);
+			return false;
+			
+			//console.log(delta);
+//			var tmp = o.valueArray.join('');
+//			tmp = tmp.replace(opt.fixedCharsRegG, '').split('');
+//			console.log(tmp);
+			//this.__mask(valueArray, globals, o, extraPos);
+		}
+
 
     	var rangeStartExtraPosition = o.range.start + extraPos;
 
@@ -37,7 +88,6 @@ Meio.MaskType.fixed = new Class({
     	}
     	else
     		this.element.setRange(o.range.start, o.range.end);
-
     	return true;
     },
     

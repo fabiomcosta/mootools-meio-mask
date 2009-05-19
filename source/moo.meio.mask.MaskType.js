@@ -21,8 +21,9 @@ Meio.MaskType = new Class({
 		o.value = this.element.get('value');
 		o.range = this.element.getRange();
 		o.valueArray = o.value.split('');
-		// 8=backspace && 46=delete
-		o.removeKey = (e.code == 8 || e.code == 46);
+		// 37=left && 39=right && 8=backspace && 46=delete && 127==iphone's delete (i mean backspace)
+		o.specialKey = (e.code == 8 || e.code == 46 || (Browser.Platform.ipod && e.code == 127));
+		o.setasKey = (e.code==37||e.code==39);
 		//o[this.options.type] = true;
 		return func.call(this, e, o);
 	},
@@ -34,7 +35,7 @@ Meio.MaskType = new Class({
     		this.mask.fireEvent('valid', [this.element, rep? rep: '', e.code]);
     	}
 		return (Browser.Platform.ipod
-			|| (this.globals.onlyKeyDownRepeat && o.removeKey)
+			|| (this.globals.onlyKeyDownRepeat && o.specialKey)
 			)? this._keypress(e, o): true;
     },
     

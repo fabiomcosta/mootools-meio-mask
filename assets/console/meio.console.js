@@ -1,10 +1,9 @@
 (function(){
-
 	if(!window.console){
 		window.console = {};
 		if(window.opera){
 			console.log = function(){
-				opera.postError.call(this, arguments);
+				opera.postError.apply(this, arguments);
 			};
 		}
 		else{
@@ -26,16 +25,13 @@
 			};
 		}
 	}
-	
-	var tempoTime = 0, tempoAtual = null;
-	console.time = function(){
-		if( tempoTime%2 == 0 ){
-			tempoAtual = $time();
-		}
-		else{
-			console.log($time()-tempoAtual);
-		}
-		tempoTime++;
-	};
-	
+	if(!console.time && !console.timeEnd){
+		var timesNamespace = {};
+		console.time = function(name){
+			timesNamespace[name] = $time();
+		};
+		console.timeEnd = function(name){
+			console.log(name + ': ' + ($time()-timesNamespace[name]));
+		};
+	}
 })();

@@ -10,8 +10,8 @@ Element.implement({
     },
 	
 	// http://www.bazon.net/mishoo/articles.epl?art_id=1292
-	setRange : function(start,end){
-		end = $pick(end,start);
+	setRange : function(start, end){
+		end = $pick(end, start);
 		if (this.setSelectionRange){
 			this.setSelectionRange(start, end);
 		}
