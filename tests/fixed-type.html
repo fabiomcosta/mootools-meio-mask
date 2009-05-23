@@ -51,9 +51,13 @@
 	
 		<form action="index_submit" method="get">
 			<fieldset>
-				<legend>Input with the 'msk' Mask</legend>
-				<label for="msk">Msk:</label>
-				<input type="text" id="msk" alt="msk" />
+				<legend>Example form with defined masks</legend>
+				<label for="cpf">Credit Card:</label>
+				<input style="width: 200px" type="text" id="cc" name="cc" alt="cc" />
+				<legend>Example form with defined masks</legend>
+				<label>No masks:</label>
+				<input style="width: 100px" type="text" />
+				
 			</fieldset>
 		</form>
 	
@@ -62,13 +66,11 @@
 		<h3 id="mm_standalone">standalone</h3>
 		<form action="index_submit" method="get">
 			<fieldset>
-				<legend>Example form with defined masks</legend>
-				<label for="cpf">Credit Card:</label>
-				<input type="text" id="cc" name="cc" alt="cc" />
-			
+				<legend>Input with the 'msk' Mask</legend>
+				<label for="msk">Msk:</label>
+				<input type="text" id="msk" alt="msk" />
 				<label for="time_example">Time:</label>
 				<input type="text" id="time_example" alt="time" />
-			
 			</fieldset>
 		</form>
 	

@@ -6,7 +6,7 @@ Meio.MaskType = new Class({
             this.mask = mask;
             this.globals = mask.globals;
             this.element = mask.element;
-    		this.eventsToBind = ['keydown', 'keypress', 'keyup', 'paste'];
+    		this.eventsToBind = ['keydown', 'keypress'];
     		this.eventsToBind.each(function(evt){
     		    this[evt + 'Event'] = this._onMask.bindWithEvent(this, this['_' + evt]);
     			this.element.addEvent(evt , this[evt+'Event']);
@@ -21,10 +21,10 @@ Meio.MaskType = new Class({
 		o.value = this.element.get('value');
 		o.range = this.element.getRange();
 		o.valueArray = o.value.split('');
-		// 37=left && 39=right && 8=backspace && 46=delete && 127==iphone's delete (i mean backspace)
-		o.specialKey = (e.code == 8 || e.code == 46 || (Browser.Platform.ipod && e.code == 127));
-		o.setasKey = (e.code==37||e.code==39);
-		//o[this.options.type] = true;
+		// 8=backspace && 46=delete && 127==iphone's delete (i mean backspace)
+		o.delKey = (e.code == 46);
+		o.bksKey = (e.code == 8 || (Browser.Platform.ipod && e.code == 127));
+		o.removeKey = (o.bksKey || o.delKey);
 		return func.call(this, e, o);
 	},
     
@@ -45,20 +45,25 @@ Meio.MaskType = new Class({
     	//it would remove the range selected by default, and that's not a desired behavior
     	//if(e.code == 9 && (Browser.Engine.webkit || Browser.Engine.trident)) return true;
     	//return this._paste(e, o);
+		return true;
     },
     
-    testEvents: function(maskArray, rsEp, c, code){
-    	if(!this.globals.rules[maskArray[rsEp]]){
-    		this.mask.fireEvent('overflow', [this.element, c, code]);
-    		return false;
-    	}
-    	else if(!this.globals.rules[maskArray[rsEp]].test(c)){
-    		this.mask.fireEvent('invalid', [this.element, c, code]);
-    		return false;
-    	}
-    	else
-    	    this.mask.fireEvent('valid', [this.element, c, code]);
-    	return true;
+    testEvents: function(maskArray, delta, c, code, o){
+    	if(!o.removeKey){
+			if(!this.globals.rules[maskArray[delta]]){
+	    		//console.log('overflow');
+				this.mask.fireEvent('overflow', [this.element, c, code]);
+	    		return false;
+	    	}
+	    	else if(!this.globals.rules[maskArray[delta]].test(c)){
+				//console.log('invalid');
+	    		this.mask.fireEvent('invalid', [this.element, c, code]);
+	    		return false;
+	    	}
+		}
+    	//console.log('valid');
+		this.mask.fireEvent('valid', [this.element, c, code]);
+		return true;
     },
     
 	// remove chars when backspace and delete are pressed

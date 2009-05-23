@@ -71,7 +71,8 @@ Meio.MaskGlobals = new Hash({
 		'date-us'			: { mask: '19/39/9999' },
 		'cep'				: { mask: '99999-999' },
 		'time'				: { mask: '29:59' },
-		'cc'				: { mask: '9999   9999 9999 9999' },
+		'cc'				: { mask: '9999 9999 9999 9999' },
+		//'cc'				: { mask: '(99) 9--9  999 99 99--' },
 		'integer'			: { mask: '999.999.999.999', type: 'reverse', decimal: false },
 		'decimal'			: { mask: '999.999.999.999,99', type: 'reverse' },
 		'decimal-us'		: { mask: '999,999,999,999.99', type: 'reverse' }
