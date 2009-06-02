@@ -10,16 +10,14 @@ Array.implement({
 		return this;
 	},
 	
-	// gets the array representing an unmasked string and masks it depending on the type of the mask
+/*	// gets the array representing an unmasked string and masks it depending on the type of the mask
 	__mask2: function(globals, opt, extraPos, o){
-		console.log(this);
 		this.__removeInvalidChars(opt.maskNonFixedChars, globals.rules);
-		console.log(this);
 		//if(o.defaultValue) this.__applyDefaultValue(o.defaultValue);
 		this.__applyMask2(opt.maskArray, opt.fixedCharsReg, extraPos, o);
-		console.log(this);
 		return this;
 	},
+*/
 
 	// applyes the default value to the result string
 	__applyDefaultValue: function(defaultValue){
@@ -61,7 +59,7 @@ Array.implement({
 		}
 		return this;
 	},
-	
+	/*
 	// Apply the current input mask to the valueArray and returns it. 
 	__applyMask2: function(maskArray, fixedCharsReg, plus, o){
 		plus = $pick(plus, 0);
@@ -77,7 +75,7 @@ Array.implement({
 			}
 		}
 		return this;
-	},
+	},*/
 	
 	// searches for fixed chars begining from the range start position, till it finds a non fixed
    	__extraPositionsTill: function(rangeStart, fixedCharsReg){

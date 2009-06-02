@@ -7,6 +7,12 @@ Meio.MaskGlobals = new Hash({
 				keyRep = (Browser.Platform.ipod)? this.iphoneKeyRepresentation: this.keyRepresentation;
 			
 			for(i=0; i<=9; i++) this.rules[i] = new RegExp('[0-'+i+']');
+
+			//create the fixedChars regular expression
+			this.fixedCharsRegex = new RegExp('[^'+this.rules.getKeys().join('').escapeRegExp()+']');
+			//create a regex to match chars from the rules
+			this.rulesRegex = new RegExp('['+this.rules.getKeys().join('').escapeRegExp()+']', 'g');
+			this.matchRules = new RegExp('['+this.rules.getKeys().join('').escapeRegExp()+']');
 			
 			this.keyRep = keyRep;
 			this.ignoreKeys = [];
@@ -27,13 +33,13 @@ Meio.MaskGlobals = new Hash({
 		return this.init();
 	},
 	
-	rules: {
+	rules: new Hash({
 		'z': /[a-z]/,
 		'Z': /[A-Z]/,
 		'a': /[a-zA-Z]/,
 		'*': /[0-9a-zA-Z]/,
 		'@': /[0-9a-zA-ZçÇáàãéèíìóòõúùü]/
-	},
+	}),
 	
 	keyRepresentation: {
 		//8: 'backspace',
@@ -63,7 +69,7 @@ Meio.MaskGlobals = new Hash({
 	},
 
 	masks: {
-		'phone'				: { mask: '(99) 9999-9999' },
+		'phone'				: { mask: '(99) 9999-9999)' },
 		'phone-us'			: { mask: '(999) 999-9999' },
 		'cpf'				: { mask: '999.999.999-99' },
 		'cnpj'				: { mask: '99.999.999/9999-99' },
@@ -71,7 +77,7 @@ Meio.MaskGlobals = new Hash({
 		'date-us'			: { mask: '19/39/9999' },
 		'cep'				: { mask: '99999-999' },
 		'time'				: { mask: '29:59' },
-		'cc'				: { mask: '9999 9999 9999 9999' },
+		'cc'				: { mask: '55 99' },
 		//'cc'				: { mask: '(99) 9--9  999 99 99--' },
 		'integer'			: { mask: '999.999.999.999', type: 'reverse', decimal: false },
 		'decimal'			: { mask: '999.999.999.999,99', type: 'reverse' },

@@ -20,7 +20,7 @@ var Builder = {
 			}
 			else{
 				for(key in files){
-					this.includeFiles(path + key + '/', files[key]);
+					this.includeFiles(path + key.match(/^([\w]+[^\d]+)\d*$/i)[1] + '/', files[key]);
 				}
 			}
 		break;

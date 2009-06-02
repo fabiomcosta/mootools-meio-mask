@@ -6,7 +6,7 @@ Meio.MaskType = new Class({
             this.mask = mask;
             this.globals = mask.globals;
             this.element = mask.element;
-    		this.eventsToBind = ['keydown', 'keypress'];
+    		this.eventsToBind = ['focus', 'blur', 'keydown', 'keypress'];
     		this.eventsToBind.each(function(evt){
     		    this[evt + 'Event'] = this._onMask.bindWithEvent(this, this['_' + evt]);
     			this.element.addEvent(evt , this[evt+'Event']);
@@ -16,11 +16,11 @@ Meio.MaskType = new Class({
     
 	_onMask: function(e, func){
 		var o = {};
-		e = new Event(e);
 		if(this.element.get('readonly')) return true;
-		o.value = this.element.get('value');
+		//o.value = this.element.get('value');
 		o.range = this.element.getRange();
-		o.valueArray = o.value.split('');
+		o.isSelection = (o.range.start != o.range.end);
+		//o.valueArray = o.value.split('');
 		// 8=backspace && 46=delete && 127==iphone's delete (i mean backspace)
 		o.delKey = (e.code == 46);
 		o.bksKey = (e.code == 8 || (Browser.Platform.ipod && e.code == 127));
@@ -29,13 +29,14 @@ Meio.MaskType = new Class({
 	},
     
     _keydown: function(e, o){
-    	this.ignore = this.globals.ignoreKeys.contains(e.code);
-    	if(this.ignore){
+    	//console.log(e);
+		this.ignore = this.globals.ignoreKeys.contains(e.code);
+		if(this.ignore){
     		var rep = this.globals.keyRep[e.code];
     		this.mask.fireEvent('valid', [this.element, rep? rep: '', e.code]);
     	}
 		return (Browser.Platform.ipod
-			|| (this.globals.onlyKeyDownRepeat && o.specialKey)
+			|| (this.globals.onlyKeyDownRepeat && o.removeKey)
 			)? this._keypress(e, o): true;
     },
     
@@ -48,14 +49,14 @@ Meio.MaskType = new Class({
 		return true;
     },
     
-    testEvents: function(maskArray, delta, c, code, o){
+    testEvents: function(maskArray, i, c, code, o){
     	if(!o.removeKey){
-			if(!this.globals.rules[maskArray[delta]]){
+			if(!this.globals.rules[maskArray[i]]){
 	    		//console.log('overflow');
 				this.mask.fireEvent('overflow', [this.element, c, code]);
 	    		return false;
 	    	}
-	    	else if(!this.globals.rules[maskArray[delta]].test(c)){
+	    	else if(!this.globals.rules[maskArray[i]].test(c)){
 				//console.log('invalid');
 	    		this.mask.fireEvent('invalid', [this.element, c, code]);
 	    		return false;

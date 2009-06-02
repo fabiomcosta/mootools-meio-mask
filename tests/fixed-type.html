@@ -46,14 +46,14 @@
 		<div id="content">
 	
 		<script type="text/javascript">
-			Meio.MaskGlobals.masks.msk = { mask : '999' };
+			//Meio.MaskGlobals.masks.msk = { mask : '999' };
 		</script>
 	
 		<form action="index_submit" method="get">
 			<fieldset>
 				<legend>Example form with defined masks</legend>
 				<label for="cpf">Credit Card:</label>
-				<input style="width: 200px" type="text" id="cc" name="cc" alt="cc" />
+				<input style="width: 200px" type="text" id="cc" name="cc" alt="phone" />
 				<legend>Example form with defined masks</legend>
 				<label>No masks:</label>
 				<input style="width: 100px" type="text" />
@@ -160,7 +160,7 @@
 	</div>
 
 	<script type="text/javascript">
-		$('cb_test_input').set('mask', {mask: '99.99-99/99',
+		/*$('cb_test_input').set('mask', {mask: '99.99-99/99',
 			onInvalid:function($el, nKey){
 				$('cb_alerts').set('text', 'keynumber: ' + nKey + '.');
 				$el.setStyle('background', 'red');
@@ -173,9 +173,10 @@
 				$('cb_alerts').set('text', "You can't enter more characters but your input might be ok!");
 				$el.setStyle('background', 'green');
 			}
-		});
-		$$('input[type=text]').each(function($el){
-			$el.set('mask');
+		});*/
+		$$('input[type=text]').each(function(el, i){
+			el.set('mask');
+			if(i==0){ el.focus(); } 
 		});
 	</script>
 	</body>

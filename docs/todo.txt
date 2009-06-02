@@ -1,5 +1,6 @@
 Things i don't like about it (will change till version 2.0):
 
+
 * Some crazy if's - This will need a total rewrite from the plugin;
 * Mask types should have in some way, different options for each of them, i mean, they should be threated separately, each of theyres event. It's being done done right now... but i feel that it can be even better;
 * Try not to polute the native objects with crazy and unusefull methods;
@@ -15,6 +16,16 @@ Things i don't like about it (will change till version 2.0):
 * Try to add a placeholder option, not that necessary but it would be nice;
 * Change the way signaled masks work! That's so not pretty!;
 * Watch for a better fix on maxLength (try to avoid that maxLength == -1).
+
+IDEAS FOR 2.0:
+
+* Set defaultValue when the mask is applyed to fix the reset buton of the form;
+* Option that will set the size attribute of the input based on the mask;
+* Add a callback to rules so that it can get uppercased or lowercased after inputting the char, this will allow a char being dependent of a preceding char (like on hours you dont want the user to input chars bigger than 3 if the first is 2) 
+
+
+
+
 
 Changelog:
 

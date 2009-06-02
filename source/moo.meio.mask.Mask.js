@@ -57,9 +57,9 @@ Meio.Mask = new Class({
 			this.setOptions({
 				fixedCharsReg: new RegExp(this.options.fixedChars),
 				fixedCharsRegG: fixedCharsRegG,
-				maxlength : mlValue,
-				maskArray : this.options.mask.split(''),
-				maskNonFixedChars : this.options.mask.replace(fixedCharsRegG, '')
+				maxlength: mlValue,
+				maskArray: this.options.mask.split(''),
+				maskNonFixedChars: this.options.mask.replace(fixedCharsRegG, '')
 			});
 			
 			if(this.element.get('value') != '')
