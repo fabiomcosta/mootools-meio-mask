@@ -12,7 +12,7 @@ Meio.MaskType.reverse = new Class({
         if(mask){
 			$extend(this.mask.options, this.options);
 			this.mask.options.maskArray.reverse();
-			if(this.mask.options.alignText) this.$el.setStyle('text-align', 'right');
+			if(this.mask.options.alignText) this.element.setStyle('text-align', 'right');
             //if(this.$el.get('value') == '') this.$el.set('value', .mask(this.mask.options));
         }
     },

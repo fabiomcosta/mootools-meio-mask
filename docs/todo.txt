@@ -22,8 +22,8 @@ IDEAS FOR 2.0:
 * Set defaultValue when the mask is applyed to fix the reset buton of the form;
 * Option that will set the size attribute of the input based on the mask;
 * Add a callback to rules so that it can get uppercased or lowercased after inputting the char, this will allow a char being dependent of a preceding char (like on hours you dont want the user to input chars bigger than 3 if the first is 2) 
-
-
+* As seen on the benchmarks i did, i should consider using a string of characters instead of a regular expression;
+* Option to force the completition of the value of the mask.
 
 
 

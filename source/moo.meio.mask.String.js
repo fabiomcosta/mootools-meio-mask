@@ -1,6 +1,6 @@
 String.implement({
 	mask : function(options){
-		var globals = Meio.MaskGlobals.init(), o = {};
+		var globals = Meio.MaskGlobals.get(), o = {};
 
 		switch($type(options)){
 			case 'string':
@@ -10,7 +10,6 @@ String.implement({
 			case 'object':
 				$extend(o, options);
 		}
-		
 		//insert signal if any
 		/*if((o.type=='reverse') && o.defaultValue){
 			var signals = globals.signals;
@@ -20,17 +19,15 @@ String.implement({
 				o.defaultValue = options.defaultValue = o.defaultValue.substring(1);
 			}
 		}*/
-		
-		if(!o.fixedChars) o.fixedChars = Meio.Mask.options.fixedChars;
-		o.fixedCharsReg = new RegExp(o.fixedChars);
-		o.fixedCharsRegG = new RegExp(o.fixedChars, 'g');
-		
+		//if(!o.fixedChars) o.fixedChars = Meio.Mask.options.fixedChars;
+		//o.fixedCharsReg = new RegExp(o.fixedChars);
+		//o.fixedCharsRegG = new RegExp(o.fixedChars, 'g');
+
 		if(!o.type) o.type = 'fixed';
 		var maskType = new Meio.MaskType[o.type]();
 
-		o.maskNonFixedChars = o.mask.replace(o.fixedCharsRegG, '');
-		o.maskArray = o.mask.split('');
-		
-		return maskType.__mask(this.split(''), globals, o);
+		//o.maskNonFixedChars = o.mask.replace(o.fixedCharsRegG, '');
+		//o.maskArray = o.mask.split('');
+		return maskType.maskString(this);//maskType.__mask(this.split(''), globals, o);
 	}
 });

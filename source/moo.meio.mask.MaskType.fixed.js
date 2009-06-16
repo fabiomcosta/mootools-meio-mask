@@ -14,57 +14,101 @@ Meio.MaskType.fixed = new Class({
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
 		this.mask.options.maskArray.each(function(c, i){
-			if(this.globals.matchRules.test(c)) this.validIndexes.push(i);
+			if(this.globals.matchRules.contains(c)) this.validIndexes.push(i);
 		}, this);
 	}, 
 
     _paste: function(e, o){
-    	/*	this.element.set('value', this.__mask(o.valueArray, this.globals, this.mask.options));
-    	if(Browser.Engine.trident || Browser.Engine.webkit)
-    	    this.element.setRange(o.range.start, o.range.end);
-    	return true;*/
+
+		var elementValue = this.element.get('value'),
+			elementValueArray = elementValue.split(''),
+			maskArray = this.mask.options.maskArray;
+		
+		var eli = 0, newStartRange = o.range.start; 
+
+		while(eli < this.maskMold.length){
+			if(!elementValueArray[eli]){
+				elementValueArray[eli] = this.maskMold[eli];
+			}
+			else if(this.globals.rules[maskArray[eli]]){
+				if(!this.globals.rules[maskArray[eli]].test(elementValueArray[eli])){
+					elementValueArray.splice(eli, 1);
+					continue;
+				}
+				newStartRange = eli;
+			}
+			else if(maskArray[eli] != elementValueArray[eli]){
+				elementValueArray.splice(eli, 0, this.maskMold[eli]);
+			}
+			else{
+				elementValueArray[eli] = this.maskMold[eli];
+			}
+			eli++;
+		}
+		
+		this.maskMoldArray = elementValueArray.slice(0, this.maskMold.length);
+		
+		this.element.set('value', this.maskMoldArray.join(''))
+			.setRange(newStartRange+1);
+
+		return false;
     },
     
 	_focus: function(e, o){
-		this.element.set('value', this.maskMoldArray.join('')).select();
+		this.element.set('value', this.maskMoldArray.join(''))
+			.store('meiomask:focusvalue', this.element.get('value'))
+			.select();
+		return true;
 	},
 
 	_blur: function(e, o){
-		var thisValue = this.element.get('value'),
-			i = thisValue.length-1, c;
-
-		if(thisValue == this.maskMold){
+		var elementValue = this.element.get('value'),
+			i = elementValue.length-1, truncateIndex = 0, cont;
+			
+		if(this.element.retrieve('meiomask:focusvalue') != elementValue){
+			this.element.fireEvent('change');
+		}
+		
+		if(elementValue == this.maskMold){
+			//easy mode :D
 			this.element.set('value', '');
 		}
 		else{
+			// removes incorrect chars at the end of the string
 			while(i >= 0){
-				c = thisValue.charAt(i);
-				if(c!=this.options.placeHolder && !this.globals.fixedCharsRegex.test(c)){
-					this.element.set('value', thisValue.substring(0, i+1));
+				cont = false;
+				while(this.globals.fixedCharsRegex.test(elementValue.charAt(i)) && elementValue.charAt(i) != this.options.placeHolder){
+					cont = true;
+					i--;
+				}
+				if(cont){
+					while(elementValue.charAt(i) == this.options.placeHolder){
+						truncateIndex = i;
+						i--;
+					}
+				}
+				else{
 					break;
 				}
-				i--;
 			}
+			if(truncateIndex) this.element.set('value', elementValue.substring(0, truncateIndex));
 		}
 		return true;
 	},
 
     _keypress: function(e, o){
-	
+		
 		if(this.ignore || e.control || e.meta || e.alt) return true;
 
     	var c = String.fromCharCode(e.code),
-    		maskArray = this.mask.options.maskArray;
-		
-		var start = o.range.start,
-			delta = 0,
-			end = 1, i;
+    		maskArray = this.mask.options.maskArray,
+			start, i;
 		
 		if(!o.isSelection){
 			// no text selected
-			if(o.removeKey){
+			if(o.isRemoveKey){
 			
-				if(o.delKey){
+				if(o.isDelKey){
 					do{
 						start = this.validIndexes.indexOf(o.range.start++);
 					}while(start==-1 && o.range.start < maskArray.length);
@@ -81,7 +125,7 @@ Meio.MaskType.fixed = new Class({
 					i = this.validIndexes[auxi],
 					i_1 = this.validIndexes[auxi+1];
 			
-				if(!this.testEvents(maskArray, i, c, e.code, o)) return false;
+				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
 			
 				while(auxi <= this.validIndexes.length && i_1 && this.globals.rules[maskArray[i]].test(this.maskMoldArray[i_1])){
 					this.maskMoldArray[i] = this.maskMoldArray[i_1];
@@ -99,9 +143,9 @@ Meio.MaskType.fixed = new Class({
 					start = this.validIndexes.indexOf(o.range.start++);
 				}while(start==-1 && o.range.start < maskArray.length);
 
-				var i = this.validIndexes[start];
+				i = this.validIndexes[start];
 				
-				if(!this.testEvents(maskArray, i, c, e.code, o)) return false;
+				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
 			
 				var queue = [this.maskMoldArray[i]],
 					auxi;
@@ -134,30 +178,36 @@ Meio.MaskType.fixed = new Class({
 			do{
 				end = this.validIndexes.indexOf(o.range.end++);
 			}while(end==-1 && o.range.end < maskArray.length);
+			//if(end==-1) end = maskArray.length;
 			
 			var delta = end-start;
 			
-			if(delta==0) return false;
-
+			if(delta == 0) return false;
+			
 			// removes all the chars into the range
-			var i;
 			for(i=rstart; i<rend; i++){
 				this.maskMoldArray[i] = this.maskMold.charAt(i);
 			}
 			// removes all the chars into the range
 
-
-			if(!o.removeKey){
+			if(!o.isRemoveKey){
 				i = this.validIndexes[start];
-				if(!this.testEvents(maskArray, i, c, e.code, o)) return false;
+				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
 				this.maskMoldArray[i] = c;
 				start++;
 			}
 			
+			delta = end - start;
+			
+			if(delta == 0){
+				this.element.set('value', this.maskMoldArray.join(''));
+				this.element.setRange(this.validIndexes[start]);
+				return false;
+			}
 			
 			auxi = end;
+			
 			var canMove = true, i_delta;
-
 			while((i = this.validIndexes[auxi]) && (this.maskMoldArray[i] != this.options.placeHolder)){
 				i_delta = this.validIndexes[auxi-delta];
 				if(!this.globals.rules[maskArray[i_delta]].test(this.maskMoldArray[i])){
@@ -166,7 +216,7 @@ Meio.MaskType.fixed = new Class({
 				}
 				auxi++;
 			}
-
+			
 			if(canMove){
 				auxi = end;
 				while(i = this.validIndexes[auxi]){
@@ -176,6 +226,7 @@ Meio.MaskType.fixed = new Class({
 					auxi++;
 				}
 			}
+			
 			this.element.set('value', this.maskMoldArray.join(''));
 			this.element.setRange(this.validIndexes[start]);
 		}				
@@ -187,114 +238,3 @@ Meio.MaskType.fixed = new Class({
     }
 
 });
-
-/*Meio.MaskType.fixed = new Class({
-    
-    Extends : Meio.MaskType,
-    
-    options : {
-        placeHolder : false // can be a char. ex : '_'. This char CAN'T be a fixedChar.
-    },
-    
-    _paste : function(e,o){
-    	this.element.set('value', this.__mask( o.valueArray , this.globals , this.mask.options ) );
-    	//fix so ie's caret won't go to the end of the input value.
-    	if( Browser.Engine.trident || Browser.Engine.webkit )
-    	    this.element.setRange(o.range.start,o.range.end);
-    	return true;
-    },
-    
-    _keypress : function(e, o){
-
-    	if( this.ignore || e.control || e.meta || e.alt ) return true;
-		
-    	var c = String.fromCharCode(e.code),
-    		opt = this.mask.options,
-    		maskArray = opt.maskArray,
-    		valueArray = o.value.replace(opt.fixedCharsRegG, '').split(''),
-    		// searches for fixed chars begining from the range start position, till it finds a non fixed
-    		delta = maskArray.__extraPositionsTill(o.range.start, opt.fixedCharsReg);
-		
-		if(!this.options.placeholder){
-			
-			
-			var start = o.range.start,
-				delta = 0,
-				end = 1, i;
-
-			if((o.range.end - o.range.start) == 0){
-				// no text selected
-				if(e.code==8){
-					// backspace
-					if(o.valueArray.length != o.range.start){
-						for(i = start-1; i >= 0; i--){
-							if(opt.fixedCharsReg.test(maskArray[i])) delta--; else break;
-						}
-					}
-					else{
-						for(i = start-2; i >= 0; i--){
-							if(opt.fixedCharsReg.test(maskArray[i])) delta--; else break;
-						}
-					}
-					//console.log(start, delta);
-					(start)? start--: end = 0;
-				}
-				else{
-					//e.code==46 (delete) and others
-					for(i = start; i < maskArray.length; i++){
-						if(opt.fixedCharsReg.test(maskArray[i])) delta++; else break;
-					}
-				}
-			}
-			else{
-				end = o.range.end - start;
-			}
-			start += delta;
-			
-			
-			
-			if(!this.testEvents(maskArray, start, c, e.code, o)) return false;
-			
-			
-			
-			var newValue = '';			
-			if(o.bksKey && o.valueArray.length != o.range.start){
-				newValue = this.__mask2(valueArray, this.globals, opt, delta, o);
-			}
-			else{
-				newValue = this.__mask(valueArray, this.globals, opt, delta);
-			}
-			this.element.set('value', newValue);
-			
-			if(o.range.start==o.range.end){
-	    		if(o.removeKey){
-					this.element.setRange(start+1);
-				}
-				else{
-					// the 0 thing is cause theres a particular behavior i wasnt liking when you put a default
-		    		// value on a fixed mask and you select the value from the input the range would go to the
-		    		// end of the string when you enter a char. with this it will overwrite the first char wich is a better behavior.
-		    		// opera fix, cant have range value bigger than value length, i think it loops thought the input value...
-					if((start==0 && o.value.length==0) || start < o.value.length){
-						this.element.setRange(start, start+1);
-					}
-				}
-	    	}
-	    	else{
-				this.element.setRange(o.range.start, o.range.end);
-			}
-			return true;
-		}
-		else{
-			
-		}
-    },
-    
-    __mask : function(valueArray, globals, opt, delta){
-        return valueArray.__mask(globals, opt, delta).join('').substring(0, opt.maskArray.length);
-    },
-
- 	__mask2 : function(valueArray, globals, opt, delta, o){
-        return valueArray.__mask2(globals, opt, delta, o).join('').substring(0, opt.maskArray.length);
-    }
-});*/

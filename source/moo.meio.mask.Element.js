@@ -1,12 +1,12 @@
 Element.implement({
 	
 	// deprecated
-	unmaskedVal : function(){
+	/*unmaskedVal: function(){
 		return this.get('value').replace(Meio.MaskGlobals.init().fixedCharsRegG, '');
-	},
+	},*/
 	
-	mask : function(options){
-        return this.set('mask', options);
+	meiomask: function(options){
+        return this.set('meiomask', options);
     },
 	
 	// http://www.bazon.net/mishoo/articles.epl?art_id=1292

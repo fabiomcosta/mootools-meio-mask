@@ -1,24 +1,27 @@
 
-Meio.MaskGlobals = new Hash({
+Meio.MaskGlobals = {
 
-	init: function(){
+	get: function(){
 		if(!this.inited){
 			var self = this,i,
-				keyRep = (Browser.Platform.ipod)? this.iphoneKeyRepresentation: this.keyRepresentation;
+				rulesKeys = [];
+			
+			this.ignoreKeys = (Browser.Platform.ipod)? this.iphoneIgnoreKeys: this.ignoreKeys;
 			
 			for(i=0; i<=9; i++) this.rules[i] = new RegExp('[0-'+i+']');
 
 			//create the fixedChars regular expression
-			this.fixedCharsRegex = new RegExp('[^'+this.rules.getKeys().join('').escapeRegExp()+']');
+			//this.fixedCharsRegex = new RegExp('[^'+this.rules.getKeys().join('').escapeRegExp()+']');
 			//create a regex to match chars from the rules
-			this.rulesRegex = new RegExp('['+this.rules.getKeys().join('').escapeRegExp()+']', 'g');
-			this.matchRules = new RegExp('['+this.rules.getKeys().join('').escapeRegExp()+']');
+			for(i in this.rules) rulesKeys.push(i);
+			this.matchRules = rulesKeys.join('');
+			this.rulesRegex = new RegExp('['+this.matchRules.escapeRegExp()+']', 'g');
 			
-			this.keyRep = keyRep;
-			this.ignoreKeys = [];
-			$each(keyRep, function(val,key){
-				self.ignoreKeys.push( key.toInt() );
-			});
+			//this.keyRep = keyRep;
+			//this.ignoreKeys = [];
+			//$each(keyRep, function(val, key){
+				//self.ignoreKeys.push(key.toInt());
+			//});
 			
 			// http://unixpapa.com/js/key.html
 			// if only the keydown auto-repeats
@@ -28,45 +31,69 @@ Meio.MaskGlobals = new Hash({
 		return this;
 	},
 	
-	reInit: function(){
+	reset: function(){
 		this.inited = false;
-		return this.init();
+		return this.get();
 	},
 	
-	rules: new Hash({
+	setRule: function(ruleKey, regex){
+		// you cant set a rule with key bigger than 1
+		if(ruleKey.length > 1) return;
+		this.rules[ruleKey] = regex;
+		this.matchRules += ruleKey;
+		this.rulesRegex.compile(this.matchRules.escapeRegExp(), 'g');
+	},
+	
+	setRules: function(rulesObj){
+		for(rule in rulesObj) this.setRule(rule, rulesObj[rule]);
+	},
+	
+	removeRule: function(rule){
+		delete this.rules[rule];
+		this.matchRules = this.matchRules.replace(rule, '');
+		this.rulesRegex.compile(this.matchRules.escapeRegExp(), 'g');
+	},
+	
+	removeRules: function(){
+		var rulesToRemove = Array.flatten(arguments);
+		for(var i=0; i<rulesToRemove.length; i++) this.removeRule(rulesToRemove[i]);
+	},
+	
+	rules: {
 		'z': /[a-z]/,
 		'Z': /[A-Z]/,
 		'a': /[a-zA-Z]/,
 		'*': /[0-9a-zA-Z]/,
 		'@': /[0-9a-zA-ZçÇáàãéèíìóòõúùü]/
-	}),
+	},
 	
-	keyRepresentation: {
+	ignoreKeys: [
 		//8: 'backspace',
-		9: 'tab',
-		13: 'enter',
-		16: 'shift',
-		17: 'control',
-		18: 'alt',
-		27: 'esc',
-		33: 'page up',
-		34: 'page down',
-		35: 'end',
-		36: 'home',
-		37: 'left',
-		38: 'up',
-		39: 'right',
-		40: 'down',
-		45: 'insert',
+		9, 		//: 'tab',
+		13, 	//: 'enter',
+		16, 	//: 'shift',
+		17, 	//: 'control',
+		18, 	//: 'alt',
+		27, 	//: 'esc',
+		33, 	//: 'page up',
+		34, 	//: 'page down',
+		35, 	//: 'end',
+		36, 	//: 'home',
+		37, 	//: 'left',
+		38, 	//: 'up',
+		39, 	//: 'right',
+		40, 	//: 'down',
+		45, 	//: 'insert',
 		//46: 'delete',
-		116: 'f5',
-		224: 'command'
-	},
+		116, 	//: 'f5',
+		123, 	//: 'f12',
+		224  	//: 'command'
+	],
 	
-	iphoneKeyRepresentation : {
-		10: 'go',
-		127: 'delete'
-	},
+	iphoneIgnoreKeys: [
+		10		//: 'go',
+		//127: 'delete'
+	],
 
 	masks: {
 		'phone'				: { mask: '(99) 9999-9999)' },
@@ -83,4 +110,4 @@ Meio.MaskGlobals = new Hash({
 		'decimal'			: { mask: '999.999.999.999,99', type: 'reverse' },
 		'decimal-us'		: { mask: '999,999,999,999.99', type: 'reverse' }
 	}
-});
+};

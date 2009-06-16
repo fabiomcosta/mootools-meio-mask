@@ -6,6 +6,8 @@
 
 		<link rel="stylesheet" href="../assets/syntax-highlighter/SyntaxHighlighter.css" type="text/css" />
 		<link rel="stylesheet" href="../assets/syntax-highlighter/docs.css" type="text/css" />
+		<link rel="stylesheet" href="../assets/console/meio.console.css" type="text/css" />
+		
 		<script type="text/javascript" src="../assets/syntax-highlighter/shCore.js"></script>
 		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushJScript.js"></script>
 		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushPhp.js"></script>
@@ -15,6 +17,9 @@
 		<script type="text/javascript" src="../assets/js-spec/Builder.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			Builder.build('../', {
+				'assets': {
+					'console': ['meio.console']
+				},
 				'source': [
 					'moo.meio.mask.inits',
 					'moo.meio.mask.MaskGlobals',

@@ -1,14 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<meta name="robots" content="index,follow" />
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 		<title>meioMask - a Mootools Mask Plugin</title>
-		<meta name="keywords" content="mootools, mask, iphone, plugin, meiomask, mascara, javascript, input, form, text, format" />
 		
 		<link rel="stylesheet" href="../assets/syntax-highlighter/SyntaxHighlighter.css" type="text/css" />
 		<link rel="stylesheet" href="../assets/syntax-highlighter/docs.css" type="text/css" />
-		
 		<link rel="stylesheet" href="../assets/console/meio.console.css" type="text/css" />
 		
 		<script type="text/javascript" src="../assets/syntax-highlighter/shCore.js"></script>
@@ -17,6 +14,7 @@
 		<script type="text/javascript" src="../assets/syntax-highlighter/shBrushXml.js"></script>
 		
 		<script type="text/javascript" src="../assets/mootools/mootools-core.js"></script>
+		<script type="text/javascript" src="../assets/mootools/mootools-more.js"></script>
 		<script type="text/javascript" src="../assets/js-spec/Builder.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			Builder.build('../', {
@@ -50,6 +48,7 @@
 		</script>
 	
 		<form action="index_submit" method="get">
+			
 			<fieldset>
 				<legend>Example form with defined masks</legend>
 				<label for="cpf">Credit Card:</label>
@@ -175,7 +174,7 @@
 			}
 		});*/
 		$$('input[type=text]').each(function(el, i){
-			el.set('mask');
+			el.meiomask();
 			if(i==0){ el.focus(); } 
 		});
 	</script>

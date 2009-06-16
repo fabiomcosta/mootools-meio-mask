@@ -6,7 +6,6 @@ Meio.Mask = new Class({
 		attr : 'alt',
 		mask : null,
 		type : 'fixed',
-		fixedChars: '[(),.:/ -]',
 		
 		selectOnFocus: true,
 		autoTab: true
@@ -19,10 +18,10 @@ Meio.Mask = new Class({
 		//signal : false
 	},
 
-	initialize : function(el,options){
+	initialize : function(el, options){
 		this.element = $(el);
 		if(this.element.get('tag') != 'input' || this.element.get('type') != 'text') return;
-		this.globals = Meio.MaskGlobals.init();
+		this.globals = Meio.MaskGlobals.get();
 		this.change(options);
 	},
 
@@ -35,7 +34,7 @@ Meio.Mask = new Class({
 		var attrValue = this.element.get(this.options.attr),
 			tmpMask;
 
-		// then we look for the 'attr' option
+		// then we look for the attr value
 		tmpMask = ($type(options) == 'string')? options: (attrValue)? attrValue: null;
 		if(tmpMask) this.options.mask = tmpMask;
 		
@@ -43,29 +42,32 @@ Meio.Mask = new Class({
 		if(this.globals.masks[this.options.mask])
 			this.setOptions(this.globals.masks[this.options.mask]);
 		
-		if(JSON) this.setOptions( JSON.decode(tmpMask, true) );
+		// apply the json options if any
+		// be carefull, your JSON sould be always a valid one.
+		// Ex: alt='{"mask":"999:999"}' works (its the ONLY accepted format)
+		// alt="{'mask':'999:999'}" doenst work
+		// alt='{mask:"999:999"}' doenst work
+		// alt="other way", doesnt work!
+		if(JSON) this.setOptions(JSON.decode(tmpMask, true));
 		
 		// merge options cause it will allways overwrite everything
 		if($type(options) == 'object') this.setOptions(options);
 		
 		if(this.options.mask){
+			if(this.element.retrieve('meiomask')) this.remove();
 			
-			if(this.element.retrieve('mask')) this.remove();
-			var mlValue = this.element.get('maxLength'),
-				fixedCharsRegG = new RegExp(this.options.fixedChars, 'g');
+			var mlValue = this.element.get('maxLength');
 				
 			this.setOptions({
-				fixedCharsReg: new RegExp(this.options.fixedChars),
-				fixedCharsRegG: fixedCharsRegG,
 				maxlength: mlValue,
-				maskArray: this.options.mask.split(''),
-				maskNonFixedChars: this.options.mask.replace(fixedCharsRegG, '')
+				maskArray: this.options.mask.split('')
 			});
 			
-			if(this.element.get('value') != '')
-				this.element.set('value', this.element.get('value').mask(this.options));
+			var elementValue = this.element.get('value');
+			if(elementValue != '')
+				this.element.set('value', elementValue.mask(this.options));
 			
-			this.element.store('mask', this).erase('maxLength');
+			this.element.store('meiomask', this).erase('maxLength');
 			this.maskType = new Meio.MaskType[this.options.type](this);
 		}
 		return this;
