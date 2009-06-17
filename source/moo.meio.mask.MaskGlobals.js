@@ -8,7 +8,7 @@ Meio.MaskGlobals = {
 			
 			this.ignoreKeys = (Browser.Platform.ipod)? this.iphoneIgnoreKeys: this.ignoreKeys;
 			
-			for(i=0; i<=9; i++) this.rules[i] = new RegExp('[0-'+i+']');
+			for(i=0; i<=9; i++) this.rules[i] = {regex: new RegExp('[0-'+i+']')};
 
 			//create the fixedChars regular expression
 			//this.fixedCharsRegex = new RegExp('[^'+this.rules.getKeys().join('').escapeRegExp()+']');
@@ -60,11 +60,12 @@ Meio.MaskGlobals = {
 	},
 	
 	rules: {
-		'z': /[a-z]/,
-		'Z': /[A-Z]/,
-		'a': /[a-zA-Z]/,
-		'*': /[0-9a-zA-Z]/,
-		'@': /[0-9a-zA-ZçÇáàãéèíìóòõúùü]/
+		'z': {regex: /[a-z]/},
+		'Z': {regex: /[A-Z]/},
+		'a': {regex: /[a-zA-Z]/},
+		'*': {regex: /[0-9a-zA-Z]/},
+		'@': {regex: /[0-9a-zA-ZçÇáàãéèíìóòõúùü]/},
+		'c': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1)==2) return (_char<=3); return true;}}
 	},
 	
 	ignoreKeys: [
@@ -103,7 +104,7 @@ Meio.MaskGlobals = {
 		'date'				: { mask: '39/19/9999' },
 		'date-us'			: { mask: '19/39/9999' },
 		'cep'				: { mask: '99999-999' },
-		'time'				: { mask: '29:59' },
+		'time'				: { mask: '2c:59' },
 		'cc'				: { mask: '55 99' },
 		//'cc'				: { mask: '(99) 9--9  999 99 99--' },
 		'integer'			: { mask: '999.999.999.999', type: 'reverse', decimal: false },

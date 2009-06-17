@@ -47,15 +47,25 @@ Meio.MaskType = new Class({
 		return true;
     },*/
     
+	testEntry: function(index, _char){
+		var maskArray = this.mask.options.maskArray;
+		var rule = this.globals.rules[maskArray[index]];
+		if(rule.check)
+			return (rule && rule.regex.test(_char) && rule.check(this.element.get('value'), index, _char));
+		else
+			return (rule && rule.regex.test(_char));
+	},
+
     testEvents: function(i, c, code, isRemoveKey){
     	var maskArray = this.mask.options.maskArray;
+		var rule = this.globals.rules[maskArray[i]];
 		if(!isRemoveKey){
-			if(!this.globals.rules[maskArray[i]]){
+			if(!rule){
 	    		//console.log('overflow');
 				this.mask.fireEvent('overflow', [this.element, code, c]);
 	    		return false;
 	    	}
-	    	else if(!this.globals.rules[maskArray[i]].test(c)){
+	    	else if(!this.testEntry(i, c)){
 				//console.log('invalid');
 	    		this.mask.fireEvent('invalid', [this.element, code, c]);
 	    		return false;

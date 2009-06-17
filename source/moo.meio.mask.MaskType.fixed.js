@@ -5,7 +5,7 @@ Meio.MaskType.fixed = new Class({
     
     options: {
         placeHolder: '_',
-		removeIfInvalid: false
+		removeIfInvalid: false // removes the value onblur if the input is not valid
     },
 
     initialize: function(mask){
@@ -16,7 +16,7 @@ Meio.MaskType.fixed = new Class({
 		this.mask.options.maskArray.each(function(c, i){
 			if(this.globals.matchRules.contains(c)) this.validIndexes.push(i);
 		}, this);
-	}, 
+	},
 
     _paste: function(e, o){
 		var elementValue = this.element.get('value'),
@@ -30,7 +30,7 @@ Meio.MaskType.fixed = new Class({
 				elementValueArray[eli] = this.maskMold[eli];
 			}
 			else if(this.globals.rules[maskArray[eli]]){
-				if(!this.globals.rules[maskArray[eli]].test(elementValueArray[eli])){
+				if(!this.testEntry(eli, elementValueArray[eli])){
 					elementValueArray.splice(eli, 1);
 					continue;
 				}
@@ -105,7 +105,6 @@ Meio.MaskType.fixed = new Class({
 	},
 
     _keypress: function(e, o){
-		
 		if(this.ignore || e.control || e.meta || e.alt) return true;
 
     	var c = String.fromCharCode(e.code),
@@ -134,7 +133,7 @@ Meio.MaskType.fixed = new Class({
 			
 				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
 			
-				while(auxi <= this.validIndexes.length && i_1 && this.globals.rules[maskArray[i]].test(this.maskMoldArray[i_1])){
+				while(auxi <= this.validIndexes.length && i_1 && this.testEntry(i, this.maskMoldArray[i_1])){
 					this.maskMoldArray[i] = this.maskMoldArray[i_1];
 					i = this.validIndexes[auxi];
 					i_1 = this.validIndexes[++auxi];
@@ -162,8 +161,8 @@ Meio.MaskType.fixed = new Class({
 			
 				auxi = start+1;
 				i = this.validIndexes[auxi];
-			
-				while(auxi < this.validIndexes.length && this.globals.rules[maskArray[i]].test(queue[0])){
+
+				while(auxi < this.validIndexes.length && this.testEntry(i, queue[0])){
 					queue.unshift(this.maskMoldArray[i]);
 					this.maskMoldArray[i] = queue.pop();
 					i = this.validIndexes[++auxi];
@@ -217,7 +216,7 @@ Meio.MaskType.fixed = new Class({
 			var canMove = true, i_delta;
 			while((i = this.validIndexes[auxi]) && (this.maskMoldArray[i] != this.options.placeHolder)){
 				i_delta = this.validIndexes[auxi-delta];
-				if(!this.globals.rules[maskArray[i_delta]].test(this.maskMoldArray[i])){
+				if(!this.testEntry(i_delta, this.maskMoldArray[i])){
 					canMove = false;
 					break;
 				}
