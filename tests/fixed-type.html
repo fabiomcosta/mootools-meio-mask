@@ -174,7 +174,7 @@
 			}
 		});*/
 		$$('input[type=text]').each(function(el, i){
-			el.meiomask();
+			el.meiomask({removeIfInvalid: true});
 			if(i==0){ el.focus(); } 
 		});
 	</script>

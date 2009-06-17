@@ -34,7 +34,7 @@ Meio.MaskType = new Class({
 			this.mask.fireEvent('valid', [this.element, e.code]);
     	}
 		return (Browser.Platform.ipod
-			|| (this.globals.onlyKeyDownRepeat && o.removeKey)
+			|| (this.globals.onlyKeyDownRepeat && o.isRemoveKey)
 			)? this._keypress(e, o): true;
     },
     
@@ -64,7 +64,7 @@ Meio.MaskType = new Class({
     	//console.log('valid');
 		this.mask.fireEvent('valid', [this.element, code, c]);
 		return true;
-    },
+    }
 
     /*
     __mask: function(valueArray){

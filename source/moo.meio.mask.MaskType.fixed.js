@@ -19,7 +19,6 @@ Meio.MaskType.fixed = new Class({
 	}, 
 
     _paste: function(e, o){
-
 		var elementValue = this.element.get('value'),
 			elementValueArray = elementValue.split(''),
 			maskArray = this.mask.options.maskArray;
@@ -69,15 +68,24 @@ Meio.MaskType.fixed = new Class({
 			this.element.fireEvent('change');
 		}
 		
+		if(this.mask.options.removeIfInvalid){
+			if(elementValue.contains(this.options.placeHolder)){
+				// remove if invalid option
+				this.maskMoldArray = this.maskMold.split('');
+				this.element.set('value', '');
+			}
+			return true;
+		} 
+		
 		if(elementValue == this.maskMold){
-			//easy mode :D
+			// if no char inputed
 			this.element.set('value', '');
 		}
 		else{
 			// removes incorrect chars at the end of the string
 			while(i >= 0){
 				cont = false;
-				while(this.globals.fixedCharsRegex.test(elementValue.charAt(i)) && elementValue.charAt(i) != this.options.placeHolder){
+				while(!this.globals.matchRules.contains(elementValue.charAt(i)) && elementValue.charAt(i) != this.options.placeHolder){
 					cont = true;
 					i--;
 				}
@@ -107,7 +115,6 @@ Meio.MaskType.fixed = new Class({
 		if(!o.isSelection){
 			// no text selected
 			if(o.isRemoveKey){
-			
 				if(o.isDelKey){
 					do{
 						start = this.validIndexes.indexOf(o.range.start++);
@@ -219,7 +226,7 @@ Meio.MaskType.fixed = new Class({
 			
 			if(canMove){
 				auxi = end;
-				while(i = this.validIndexes[auxi]){
+				while((i = this.validIndexes[auxi])){
 					i_delta = this.validIndexes[auxi-delta];
 					this.maskMoldArray[i_delta] = this.maskMoldArray[i];
 					this.maskMoldArray[i] = this.options.placeHolder;
