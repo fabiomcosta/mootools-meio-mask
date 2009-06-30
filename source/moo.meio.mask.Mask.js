@@ -1,12 +1,13 @@
 Meio.Mask = new Class({
 
-	Implements : [Options,Events],
+	Implements: [Options, Events],
 
-	options : {
-		attr : 'alt',
-		mask : null,
-		type : 'fixed',
+	options: {
+		attr: 'alt',
+		mask: null,
+		type: 'fixed',
 		
+		setSize: false,
 		selectOnFocus: true,
 		autoTab: true
 		
@@ -18,14 +19,14 @@ Meio.Mask = new Class({
 		//signal : false
 	},
 
-	initialize : function(el, options){
+	initialize: function(el, options){
 		this.element = $(el);
 		if(this.element.get('tag') != 'input' || this.element.get('type') != 'text') return;
 		this.globals = Meio.MaskGlobals.get();
 		this.change(options);
 	},
 
-	change : function(options){
+	change: function(options){
 		options = $pick(options, {});
 
 		// see whats the attr that we have to look
@@ -56,7 +57,7 @@ Meio.Mask = new Class({
 		if(this.options.mask){
 			if(this.element.retrieve('meiomask')) this.remove();
 			
-			var mlValue = this.element.get('maxLength');
+			var mlValue = this.element.get('maxlength');
 				
 			this.setOptions({
 				maxlength: mlValue,
@@ -64,10 +65,14 @@ Meio.Mask = new Class({
 			});
 			
 			var elementValue = this.element.get('value');
-			if(elementValue != '')
-				this.element.set('value', elementValue.mask(this.options));
 			
-			this.element.store('meiomask', this).erase('maxLength');
+			if(elementValue != ''){
+				var newValue = elementValue.mask(this.options);
+				this.element.defaultValue = newValue;
+				this.element.value = newValue;
+			}
+
+			this.element.store('meiomask', this).erase('maxlength');
 			this.maskType = new Meio.MaskType[this.options.type](this);
 		}
 		return this;
@@ -78,7 +83,7 @@ Meio.Mask = new Class({
 		var mask = this.element.retrieve('mask');
 		if(mask){
 			var maxLength = mask.options.maxlength;
-			if(maxLength != -1) this.element.set('maxLength', maxLength);
+			if(maxLength != null) this.element.set('maxlength', maxLength);
 			mask.maskType.eventsToBind.each(function(evt){
 				this.element.removeEvent(evt, this[evt + 'Event']);
 			}, mask.maskType);

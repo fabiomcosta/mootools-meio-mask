@@ -36,10 +36,10 @@ Meio.MaskGlobals = {
 		return this.get();
 	},
 	
-	setRule: function(ruleKey, regex){
+	setRule: function(ruleKey, properties){
 		// you cant set a rule with key bigger than 1
 		if(ruleKey.length > 1) return;
-		this.rules[ruleKey] = regex;
+		this.rules[ruleKey] = properties;
 		this.matchRules += ruleKey;
 		this.rulesRegex.compile(this.matchRules.escapeRegExp(), 'g');
 	},
@@ -64,7 +64,7 @@ Meio.MaskGlobals = {
 		'Z': {regex: /[A-Z]/},
 		'a': {regex: /[a-zA-Z]/},
 		'*': {regex: /[0-9a-zA-Z]/},
-		'@': {regex: /[0-9a-zA-ZçÇáàãéèíìóòõúùü]/},
+		'@': {regex: /[0-9a-zA-ZçÇáàãâéèêíìóòõôúùü]/},
 		'c': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1)==2) return (_char<=3); return true;}}
 	},
 	
