@@ -5,29 +5,40 @@ Meio.MaskType.fixed = new Class({
     
     options: {
         placeHolder: '_',
+		setSize: false,
 		removeIfInvalid: false // removes the value onblur if the input is not valid
     },
 
-    initialize: function(mask){
-		this.parent(mask);
-		this.maskMold = this.mask.options.mask.replace(this.globals.rulesRegex, this.options.placeHolder);
+    initialize: function(mask, options){
+		this.parent(mask, options);
+		this.maskMold = this.options.mask.replace(this.globals.rulesRegex, this.options.placeHolder);
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
-		this.mask.options.maskArray.each(function(c, i){
+		if(this.options.setSize) this.setSize();
+		this.maskArray.each(function(c, i){
 			if(this.globals.matchRules.contains(c)) this.validIndexes.push(i);
 		}, this);
 	},
 
     _paste: function(e, o){
-		var elementValue = this.element.get('value'),
-			elementValueArray = elementValue.split(''),
-			maskArray = this.mask.options.maskArray;
+		var retApply = this._applyMask(this.element.get('value'), o.range.start);
+		this.maskMoldArray = retApply.value;
 		
-		var eli = 0, newStartRange = o.range.start; 
+		this.element.set('value', this.maskMoldArray.join(''))
+			.setRange(retApply.rangeStart+1);
 
-		while(eli < this.maskMold.length){
+		return false;
+    },
+    
+	_applyMask: function(elementValue, newRangeStart){
+		var elementValueArray = elementValue.split(''),
+			maskArray = this.maskArray,
+			maskMold = this.maskMold,
+			eli = 0;
+			
+		while(eli < maskMold.length){
 			if(!elementValueArray[eli]){
-				elementValueArray[eli] = this.maskMold[eli];
+				elementValueArray[eli] = maskMold[eli];
 			}
 			else if(this.globals.rules[maskArray[eli]]){
 				if(!this.testEntry(eli, elementValueArray[eli])){
@@ -37,22 +48,18 @@ Meio.MaskType.fixed = new Class({
 				newStartRange = eli;
 			}
 			else if(maskArray[eli] != elementValueArray[eli]){
-				elementValueArray.splice(eli, 0, this.maskMold[eli]);
+				elementValueArray.splice(eli, 0, maskMold[eli]);
 			}
 			else{
-				elementValueArray[eli] = this.maskMold[eli];
+				elementValueArray[eli] = maskMold[eli];
 			}
 			eli++;
 		}
 		
-		this.maskMoldArray = elementValueArray.slice(0, this.maskMold.length);
-		
-		this.element.set('value', this.maskMoldArray.join(''))
-			.setRange(newStartRange+1);
+		// makes sure the value is not bigger than the mask definition
+		return {value: elementValueArray.slice(0, this.maskMold.length), rangeStart: newRangeStart};
+	},
 
-		return false;
-    },
-    
 	_focus: function(e, o){
 		this.element.set('value', this.maskMoldArray.join(''))
 			.store('meiomask:focusvalue', this.element.get('value'))
@@ -63,12 +70,13 @@ Meio.MaskType.fixed = new Class({
 	_blur: function(e, o){
 		var elementValue = this.element.get('value'),
 			i = elementValue.length-1, truncateIndex = 0, cont;
-			
+		
+		// fires change event if the value on focus != from value on blur
 		if(this.element.retrieve('meiomask:focusvalue') != elementValue){
 			this.element.fireEvent('change');
 		}
 		
-		if(this.mask.options.removeIfInvalid){
+		if(this.options.removeIfInvalid){
 			if(elementValue.contains(this.options.placeHolder)){
 				// remove if invalid option
 				this.maskMoldArray = this.maskMold.split('');
@@ -108,7 +116,7 @@ Meio.MaskType.fixed = new Class({
 		if(this.ignore || e.control || e.meta || e.alt) return true;
 
     	var c = String.fromCharCode(e.code),
-    		maskArray = this.mask.options.maskArray,
+    		maskArray = this.maskArray,
 			start, i;
 		
 		if(!o.isSelection){
@@ -239,8 +247,8 @@ Meio.MaskType.fixed = new Class({
 		return false;
     },
     
-    __mask: function(valueArray, globals, o, delta){
-        return valueArray.__mask(globals, o, delta).join('').substring(0, o.maskArray.length);
+    mask: function(str){
+        return this._applyMask(str).value;
     }
 
 });

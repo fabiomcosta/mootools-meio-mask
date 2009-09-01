@@ -7,8 +7,9 @@ class Builder:
     javascript_files = []
     extra_zip_files = []
 
-    def __init__(self, minify_postfix='min', extension='js'):
+    def __init__(self, build_folder='build/', minify_postfix='min', extension='js'):
         self.minify_posfix = minify_postfix
+        self.build_folder = build_folder
         self.extension = '.' + extension
                 
     def add_files(self, list_name, files, root='', path='', extension=''):
@@ -32,7 +33,7 @@ class Builder:
         return ret
 
     def create_built_file(self):
-        file_name = self.file_name + self.extension
+        file_name = self.build_folder + self.file_name + self.extension
         built_file = open(file_name, 'w')
         try:
             for name ,absolute_name in self.javascript_files:
@@ -42,16 +43,16 @@ class Builder:
         print '** Succesfully created "' + file_name + '" file. **'
     
     def create_minified_file(self):
-        os.system('java -jar assets/yui-compressor/yui.jar --warn --charset utf8 ' + self.file_name + self.extension + ' > ' + self.file_name + '.' + self.minify_posfix + self.extension)
+        os.system('java -jar ../../assets/yui-compressor/yui.jar --warn --charset utf8 ' + self.build_folder + self.file_name + self.extension + ' > '+ self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension)
         print '** Succesfully created minified file. **'
         
     def create_zip_file(self):
         zip_file = ZipFile(self.file_name+'.zip','w')
         
-        file_name = self.file_name + self.extension
+        file_name = self.build_folder + self.file_name + self.extension
         zip_file.write(file_name, self.file_name + '/' + file_name)
         
-        compressed_file_name = self.file_name + '.' + self.minify_posfix + self.extension
+        compressed_file_name = self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension
         zip_file.write(compressed_file_name, self.file_name + '/' + compressed_file_name)
         
         for name, absolute_name in self.extra_zip_files:
@@ -67,7 +68,7 @@ class Builder:
             print '** Succesfully created zipped file. **'
         zip_file.close()
         
-    def build(self, file_name, files, extra_zip_files={}, root='Source/'):
+    def build(self, file_name, files, extra_zip_files={}, root='source/'):
         self.file_name = file_name
         self.add_files('javascript_files', files, root=root, extension=self.extension)
         self.add_files('extra_zip_files', extra_zip_files)
@@ -95,7 +96,7 @@ if __name__ == '__main__':
 			'moo.meio.mask.MaskType.regexp',
 			'moo.meio.mask.Array',
 			'moo.meio.mask.Element',
-			'moo.meio.mask.Properties.mask',
+			'moo.meio.mask.Properties',
 			'moo.meio.mask.String'
 		)
     )
