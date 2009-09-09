@@ -12,12 +12,11 @@ Meio.MaskType.fixed = new Class({
     initialize: function(mask, options){
 		this.parent(mask, options);
 		this.maskMold = this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeHolder);
-		console.log(Meio.Mask.rulesRegex, this.options.placeHolder, this.options.mask);
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
 		if(this.options.setSize) this.setSize();
 		this.maskArray.each(function(c, i){
-			if(Meio.Mask.matchRules.contains(c)) this.validIndexes.push(i);
+		    if(Meio.Mask.matchRules.contains(c)) this.validIndexes.push(i);
 		}, this);
 	},
 

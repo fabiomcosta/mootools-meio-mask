@@ -24,3 +24,13 @@ IDEAS FOR 2.0:
 * As seen on the benchmarks i did, i should consider using a string of characters instead of a regular expression; OK
 * Add a callback to rules so that it can get uppercased or lowercased after inputting the char, this will allow a char being dependent of a preceding char (like on hours you dont want the user to input chars bigger than 3 if the first is 2) 
 * Option to force the completition of the value of the mask.
+
+
+New Structure
+=============
+Everything will be classes now. I'll have to give some credit for zilenCe here, he made an inputMask plugin that i loved the structured he used, in fact it was i was looking for. I don't like the structure right now but i couldn't find a better one, but zileCe did.
+
+First class is Meio just to namespace my own classes. Next comes our Mask class, Meio.Mask. Next is the mask type, like Meio.Mask.Fixed, that will extends from Meio.Mask and finally the mask name, like Date or Time. We end up with something like Meio.Mask.Fixed.Date.
+I think its a nice organization.
+
+This, of course, is just a proposal, as its not implemented. I'll try to do it, but can't say for sure it will work fine and stuff.

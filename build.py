@@ -93,7 +93,6 @@ if __name__ == '__main__':
 			'moo.meio.mask.MaskType.infinite',
 			'moo.meio.mask.MaskType.reverse',
 			'moo.meio.mask.MaskType.regexp',
-			'moo.meio.mask.MaskGlobals',
 			'moo.meio.mask.Array',
 			'moo.meio.mask.Element',
 			'moo.meio.mask.Properties',

@@ -1,4 +1,4 @@
-	Meio.MaskType = new Class({
+/*	Meio.MaskType = new Class({
 
     	Implements: [Options, Events],
 
@@ -51,14 +51,14 @@
 				)? this._keypress(e, o): true;
 	    },
     
-	    /*_keyup: function(e, o){
+	    //_keyup: function(e, o){
 	    	//9=TAB_KEY
 	    	//this is a little bug, when you go to an input with tab key
 	    	//it would remove the range selected by default, and that's not a desired behavior
 	    	//if(e.code == 9 && (Browser.Engine.webkit || Browser.Engine.trident)) return true;
 	    	//return this._paste(e, o);
-			return true;
-	    },*/
+		//	return true;
+	    //},
     
 		testEntry: function(index, _char){
 			var maskArray = this.maskArray,
@@ -91,3 +91,4 @@
 			if(!this.element.get('size')) this.element.set('size', this.maskArray.length);
 		}
 	});
+*/
