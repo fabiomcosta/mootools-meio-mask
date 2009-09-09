@@ -1,50 +1,33 @@
-	// kind of a singleton, use Meio.MaskGlobals.get() to get the instance
-	Meio.MaskGlobals = {
 
-		get: function(){
-			if(!this.inited){
-				var self = this,i,
-					rulesKeys = [];
-			
-				this.ignoreKeys = (Browser.Platform.ipod)? this.iphoneIgnoreKeys: this.ignoreKeys;
-			
-				for(i=0; i<=9; i++) this.rules[i] = {regex: new RegExp('[0-' + i + ']')};
+	Meio.Mask.extend({
 
-				//create the fixedChars regular expression
-				//create a regex to match chars from the rules
-				for(i in this.rules) rulesKeys.push(i);
-				this.matchRules = rulesKeys.join('');
-				this.rulesRegex = new RegExp('['+this.matchRules.escapeRegExp()+']', 'g');
-			
-				// http://unixpapa.com/js/key.html
-				// if only the keydown auto-repeats
-				this.onlyKeyDownRepeat = (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525));
-				this.inited = true;
-			}
-			return this;
-		},
-	
-		reset: function(){
+		/*reset: function(){
 			this.inited = false;
 			return this.get();
-		},
-	
+		},*/
+	    
+	    matchRules: '',
+	    
+	    rulesRegex: new RegExp(''),
+		
+		rules: {},
+		
 		setRule: function(ruleKey, properties){
-			// you cant set a rule with key bigger than 1
-			if(ruleKey.length > 1) return;
-			this.rules[ruleKey] = properties;
-			this.matchRules += ruleKey;
-			this.rulesRegex.compile(this.matchRules.escapeRegExp(), 'g');
+			this.setRules({ruleKey: properties});
 		},
 	
 		setRules: function(rulesObj){
-			for(rule in rulesObj) this.setRule(rule, rulesObj[rule]);
+		    var rulesKeys = [];
+			for(rule in rulesObj) rulesKeys.push(rule);
+    		this.matchRules += rulesKeys.join('');
+    		this.rulesRegex = new RegExp('[' + this.matchRules.escapeRegExp() + ']', 'g');
+    		$extend(this.rules, rulesObj);
 		},
 	
 		removeRule: function(rule){
 			delete this.rules[rule];
 			this.matchRules = this.matchRules.replace(rule, '');
-			this.rulesRegex.compile(this.matchRules.escapeRegExp(), 'g');
+			this.rulesRegex.compile('[' + this.matchRules.escapeRegExp() + ']', 'g');
 		},
 	
 		removeRules: function(){
@@ -52,44 +35,6 @@
 			for(var i=rulesToRemove.length; i--;) this.removeRule(rulesToRemove[i]);
 		},
 	
-		rules: {
-			'z': {regex: /[a-z]/},
-			'Z': {regex: /[A-Z]/},
-			'a': {regex: /[a-zA-Z]/},
-			'*': {regex: /[0-9a-zA-Z]/},
-			'@': {regex: /[0-9a-zA-ZçÇáàãâéèêíìóòõôúùü]/},
-			//its included just to exemplify how to use it, its used on the time mask
-			'h': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1)===2) return (_char<=3); return true;}}
-		},
-	
-		ignoreKeys: [
-			//8: 'backspace',
-			9, 		//: 'tab',
-			13, 	//: 'enter',
-			16, 	//: 'shift',
-			17, 	//: 'control',
-			18, 	//: 'alt',
-			27, 	//: 'esc',
-			33, 	//: 'page up',
-			34, 	//: 'page down',
-			35, 	//: 'end',
-			36, 	//: 'home',
-			37, 	//: 'left',
-			38, 	//: 'up',
-			39, 	//: 'right',
-			40, 	//: 'down',
-			45, 	//: 'insert',
-			//46: 'delete',
-			116, 	//: 'f5',
-			123, 	//: 'f12',
-			224  	//: 'command'
-		],
-	
-		iphoneIgnoreKeys: [
-			10		//: 'go',
-			//127: 'delete'
-		],
-
 		masks: {
 			'phone'				: { mask: '(99) 9999-9999)' },
 			'phone-us'			: { mask: '(999) 999-9999' },
@@ -103,5 +48,62 @@
 			'integer'			: { mask: '999.999.999.999', type: 'reverse', decimal: false },
 			'decimal'			: { mask: '999.999.999.999,99', type: 'reverse' },
 			'decimal-us'		: { mask: '999,999,999,999.99', type: 'reverse' }
-		}
-	};
+		},
+		
+		// http://unixpapa.com/js/key.html
+		// if only the keydown auto-repeats
+		// if you have a better implementation of this detection tell me
+		onlyKeyDownRepeat: (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
+		
+	}).extend(function(){
+        var desktopIgnoreKeys = [
+    		//8: 'backspace',
+    		9, 		//: 'tab',
+    		13, 	//: 'enter',
+    		16, 	//: 'shift',
+    		17, 	//: 'control',
+    		18, 	//: 'alt',
+    		27, 	//: 'esc',
+    		33, 	//: 'page up',
+    		34, 	//: 'page down',
+    		35, 	//: 'end',
+    		36, 	//: 'home',
+    		37, 	//: 'left',
+    		38, 	//: 'up',
+    		39, 	//: 'right',
+    		40, 	//: 'down',
+    		45, 	//: 'insert',
+    		//46: 'delete',
+    		116, 	//: 'f5',
+    		123, 	//: 'f12',
+    		224  	//: 'command'
+    	],
+    	iphoneIgnoreKeys = [
+    		10		//: 'go',
+    		//127: 'delete'
+    	];
+        return {
+            ignoreKeys: (Browser.Platform.ipod)? iphoneIgnoreKeys: desktopIgnoreKeys
+        };
+    }()).setRules((function(){
+	    var rules = {
+			'z': {regex: /[a-z]/},
+			'Z': {regex: /[A-Z]/},
+			'a': {regex: /[a-zA-Z]/},
+			'*': {regex: /[0-9a-zA-Z]/},
+			'@': {regex: /[0-9a-zA-ZçÇáàãâéèêíìóòõôúùü]/},
+			//its included just to exemplify how to use it, its used on the time mask
+			'h': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1) === '2') return (_char<=3); return true;}}
+		};
+		for(var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
+		return rules;
+		//create the fixedChars regular expression
+		//create a regex to match chars from the rules
+		//for(i in this.rules) rulesKeys.push(i);
+		//this.matchRules = rulesKeys.join('');
+		//this.rulesRegex = new RegExp('[' + this.matchRules.escapeRegExp() + ']', 'g');
+		//return ;
+		//this.inited = true;
+    })());
+    
+    

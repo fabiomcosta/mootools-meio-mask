@@ -15,7 +15,7 @@
 	        this.setOptions(options);
 			if(mask){
 	            this.mask = mask;
-	            this.globals = mask.globals;
+	            //this.globals = mask.globals;
 	            this.element = mask.element;
 				this.masklength = this.element.get('maxlength');
 				this.maskArray = this.options.mask.split('');
@@ -40,14 +40,14 @@
 		},
     
 	    _keydown: function(e, o){
-			this.ignore = this.globals.ignoreKeys.contains(e.code);
+			this.ignore = Meio.Mask.ignoreKeys.contains(e.code);
 			if(this.ignore){
 	    		// var rep = this.globals.keyRep[e.code];
 				// no more representation of the keys yet... (since this is not so used or usefull you know..., im thinking about that)
 				this.mask.fireEvent('valid', [this.element, e.code]);
 	    	}
 			return (Browser.Platform.ipod
-				|| (this.globals.onlyKeyDownRepeat && o.isRemoveKey)
+				|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)
 				)? this._keypress(e, o): true;
 	    },
     
@@ -62,15 +62,14 @@
     
 		testEntry: function(index, _char){
 			var maskArray = this.maskArray,
-				rule = this.globals.rules[maskArray[index]],
+				rule = Meio.Mask.rules[maskArray[index]],
 				ret = (rule && rule.regex.test(_char));
-				
 			return (rule.check)? (ret && rule.check(this.element.get('value'), index, _char)): ret;
 		},
 
 	    testEvents: function(i, c, code, isRemoveKey){
 	    	var maskArray = this.maskArray;
-			var rule = this.globals.rules[maskArray[i]];
+			var rule = Meio.Mask.rules[maskArray[i]];
 			if(!isRemoveKey){
 				if(!rule){
 		    		//console.log('overflow');

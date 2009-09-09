@@ -11,12 +11,13 @@ Meio.MaskType.fixed = new Class({
 
     initialize: function(mask, options){
 		this.parent(mask, options);
-		this.maskMold = this.options.mask.replace(this.globals.rulesRegex, this.options.placeHolder);
+		this.maskMold = this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeHolder);
+		console.log(Meio.Mask.rulesRegex, this.options.placeHolder, this.options.mask);
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
 		if(this.options.setSize) this.setSize();
 		this.maskArray.each(function(c, i){
-			if(this.globals.matchRules.contains(c)) this.validIndexes.push(i);
+			if(Meio.Mask.matchRules.contains(c)) this.validIndexes.push(i);
 		}, this);
 	},
 
@@ -25,7 +26,7 @@ Meio.MaskType.fixed = new Class({
 		this.maskMoldArray = retApply.value;
 		
 		this.element.set('value', this.maskMoldArray.join(''))
-			.setRange(retApply.rangeStart+1);
+			.setRange(retApply.rangeStart + 1);
 
 		return false;
     },
@@ -40,7 +41,7 @@ Meio.MaskType.fixed = new Class({
 			if(!elementValueArray[eli]){
 				elementValueArray[eli] = maskMold[eli];
 			}
-			else if(this.globals.rules[maskArray[eli]]){
+			else if(Meio.Mask.rules[maskArray[eli]]){
 				if(!this.testEntry(eli, elementValueArray[eli])){
 					elementValueArray.splice(eli, 1);
 					continue;
@@ -69,7 +70,7 @@ Meio.MaskType.fixed = new Class({
 
 	_blur: function(e, o){
 		var elementValue = this.element.get('value'),
-			i = elementValue.length-1, truncateIndex = 0, cont;
+			i = elementValue.length - 1, truncateIndex = 0, cont;
 		
 		// fires change event if the value on focus != from value on blur
 		if(this.element.retrieve('meiomask:focusvalue') != elementValue){
@@ -93,7 +94,7 @@ Meio.MaskType.fixed = new Class({
 			// removes incorrect chars at the end of the string
 			while(i >= 0){
 				cont = false;
-				while(!this.globals.matchRules.contains(elementValue.charAt(i)) && elementValue.charAt(i) != this.options.placeHolder){
+				while(!Meio.Mask.matchRules.contains(elementValue.charAt(i)) && elementValue.charAt(i) != this.options.placeHolder){
 					cont = true;
 					i--;
 				}
@@ -125,20 +126,21 @@ Meio.MaskType.fixed = new Class({
 				if(o.isDelKey){
 					do{
 						start = this.validIndexes.indexOf(o.range.start++);
-					}while(start==-1 && o.range.start < maskArray.length);
+					}while(start == -1 && o.range.start < maskArray.length);
 				}
 				else{
 					do{
 						start = this.validIndexes.indexOf(--o.range.start);
-					}while(start==-1 && o.range.start >= 0);
+					}while(start == -1 && o.range.start >= 0);
 				}
 			
-				if(start==-1) return false;
+				if(start == -1) return false;
 			
 				var auxi = start,
-					i = this.validIndexes[auxi],
 					i_1 = this.validIndexes[auxi+1];
 			
+			    i = this.validIndexes[auxi];
+			    
 				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
 			
 				while(auxi <= this.validIndexes.length && i_1 && this.testEntry(i, this.maskMoldArray[i_1])){
@@ -161,13 +163,12 @@ Meio.MaskType.fixed = new Class({
 				
 				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
 			
-				var queue = [this.maskMoldArray[i]],
-					auxi;
+				var queue = [this.maskMoldArray[i]];
 
 				// apply the char that just passed the test
 				this.maskMoldArray[i] = c;
 			
-				auxi = start+1;
+				auxi = start + 1;
 				i = this.validIndexes[auxi];
 
 				while(auxi < this.validIndexes.length && this.testEntry(i, queue[0])){
@@ -177,7 +178,7 @@ Meio.MaskType.fixed = new Class({
 				}
 			
 				this.element.set('value', this.maskMoldArray.join(''));
-				if(this.validIndexes[start+1]) this.element.setRange(this.validIndexes[start+1]);
+				if(this.validIndexes[start + 1]) this.element.setRange(this.validIndexes[start + 1]);
 			}
 		}
 		else{

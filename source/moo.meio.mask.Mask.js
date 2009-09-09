@@ -27,7 +27,7 @@
 		initialize: function(el, options){
 			this.element = $(el);
 			if(this.element.get('tag') != 'input' || this.element.get('type') != 'text') return;
-			this.globals = Meio.MaskGlobals.get();
+			//this.globals = Meio.MaskGlobals.get();
 			this.change(options);
 		},
 
@@ -45,8 +45,8 @@
 			if(tmpMask) this.options.mask = tmpMask;
 		
 			// then we see if it's a defined mask
-			if(this.globals.masks[this.options.mask])
-				this.setOptions(this.globals.masks[this.options.mask]);
+			if(Meio.Mask.masks[this.options.mask])
+				this.setOptions(Meio.Mask.masks[this.options.mask]);
 		
 			// apply the json options if any
 			// be carefull, your JSON should be always a valid one.
