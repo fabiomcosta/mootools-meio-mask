@@ -1,11 +1,6 @@
 
 	Meio.Mask.extend({
 
-		/*reset: function(){
-			this.inited = false;
-			return this.get();
-		},*/
-	    
 	    matchRules: '',
 	    
 	    rulesRegex: new RegExp(''),
@@ -20,7 +15,7 @@
 		    var rulesKeys = [];
 			for(rule in rulesObj) rulesKeys.push(rule);
     		this.matchRules += rulesKeys.join('');
-    		this.rulesRegex = new RegExp('[' + this.matchRules.escapeRegExp() + ']', 'g');
+    		this.rulesRegex.compile('[' + this.matchRules.escapeRegExp() + ']', 'g');
     		$extend(this.rules, rulesObj);
 		},
 	
@@ -97,13 +92,6 @@
 		};
 		for(var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
 		return rules;
-		//create the fixedChars regular expression
-		//create a regex to match chars from the rules
-		//for(i in this.rules) rulesKeys.push(i);
-		//this.matchRules = rulesKeys.join('');
-		//this.rulesRegex = new RegExp('[' + this.matchRules.escapeRegExp() + ']', 'g');
-		//return ;
-		//this.inited = true;
     })());
     
     
