@@ -3,7 +3,7 @@
 		set: function(options){
 			options = $pick(options, {});
 			var mask = this.retrieve('meiomask');
-			return this.store('meiomask', mask? mask.change(options): new Meio.Mask(this, options));
+			return this.store('meiomask', mask? mask.change(options): new Meio.Mask.Fixed(this, options));
 		},
 		// returns the mask object
 		get: function(){

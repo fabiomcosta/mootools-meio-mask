@@ -5,7 +5,6 @@
 		options: {
 			attr: 'data-meiomask',
 			mask: null,
-			type: 'fixed',
 
 			selectOnFocus: true,
 			autoTab: false
@@ -67,9 +66,14 @@
 					var elValue = elementValue.meiomask(this.options);
 					this.element.set('value', elValue).defaultValue = elValue;
 				}
-				this.element.store('meiomask', this);
-				this.maskType = new Meio.MaskType[this.options.type](this, this.options);
-				this.element.erase('maxlength');
+				this.ignore = false;
+				this.masklength = this.element.get('maxlength');
+				this.maskArray = this.options.mask.split('');
+	    		this.eventsToBind = ['focus', 'blur', 'keydown', 'keypress', 'paste'];
+	    		this.eventsToBind.each(function(evt){
+	    			this.element.addEvent(evt, this._onMask.bindWithEvent(this, this['_' + evt]));
+	    		}, this);
+				this.element.store('meiomask', this).erase('maxlength');
 			}
 			return this;
 		},
@@ -84,31 +88,8 @@
 				}, mask.maskType);
 			}
 			return this;
-		}
-	
-	});
-	
-	
-	Meio.MaskType = new Class({
-
-        Implements: [Options, Events],
-
-	    initialize: function(mask, options){
-	        this.ignore = false;
-	        this.setOptions(options);
-			if(mask){
-	            this.mask = mask;
-	            this.element = mask.element;
-				this.masklength = this.element.get('maxlength');
-				this.maskArray = this.options.mask.split('');
-	    		this.eventsToBind = ['focus', 'blur', 'keydown', 'keypress', 'paste'];
-	    		this.eventsToBind.each(function(evt){
-	    		    this[evt + 'Event'] = this._onMask.bindWithEvent(this, this['_' + evt]);
-	    			this.element.addEvent(evt, this[evt+'Event']);
-	    		}, this);
-	        }
-	    },
-    
+		},
+		
 		_onMask: function(e, func){
 			var o = {};
 			if(this.element.get('readonly')) return true;
@@ -126,7 +107,7 @@
 			if(this.ignore){
 	    		// var rep = this.globals.keyRep[e.code];
 				// no more representation of the keys yet... (since this is not so used or usefull you know..., im thinking about that)
-				this.mask.fireEvent('valid', [this.element, e.code]);
+				this.fireEvent('valid', [this.element, e.code]);
 	    	}
 			return (Browser.Platform.ipod
 				|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)
@@ -155,25 +136,25 @@
 			if(!isRemoveKey){
 				if(!rule){
 		    		//console.log('overflow');
-					this.mask.fireEvent('overflow', [this.element, code, c]);
+					this.fireEvent('overflow', [this.element, code, c]);
 		    		return false;
 		    	}
 		    	else if(!this.testEntry(i, c)){
 					//console.log('invalid');
-		    		this.mask.fireEvent('invalid', [this.element, code, c]);
+		    		this.fireEvent('invalid', [this.element, code, c]);
 		    		return false;
 		    	}
 			}
 	    	//console.log('valid');
-			this.mask.fireEvent('valid', [this.element, code, c]);
+			this.fireEvent('valid', [this.element, code, c]);
 			return true;
 	    },
 		
 		setSize: function(){
 			if(!this.element.get('size')) this.element.set('size', this.maskArray.length);
 		}
-	});
 	
+	});
 	
 	Meio.Mask.extend({
 
