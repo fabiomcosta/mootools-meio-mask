@@ -22,11 +22,10 @@
 				'source': [
 					'moo.meio.mask.inits',
 					'moo.meio.mask.Mask',
-					'moo.meio.mask.MaskType',
-					'moo.meio.mask.MaskType.fixed',
-					'moo.meio.mask.MaskType.infinite',
-					'moo.meio.mask.MaskType.reverse',
-					'moo.meio.mask.MaskType.regexp',
+					'moo.meio.mask.Mask.Fixed',
+					'moo.meio.mask.Mask.Repeat',
+					'moo.meio.mask.Mask.Reverse',
+					'moo.meio.mask.Mask.Regexp',
 					'moo.meio.mask.Array',
 					'moo.meio.mask.Element',
 					'moo.meio.mask.Properties',
@@ -145,7 +144,12 @@
 				$el.setStyle('background', 'green');
 			}
 		});*/
-		$$('input[type=text]')[0].meiomask({setSize: true});
+		
+		
+		var firstInput = $$('input[type=text]')[0];
+		var mask = firstInput.get('data-meiomask');
+		firstInput.meiomask(mask);
+		
 		//.each(function(el, i){
 		//	el
 		//	if(i==0){ el.focus(); } 

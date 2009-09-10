@@ -1,9 +1,10 @@
 	// sets mask to this input and returns this input
 	Element.Properties.meiomask = {
-		set: function(options){
-			options = $pick(options, {});
-			var mask = this.retrieve('meiomask');
-			return this.store('meiomask', mask? mask.change(options): new Meio.Mask.Fixed(this, options));
+		set: function(mask, type, options){
+			mask = mask.capitalize();
+			options = $pick(options, type, {});
+			type = ($type(type) === 'string')? type.capitalize(): 'Fixed';
+			return this.store('meiomask', new Meio.Mask[type][mask](this, options));
 		},
 		// returns the mask object
 		get: function(){
@@ -25,7 +26,7 @@
 		},
 		get: function(){
 			var ml = this.getAttribute('maxLength', 2);
-			return (ml == 2147483647)? null: ml;
+			return (ml === 2147483647)? null: ml;
 		},
 		erase: function(){
 			this.removeAttribute('maxLength');

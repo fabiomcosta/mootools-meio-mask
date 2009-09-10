@@ -28,9 +28,6 @@ IDEAS FOR 2.0:
 
 New Structure
 =============
-Everything will be classes now. I'll have to give some credit for zilenCe here, he made an inputMask plugin that i loved the structured he used, in fact it was i was looking for. I don't like the structure right now but i couldn't find a better one, but zileCe did.
+Everything will be classes now. I'll have to give some credit for zilenCe here, he made an inputMask plugin that i loved the structured he used, in fact it was i was looking for. I don't like the structure used on MeioMask right now, but zilenCe found a better one.
 
 First class is Meio just to namespace my own classes. Next comes our Mask class, Meio.Mask. Next is the mask type, like Meio.Mask.Fixed, that will extends from Meio.Mask and finally the mask name, like Date or Time. We end up with something like Meio.Mask.Fixed.Date.
-I think its a nice organization.
-
-This, of course, is just a proposal, as its not implemented. I'll try to do it, but can't say for sure it will work fine and stuff.
