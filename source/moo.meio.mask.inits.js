@@ -36,16 +36,17 @@ if(typeof Meio == 'undefined') var Meio = {};
 
 //(function(){
 	
-	$extend(Element.NativeEvents,{
+	var $ = document.id || $;
+	
+	$extend(Element.NativeEvents, {
 		'paste': 2, 'input': 2
 	});
 	// thanks Jan Kassens
 	Element.Events.paste = {
-		base : (Browser.Engine.presto || ( Browser.Engine.gecko && Browser.Engine.version < 19 ))? 'input': 'paste',
+		base : (Browser.Engine.presto || (Browser.Engine.gecko && Browser.Engine.version < 19))? 'input': 'paste',
 		condition: function(e){
 			this.fireEvent('paste', e, 1);
 			return false;
 		}
 	};
-
-	var $ = document.id || $;
+	

@@ -1,9 +1,9 @@
 	// sets mask to this input and returns this input
 	Element.Properties.meiomask = {
 		set: function(mask, type, options){
-			mask = mask.capitalize();
+			mask = mask.camelCase().capitalize();
 			options = $pick(options, type, {});
-			type = ($type(type) === 'string')? type.capitalize(): 'Fixed';
+			type = ($type(type) === 'string')? type.camelCase().capitalize(): 'Fixed';
 			return this.store('meiomask', new Meio.Mask[type][mask](this, options));
 		},
 		// returns the mask object

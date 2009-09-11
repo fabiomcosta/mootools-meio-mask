@@ -25,16 +25,20 @@ Meio.Mask.Fixed = new Class({
 		var elementValueArray = elementValue.split(''),
 			maskArray = this.maskArray,
 			maskMold = this.maskMold,
-			eli = 0;
+			eli = 0,
+			returnFromTestEntry;
 			
 		while(eli < maskMold.length){
 			if(!elementValueArray[eli]){
 				elementValueArray[eli] = maskMold[eli];
 			}
 			else if(Meio.Mask.rules[maskArray[eli]]){
-				if(!this.testEntry(eli, elementValueArray[eli])){
+				if(!(returnFromTestEntry = this.testEntry(eli, elementValueArray[eli]))){
 					elementValueArray.splice(eli, 1);
 					continue;
+				}
+				else{
+				    if($type(returnFromTestEntry) === 'string') elementValueArray[eli] = returnFromTestEntry;
 				}
 				newStartRange = eli;
 			}
@@ -170,10 +174,11 @@ Meio.Mask.Fixed = new Class({
     },
     
     mask: function(str){
-        return this._applyMask(str).value;
+        return this._applyMask(str).value.join('');
     }
 
 });
+
 
 Meio.Mask.createMasks('Fixed', {
     'Phone'				: { mask: '(99) 9999-9999)' },

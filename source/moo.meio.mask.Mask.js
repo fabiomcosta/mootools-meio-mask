@@ -31,6 +31,7 @@
         
 		setup: function(options){
 			this.setOptions(options);
+			
 			if(this.options.mask){
 				if(this.element.retrieve('meiomask')) this.remove();
 				var elementValue = this.element.get('value');
@@ -51,13 +52,13 @@
 		},
 		
 		remove: function(){
-			var mask = this.element.retrieve('mask');
+			var mask = this.element.retrieve('meiomask');
 			if(mask){
 				var maxLength = mask.options.maxlength;
 				if(maxLength !== null) this.element.set('maxlength', maxLength);
-				mask.maskType.eventsToBind.each(function(evt){
+				mask.eventsToBind.each(function(evt){
 					this.element.removeEvent(evt, this[evt + 'Event']);
-				}, mask.maskType);
+				}, mask);
 			}
 			return this;
 		},
@@ -94,7 +95,6 @@
 			var maskArray = this.maskArray,
 				rule = Meio.Mask.rules[maskArray[index]],
 				ret = (rule && rule.regex.test(_char));
-			
 			return (rule.check && ret)? rule.check(this.element.get('value'), index, _char): ret;
 		},
 
@@ -214,7 +214,7 @@
 			'Z': {regex: /[A-Z]/},
 			'a': {regex: /[a-zA-Z]/},
 			'*': {regex: /[0-9a-zA-Z]/},
-			'@': {regex: /[0-9a-zA-ZçÇáàãâéèêíìóòõôúùü]/},
+			'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, //i doenst work here
 			//its included just to exemplify how to use it, its used on the time mask
 			'h': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1)==2) return (_char<=3); return true;}},
 			'U': {regex: /[a-zA-Z]/, check: function(value, index, _char){return _char.toUpperCase();}}

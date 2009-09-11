@@ -20,7 +20,9 @@ Things i don't like about it (will change till version 2.0):
 	'2222' -> '222-2'
 	Till it gets to 5.
 * RegexMask should be included too, it is still here at the mootools version, but with the paste bug, that will be easily fixed with the maxLength option, that will not be optional (can't force it but it will break paste if not present);
-
+* the String.meiomask function is too ugly. Remake it please!; OKKK
+* Make a way to define a rule just in a certain mask, like when you define the class.
+* I NEED A WAY TO KNOW THE NAME OF THE CLASS!
 
 IDEAS FOR 2.0:
 
