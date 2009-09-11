@@ -5,8 +5,10 @@
 		eventsToBind: ['focus', 'blur', 'keydown', 'keypress', 'paste'],
 
 		options: {
+			
 			selectOnFocus: true,
 			autoTab: false
+			
 			//onInvalid: $empty,
 			//onValid: $empty,
 			//onOverflow: $empty
@@ -83,6 +85,10 @@
 				|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)
 				)? this._keypress(e, o): true;
 	    },
+        
+        _focus: function(e, o){
+            if(this.options.selectOnFocus) this.element.select();
+        },
     
 		testEntry: function(index, _char){
 			var maskArray = this.maskArray,
@@ -205,7 +211,8 @@
 			'*': {regex: /[0-9a-zA-Z]/},
 			'@': {regex: /[0-9a-zA-ZçÇáàãâéèêíìóòõôúùü]/},
 			//its included just to exemplify how to use it, its used on the time mask
-			'h': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1)==2) return (_char<=3); return true;}}
+			'h': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1)==2) return (_char<=3); return true;}},
+			'U': {regex: /[a-z]/, check: function(value, index, _char){return _char.toUpperCase();}}
 		};
 		for(var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
 		return rules;

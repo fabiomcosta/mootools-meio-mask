@@ -1,11 +1,18 @@
 Things i don't like about it (will change till version 2.0):
 
-
+* Watch for a better fix on maxLength (try to avoid that maxLength == -1).
+** OK, i've overwritten the maxlength Property, now its cleaner.
 * Some crazy if's - This will need a total rewrite from the plugin;
-* Mask types should have in some way, different options for each of them, i mean, they should be threated separately, each of theyres event. It's being done right now... but i feel that it can be even better;
+** Its becoming better every commit.
+* Mask types should have, in some way, different options for each of them, i mean, they should be threated separately, each of theyre's event. It's being done right now... but i feel that it can be even better;
+** It can always be better but im happy right now.
 * Try not to polute the native objects with crazy and unusefull methods;
+** I won't sir! I promice.
+* Try to add a placeholder option, not that necessary but it would be nice;
+** IT IS STILL THERE! And working like a charm
 * Make a cool and correct unmaskedVal function;
 * Work correctly with float and integer numbers, i mean like... if 90 is the value of the input it will mask to 90.00 not 0.90;
+* Change the way signed masks work! That's so not pretty!;
 * New mask type that works like this:
 	mask='9-9' and maxlength=5
 	'22' -> '2-2'
@@ -13,21 +20,27 @@ Things i don't like about it (will change till version 2.0):
 	'2222' -> '222-2'
 	Till it gets to 5.
 * RegexMask should be included too, it is still here at the mootools version, but with the paste bug, that will be easily fixed with the maxLength option, that will not be optional (can't force it but it will break paste if not present);
-* Try to add a placeholder option, not that necessary but it would be nice; IT IS STILL THERE!
-* Change the way signed masks work! That's so not pretty!;
-* Watch for a better fix on maxLength (try to avoid that maxLength == -1).
+
 
 IDEAS FOR 2.0:
 
 * Set defaultValue when the mask is applyed to fix the reset buton of the form; OK
 * Option that will set the size attribute of the input based on the mask; OK
 * As seen on the benchmarks i did, i should consider using a string of characters instead of a regular expression; OK
-* Add a callback to rules so that it can get uppercased or lowercased after inputting the char, this will allow a char being dependent of a preceding char (like on hours you dont want the user to input chars bigger than 3 if the first is 2) 
-* Option to force the completition of the value of the mask.
+* Option to force the completition of the value of the mask. OK, removeIfInvalid
+* Add a callback to rules so that it can get uppercased or lowercased after inputting the char, this will allow a char being dependent of a preceding char (like on hours you dont want the user to input chars bigger than 3 if the first is 2)
 
+
+Fixed Masks Behavior
+====================
+
+I've just seen how fixed masks works on netbeans. I'll implement it exactly the same way, i liked it.
+The code will be smaller and i think more consistent.
+O course the code will always be here, i think ill create a tag for this.
 
 New Structure
 =============
+
 Everything will be classes now. I'll have to give some credit for zilenCe here, he made an inputMask plugin that i loved the structured he used, in fact it was i was looking for. I don't like the structure used on MeioMask right now, but zilenCe found a better one.
 
 First class is Meio just to namespace my own classes. Next comes our Mask class, Meio.Mask. Next is the mask type, like Meio.Mask.Fixed, that will extends from Meio.Mask and finally the mask name, like Date or Time. We end up with something like Meio.Mask.Fixed.Date.
