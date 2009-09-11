@@ -94,19 +94,21 @@
 			var maskArray = this.maskArray,
 				rule = Meio.Mask.rules[maskArray[index]],
 				ret = (rule && rule.regex.test(_char));
-			return (rule.check)? (ret && rule.check(this.element.get('value'), index, _char)): ret;
+			
+			return (rule.check && ret)? rule.check(this.element.get('value'), index, _char): ret;
 		},
 
 	    testEvents: function(index, _char, code, isRemoveKey){
-	    	var maskArray = this.maskArray;
-			var rule = Meio.Mask.rules[maskArray[index]];
+	    	var maskArray = this.maskArray,
+			    rule = Meio.Mask.rules[maskArray[index]],
+			    returnFromTestEntry;
 			if(!isRemoveKey){
 				if(!rule){
 		    		//console.log('overflow');
 					this.fireEvent('overflow', [this.element, code, _char]);
 		    		return false;
 		    	}
-		    	else if(!this.testEntry(index, _char)){
+		    	else if(!(returnFromTestEntry = this.testEntry(index, _char))){
 					//console.log('invalid');
 		    		this.fireEvent('invalid', [this.element, code, _char]);
 		    		return false;
@@ -114,7 +116,7 @@
 			}
 	    	//console.log('valid');
 			this.fireEvent('valid', [this.element, code, _char]);
-			return true;
+			return returnFromTestEntry || true;
 	    },
 		
 		setSize: function(){
@@ -215,7 +217,7 @@
 			'@': {regex: /[0-9a-zA-ZçÇáàãâéèêíìóòõôúùü]/},
 			//its included just to exemplify how to use it, its used on the time mask
 			'h': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1)==2) return (_char<=3); return true;}},
-			'U': {regex: /[a-z]/, check: function(value, index, _char){return _char.toUpperCase();}}
+			'U': {regex: /[a-zA-Z]/, check: function(value, index, _char){return _char.toUpperCase();}}
 		};
 		for(var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
 		return rules;

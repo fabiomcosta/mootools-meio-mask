@@ -6,7 +6,8 @@ Meio.Mask.Fixed = new Class({
     options: {
         placeholder: '_',
 		autoSetSize: false,
-		removeIfInvalid: false // removes the value onblur if the input is not valid
+		removeIfInvalid: false, // removes the value onblur if the input is not valid
+		removeInvalidTrailingChars: true
     },
 
     initialize: function(element, options){
@@ -97,7 +98,7 @@ Meio.Mask.Fixed = new Class({
 			}
 			return true;
 		} 
-		this._removeInvalidTrailingChars(elementValue);
+		if(this.options.removeInvalidTrailingChars) this._removeInvalidTrailingChars(elementValue);
 		return true;
 	},
     
@@ -107,7 +108,7 @@ Meio.Mask.Fixed = new Class({
         e.preventDefault();
     	var c = String.fromCharCode(e.code),
     		maskArray = this.maskArray,
-			start, i;
+			start, i, returnFromTestEntry;
 		
 		if(!o.isSelection){
 			// no text selected
@@ -126,8 +127,8 @@ Meio.Mask.Fixed = new Class({
 			}
 		
 		    i = this.validIndexes[start];
-			if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return true;
-			
+			if(!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
+			if($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
 			this.maskMoldArray[i] = (o.isRemoveKey)? this.options.placeholder: c;
 			
 			this.element.set('value', this.maskMoldArray.join(''))
@@ -156,7 +157,8 @@ Meio.Mask.Fixed = new Class({
 
 			if(!o.isRemoveKey){
 				i = this.validIndexes[start];
-				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return true;
+				if(!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
+    			if($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
 				this.maskMoldArray[i] = c;
 				start++;
 			}
@@ -181,7 +183,7 @@ Meio.Mask.createMasks('Fixed', {
     'Date'				: { mask: '39/19/9999' },
     'DateUs'			: { mask: '19/39/9999' },
     'Cep'				: { mask: '99999-999' },
-    'Time'				: { mask: '2h:59' },
+    'Time'				: { mask: '2h:59U' },
     'CC'				: { mask: '9999 9999 9999 9999' }
 });
 

@@ -148,7 +148,7 @@
 		
 		var firstInput = $$('input[type=text]')[0];
 		var mask = firstInput.get('data-meiomask');
-		firstInput.meiomask(mask);
+		firstInput.meiomask(mask, 'Fixed', {removeInvalidTrailingChars: false});
 		//.each(function(el, i){
 		//	el
 		//	if(i==0){ el.focus(); } 

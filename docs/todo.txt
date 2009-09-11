@@ -29,6 +29,10 @@ IDEAS FOR 2.0:
 * As seen on the benchmarks i did, i should consider using a string of characters instead of a regular expression; OK
 * Option to force the completition of the value of the mask. OK, removeIfInvalid
 * Add a callback to rules so that it can get uppercased or lowercased after inputting the char, this will allow a char being dependent of a preceding char (like on hours you dont want the user to input chars bigger than 3 if the first is 2)
+** COOOL, now you can return a char on the check function (may have its name changed). It works like this now:
+** if it returns a boolean: the inputed char wont be inserted if its false else it will.
+** if it returns a string the returned string will be inserted.
+** So you can insert a 'B' if someone inputs an 'a', for example. This opens some space to a lot of ideas.
 
 
 Fixed Masks Behavior
