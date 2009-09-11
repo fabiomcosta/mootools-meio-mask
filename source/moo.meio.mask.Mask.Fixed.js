@@ -85,7 +85,7 @@ Meio.Mask.Fixed = new Class({
 			return true;
 		} 
 		
-		if(elementValue == this.maskMold){
+		if(elementValue === this.maskMold){
 			// if no char inputed
 			this.element.set('value', '');
 		}
@@ -132,8 +132,7 @@ Meio.Mask.Fixed = new Class({
 						start = this.validIndexes.indexOf(--o.range.start);
 					}while(start == -1 && o.range.start >= 0);
 				}
-			
-				if(start == -1) return false;
+				if(start === -1) return false;
 			
 				var auxi = start,
 					i_1 = this.validIndexes[auxi+1];
@@ -141,16 +140,16 @@ Meio.Mask.Fixed = new Class({
 			    i = this.validIndexes[auxi];
 			    
 				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
-			
-				while(auxi <= this.validIndexes.length && i_1 && this.testEntry(i, this.maskMoldArray[i_1])){
-					this.maskMoldArray[i] = this.maskMoldArray[i_1];
-					i = this.validIndexes[auxi];
-					i_1 = this.validIndexes[++auxi];
-				}
+
 				this.maskMoldArray[i] = this.options.placeHolder;
-			
-				this.element.set('value', this.maskMoldArray.join(''))
-					.setRange(this.validIndexes[start]);
+				this.element.set('value', this.maskMoldArray.join(''));
+				
+				if(o.isDelKey){
+			        this.element.setRange(this.validIndexes[start + 1] || this.maskMoldArray.length);
+			    }
+			    else{
+			        this.element.setRange(this.validIndexes[start]);
+			    }
 			}
 			else{
 				// gets start index, if it is not on the validIndexes it will try to get the next
@@ -161,23 +160,13 @@ Meio.Mask.Fixed = new Class({
 				i = this.validIndexes[start];
 				
 				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
-			
-				var queue = [this.maskMoldArray[i]];
-
+			    
 				// apply the char that just passed the test
 				this.maskMoldArray[i] = c;
-			
-				auxi = start + 1;
-				i = this.validIndexes[auxi];
 
-				while(auxi < this.validIndexes.length && this.testEntry(i, queue[0])){
-					queue.unshift(this.maskMoldArray[i]);
-					this.maskMoldArray[i] = queue.pop();
-					i = this.validIndexes[++auxi];
-				}
-			
 				this.element.set('value', this.maskMoldArray.join(''));
-				if(this.validIndexes[start + 1]) this.element.setRange(this.validIndexes[start + 1]);
+
+                this.element.setRange(this.validIndexes[start + 1] || this.maskMoldArray.length);
 			}
 		}
 		else{
@@ -188,13 +177,13 @@ Meio.Mask.Fixed = new Class({
 			// text selected
 			do{
 				start = this.validIndexes.indexOf(o.range.start++);
-			}while(start==-1 && o.range.start < maskArray.length);
+			}while(start === -1 && o.range.start < maskArray.length);
 			do{
 				end = this.validIndexes.indexOf(o.range.end++);
-			}while(end==-1 && o.range.end < maskArray.length);
+			}while(end === -1 && o.range.end < maskArray.length);
 			//if(end==-1) end = maskArray.length;
 			
-			var delta = end-start;
+			var delta = end - start;
 			
 			if(delta == 0) return false;
 			
@@ -209,36 +198,6 @@ Meio.Mask.Fixed = new Class({
 				if(!this.testEvents(i, c, e.code, o.isRemoveKey)) return false;
 				this.maskMoldArray[i] = c;
 				start++;
-			}
-			
-			delta = end - start;
-			
-			if(delta == 0){
-				this.element.set('value', this.maskMoldArray.join(''));
-				this.element.setRange(this.validIndexes[start]);
-				return false;
-			}
-			
-			auxi = end;
-			
-			var canMove = true, i_delta;
-			while((i = this.validIndexes[auxi]) && (this.maskMoldArray[i] != this.options.placeHolder)){
-				i_delta = this.validIndexes[auxi-delta];
-				if(!this.testEntry(i_delta, this.maskMoldArray[i])){
-					canMove = false;
-					break;
-				}
-				auxi++;
-			}
-			
-			if(canMove){
-				auxi = end;
-				while((i = this.validIndexes[auxi])){
-					i_delta = this.validIndexes[auxi-delta];
-					this.maskMoldArray[i_delta] = this.maskMoldArray[i];
-					this.maskMoldArray[i] = this.options.placeHolder;
-					auxi++;
-				}
 			}
 			
 			this.element.set('value', this.maskMoldArray.join(''));
