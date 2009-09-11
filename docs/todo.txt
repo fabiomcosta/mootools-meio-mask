@@ -36,7 +36,9 @@ Fixed Masks Behavior
 
 I've just seen how fixed masks works on netbeans. I'll implement it exactly the same way, i liked it.
 The code will be smaller and i think more consistent.
-O course the code will always be here, i think ill create a tag for this.
+Of course the code will always be here, i think ill create a tag for this.
+
+The new behavior is working fine!
 
 New Structure
 =============

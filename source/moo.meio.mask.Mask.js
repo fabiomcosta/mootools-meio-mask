@@ -71,7 +71,8 @@
 			o.isDelKey = (e.code == 46);
 			o.isBksKey = (e.code == 8 || (Browser.Platform.ipod && e.code == 127));
 			o.isRemoveKey = (o.isBksKey || o.isDelKey);
-			return func.call(this, e, o);
+			func.call(this, e, o);
+			return true;
 		},
     
 	    _keydown: function(e, o){
@@ -81,9 +82,8 @@
 				// no more representation of the keys yet... (since this is not so used or usefull you know..., im thinking about that)
 				this.fireEvent('valid', [this.element, e.code]);
 	    	}
-			return (Browser.Platform.ipod
-				|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)
-				)? this._keypress(e, o): true;
+			(Browser.Platform.ipod
+			|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey))? this._keypress(e, o): true;
 	    },
         
         _focus: function(e, o){
@@ -119,8 +119,11 @@
 		
 		setSize: function(){
 			if(!this.element.get('size')) this.element.set('size', this.maskArray.length);
+		},
+		
+		isFixedChar: function(_char){
+		    return !Meio.Mask.matchRules.contains(_char);
 		}
-	
 	});
 	
 	Meio.Mask.extend({

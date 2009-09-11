@@ -5,8 +5,8 @@ Element.implement({
 		return this.get('value').replace(Meio.MaskGlobals.init().fixedCharsRegG, '');
 	},*/
 	
-	meiomask: function(options){
-        return this.set('meiomask', options);
+	meiomask: function(mask, type, options){
+        return this.set('meiomask', mask, type, options);
     },
 	
 	// http://www.bazon.net/mishoo/articles.epl?art_id=1292
