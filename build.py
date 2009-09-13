@@ -29,21 +29,27 @@ class Builder:
             ret = f.readlines()
         finally:
             f.close()
-        ret.append('\r\r')
+        ret.append('\r\n')
         return ret
 
     def create_built_file(self):
         file_name = self.build_folder + self.file_name + self.extension
         built_file = open(file_name, 'w')
         try:
-            for name ,absolute_name in self.javascript_files:
-                built_file.writelines( self.read_file(absolute_name) )
+            built_file.writelines(self.read_file('CREDITS'))
+            for name, absolute_name in self.javascript_files:
+                built_file.writelines(self.read_file(absolute_name))
         finally:
             built_file.close()
         print '** Succesfully created "' + file_name + '" file. **'
     
     def create_minified_file(self):
-        os.system('java -jar ../../assets/yui-compressor/yui.jar --warn --charset utf8 ' + self.build_folder + self.file_name + self.extension + ' > '+ self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension)
+        uncompressed_file = self.build_folder + self.file_name + self.extension 
+        compressed_file = self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension
+        os.system('cat CREDITS > %(compressed)s; java -jar ../../assets/yui-compressor/yui.jar --warn --charset utf8 %(uncompressed)s >> %(compressed)s' % {
+            'uncompressed': uncompressed_file,
+            'compressed': compressed_file
+        })
         print '** Succesfully created minified file. **'
         
     def create_zip_file(self):

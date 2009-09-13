@@ -1,35 +1,9 @@
 /**
- * moo.meio.mask.js
  * @author: fabiomcosta
  * @version 1.0
- * Inspired by iMask http://zendold.lojcomm.com.br/imask/
- *
- * Created by Fabio M. Costa on 2008-09-16. Please report any bug at http://www.meiocodigo.com
- *
+ * Inspired by InputMask http://cpojer.net and iMask http://zendold.lojcomm.com.br/imask/
  * Copyright (c) 2008 Fabio M. Costa http://www.meiocodigo.com
- *
  * The MIT License (http://www.opensource.org/licenses/mit-license.php)
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- * 
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
  */
 
 if(typeof Meio == 'undefined') var Meio = {};
@@ -45,7 +19,8 @@ Element.Events.paste = {
 		return false;
 	}
 };
-		
+	
+	
 Meio.Mask = new Class({
 
 	Implements: [Options, Events],
@@ -283,7 +258,8 @@ Meio.Mask.extend({
 	return rules;
 })());
 
-
+
+
 Meio.Mask.Fixed = new Class({
     
     Extends: Meio.Mask,
@@ -496,7 +472,8 @@ Meio.Mask.Fixed.Time = new Class({
     }
 });
 */
-
+
+
 Meio.Mask.DumbInput = new Element('input', {'type': 'text'});
 
 // sets mask to this input and returns this input
@@ -601,4 +578,4 @@ Meio.Mask.DumbInput = new Element('input', {'type': 'text'});
 			return this.setProperty('value', value);
 		}
 	};
-*/
+*/
