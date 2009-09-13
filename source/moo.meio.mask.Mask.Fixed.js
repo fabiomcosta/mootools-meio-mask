@@ -12,13 +12,19 @@ Meio.Mask.Fixed = new Class({
 
     initialize: function(element, options){
 		this.parent(element, options);
-		this.maskMold = this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
+		this.maskMold = this.element.get('value') || this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
 		if(this.options.autoSetSize) this.setSize();
 		this.maskArray.each(function(c, i){
 		    if(!this.isFixedChar(c)) this.validIndexes.push(i);
 		}, this);
+		this.createUnmaskRegex();
+	},
+	
+	createUnmaskRegex: function(){
+	    var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
+	    this.unmaskRegex = new RegExp('[' + fixedCharsArray.join('').escapeRegExp() + ']', 'g');
 	},
 
 	_applyMask: function(elementValue, newRangeStart){
@@ -86,7 +92,7 @@ Meio.Mask.Fixed = new Class({
 
 	_focus: function(e, o){
 		this.element.set('value', this.maskMoldArray.join(''))
-			.store('meiomask:focusvalue', this.element.get('value'));
+		    .store('meiomask:focusvalue', this.element.get('value'));
 		this.parent(e, o);
 	},
 
@@ -140,8 +146,9 @@ Meio.Mask.Fixed = new Class({
 		}
 		else{
 
-			var rstart = o.range.start;
-			var rend = o.range.end;
+			var rstart = o.range.start,
+			    rend = o.range.end,
+			    end;
 
 			// text selected
 			do{
@@ -175,6 +182,10 @@ Meio.Mask.Fixed = new Class({
     
     mask: function(str){
         return this._applyMask(str).value.join('');
+    },
+    
+    unmask: function(str){
+        return str.replace(this.unmaskRegex, '');
     }
 
 });
@@ -185,10 +196,10 @@ Meio.Mask.createMasks('Fixed', {
     'PhoneUs'			: { mask: '(999) 999-9999' },
     'Cpf'				: { mask: '999.999.999-99' },
     'Cnpj'				: { mask: '99.999.999/9999-99' },
-    'Date'				: { mask: '39/19/9999' },
-    'DateUs'			: { mask: '19/39/9999' },
+    'Date'				: { mask: '3d/1m/9999' },
+    'DateUs'			: { mask: '1m/3d/9999' },
     'Cep'				: { mask: '99999-999' },
-    'Time'				: { mask: '2h:59U' },
+    'Time'				: { mask: '2h:59' },
     'CC'				: { mask: '9999 9999 9999 9999' }
 });
 

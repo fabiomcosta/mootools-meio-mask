@@ -10,22 +10,10 @@ Things i don't like about it (will change till version 2.0):
 ** I won't sir! I promice.
 * Try to add a placeholder option, not that necessary but it would be nice;
 ** IT IS STILL THERE! And working like a charm
+* the String.meiomask function is too ugly. Remake it please!;
+** OKKK
 * Make a cool and correct unmaskedVal function;
-* Work correctly with float and integer numbers, i mean like... if 90 is the value of the input it will mask to 90.00 not 0.90;
-* Change the way signed masks work! That's so not pretty!;
-* New mask type that works like this:
-	mask='9-9' and maxlength=5
-	'22' -> '2-2'
-	'222' -> '22-2'
-	'2222' -> '222-2'
-	Till it gets to 5.
-* RegexMask should be included too, it is still here at the mootools version, but with the paste bug, that will be easily fixed with the maxLength option, that will not be optional (can't force it but it will break paste if not present);
-* the String.meiomask function is too ugly. Remake it please!; OKKK
-* Make a way to define a rule just in a certain mask, like when you define the class.
-* I NEED A WAY TO KNOW THE NAME OF THE CLASS!
-
-IDEAS FOR 2.0:
-
+** it looks fine for the fixed type. Reverse type will have a nice one too hehe, u'll c.
 * Set defaultValue when the mask is applyed to fix the reset buton of the form; OK
 * Option that will set the size attribute of the input based on the mask; OK
 * As seen on the benchmarks i did, i should consider using a string of characters instead of a regular expression; OK
@@ -35,6 +23,16 @@ IDEAS FOR 2.0:
 ** if it returns a boolean: the inputed char wont be inserted if its false else it will.
 ** if it returns a string the returned string will be inserted.
 ** So you can insert a 'B' if someone inputs an 'a', for example. This opens some space to a lot of ideas.
+
+* Work correctly with float and integer numbers, i mean like... if 90 is the value of the input it will mask to 90.00 not 0.90;
+* Change the way signed masks work! That's so not pretty!;
+* New mask type that works like this:
+	mask='9-9' and maxlength=5
+	'22' -> '2-2'
+	'222' -> '22-2'
+	'2222' -> '222-2'
+	Till it gets to 5.
+* RegexMask should be included too, it is still here at the mootools version, but with the paste bug, that will be easily fixed with the maxLength option, that will not be optional (can't force it but it will break paste if not present);
 
 
 Fixed Masks Behavior

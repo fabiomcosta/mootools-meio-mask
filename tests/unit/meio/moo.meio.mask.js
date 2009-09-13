@@ -39,5 +39,9 @@ describe('String.meiomask()', {
 		el.meiomask('Date', 'Fixed');
 		value_of(el.value).should_be('12/12/2000');
 	},
+	
+	'should unmask the passed string': function(){
+		value_of('12/12/2000'.meiounmask('Date', 'Fixed')).should_be('12122000');
+	}
 
 });

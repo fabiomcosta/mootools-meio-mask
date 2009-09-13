@@ -1,3 +1,5 @@
+	
+	
 	Meio.Mask = new Class({
 
 		Implements: [Options, Events],
@@ -13,11 +15,6 @@
 			//onValid: $empty,
 			//onOverflow: $empty
 			
-			//FIXED MASK OPTIONS
-			//placeHolder: false,
-			//removeIfInvalid: false,
-			//setSize: false,
-			
 			//REVERSE MASK OPTIONS
 			//signal: false,
 			//setSize: false
@@ -31,13 +28,11 @@
         
 		setup: function(options){
 			this.setOptions(options);
-			
 			if(this.options.mask){
 				if(this.element.retrieve('meiomask')) this.remove();
 				var elementValue = this.element.get('value');
 				if(elementValue !== ''){
-					// if the value of the input is '' it will give an error since meiomask String function is not implemented correctly
-					var elValue = elementValue.meiomask(this.options);
+					var elValue = elementValue.meiomask(this.constructor, this.options);
 					this.element.set('value', elValue).defaultValue = elValue;
 				}
 				this.ignore = false;
@@ -64,11 +59,11 @@
 		},
 		
 		_onMask: function(e, func){
-			var o = {};
 			if(this.element.get('readonly')) return true;
+			var o = {};
 			o.range = this.element.getRange();
-			o.isSelection = (o.range.start != o.range.end);
-			// 8=backspace && 46=delete && 127==iphone's delete (i mean backspace)
+			o.isSelection = (o.range.start !== o.range.end);
+			// 8==backspace && 46==delete && 127==iphone's delete (i mean backspace)
 			o.isDelKey = (e.code == 46);
 			o.isBksKey = (e.code == 8 || (Browser.Platform.ipod && e.code == 127));
 			o.isRemoveKey = (o.isBksKey || o.isDelKey);
@@ -77,9 +72,9 @@
 		},
     
 	    _keydown: function(e, o){
-			this.ignore = Meio.Mask.ignoreKeys[e.code];
+			this.ignore = (e.code in Meio.Mask.ignoreKeys);
 			if(this.ignore){
-	    		//var rep = Meio.Mask.ignoreKeys[e.code];
+	    		// var rep = Meio.Mask.ignoreKeys[e.code];
 				// no more representation of the keys yet... (since this is not so used or usefull you know..., im thinking about that)
 				this.fireEvent('valid', [this.element, e.code]);
 	    	}
@@ -171,9 +166,26 @@
     		        options: masks[mask]
     		    });
 		    }
-		}
+		},
+		
+		// Christoph Pojer's (zilenCe) idea http://cpojer.net/
+		// adapted to MeioMask
+		upTo: function(number){
+		    number = String(number);
+		    return function(value, index, _char){
+		        if(value.charAt(index-1) == number[0])
+    		        return (_char<=number[1]);
+    		    return true;
+		    };
+		},
+		
+		// http://unixpapa.com/js/key.html
+		// if only the keydown auto-repeats
+		// if you have a better implementation of this detection tell me
+        onlyKeyDownRepeat: (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
 		
 	}).extend(function(){
+	    var ignoreKeys;
         var desktopIgnoreKeys = {
     		//8: 'backspace',
     		9 		: 'tab',
@@ -192,23 +204,24 @@
     		40 	    : 'down',
     		45 	    : 'insert',
     		//46: 'delete',
-    		116 	: 'f5',
-    		123 	: 'f12',
     		224  	: 'command'
     	},
     	iphoneIgnoreKeys = {
     		10		: 'go'
     		//127: 'delete'
     	};
-        
-        return {
-            ignoreKeys: (Browser.Platform.ipod)? iphoneIgnoreKeys: desktopIgnoreKeys,
-            // http://unixpapa.com/js/key.html
-    		// if only the keydown auto-repeats
-    		// if you have a better implementation of this detection tell me
-            onlyKeyDownRepeat: (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
-        };
-    }()).setRules((function(){
+    	
+    	if(Browser.Platform.ipod){
+    	    ignoreKeys = iphoneIgnoreKeys;
+    	}
+    	else{
+    	    // f1, f2, f3 ... f12
+            for(var i=1; i<=12; i++) desktopIgnoreKeys[111 + i] = 'f' + i;
+            ignoreKeys = desktopIgnoreKeys; 
+    	}
+        return {ignoreKeys: ignoreKeys};
+    }())
+    .setRules((function(){
 	    var rules = {
 			'z': {regex: /[a-z]/},
 			'Z': {regex: /[A-Z]/},
@@ -216,8 +229,9 @@
 			'*': {regex: /[0-9a-zA-Z]/},
 			'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, //i doenst work here
 			//its included just to exemplify how to use it, its used on the time mask
-			'h': {regex: /[0-9]/, check: function(value, index, _char){if(value.charAt(index-1)==2) return (_char<=3); return true;}},
-			'U': {regex: /[a-zA-Z]/, check: function(value, index, _char){return _char.toUpperCase();}}
+			'h': {regex: /[0-9]/, check: Meio.Mask.upTo(23)},
+			'd': {regex: /[0-9]/, check: Meio.Mask.upTo(31)},
+			'm': {regex: /[0-9]/, check: Meio.Mask.upTo(12)}
 		};
 		for(var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
 		return rules;
