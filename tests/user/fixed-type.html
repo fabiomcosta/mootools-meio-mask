@@ -26,10 +26,7 @@
 					'moo.meio.mask.Mask.Repeat',
 					'moo.meio.mask.Mask.Reverse',
 					'moo.meio.mask.Mask.Regexp',
-					'moo.meio.mask.Array',
-					'moo.meio.mask.Element',
-					'moo.meio.mask.Properties',
-					'moo.meio.mask.String'
+					'moo.meio.mask.Extras'
 				]
 			});
 		</script>
@@ -41,22 +38,14 @@
 			<fieldset>
 				<legend>Example form with defined masks</legend>
 				<label for="cpf">Credit Card:</label>
-				<input style="width: 200px" type="text" id="cc" name="cc" data-meiomask="time" />
-
-<!--
-
-				<legend>Example form with defined masks</legend>
-				<label>No masks:</label>
-				<input style="width: 100px" type="text" />
-
+				<input style="width: 200px" type="text" id="cc" name="cc" data-meiomask="fixed.time" />
 
 				<legend>Input with the 'msk' Mask</legend>
 				<label for="msk">Msk:</label>
-				<input type="text" id="msk" data-meiomask="msk" />
-
+				<input type="text" id="msk" data-meiomask="fixed.date" />
 
 				<label for="time_example">Time:</label>
-				<input type="text" id="time_example" data-meiomask="time" />
+				<input type="text" id="time_example" data-meiomask="fixed.time" />
 
 
 				<legend>Example form for the paste feature</legend>
@@ -64,28 +53,19 @@
 				<p>copy:  <strong>1234567890</strong>  and paste at the input</p>
 				<p>copy:  <strong>(12) 3456-7890</strong>  and paste at the input</p>
 				<p>copy:  <strong>12abcdef34567890</strong>  and paste at the input</p>
-				<input type="text" id="phone" name="phone" data-meiomask="phone" />
-
-
-				<label for="metadata1">Mask '555-666':</label>
-				<input type="text" id="metadata1" alt='{"mask":"555-666"}' />
-
-
-				<span>metadata overwrote the 'phone' mask set at alt attribute</span>
-				<label for="cpf">Mask '666-888':</label>
-				<input type="text" name="some_name" alt='{"mask":"555-666"}' />
-
+				<input type="text" id="phone" name="phone" data-meiomask="fixed.phone" />
 
 				<legend>Example form with the change-on-the-fly feature</legend>
 				<label for="change_mask">Mask '(99) 666':</label>
-				<input type="text" id="change_mask" data-meiomask="(99) 666" maxlength="10" />
+				<input type="text" id="change_mask" data-meiomask="fixed.cpf" maxlength="10" />
+
 				<ul>
 					<li><a onclick="$('change_mask').set('mask','***:***').set('value', ''); return false;" href="#">Change mask to '***:***'</a></li>
 					<li><a onclick="$('change_mask').set('mask','(aaa) **-9999').set('value', ''); return false;" href="#">Change mask to '(aaa) **-9999'</a></li>
 	 				<li><a onclick="$('change_mask').erase('mask').set('value', ''); return false;" href="#">unset the mask</a></li>
 				</ul>
-
-
+				
+				<!--
 				<legend>Example that shows the $.mask.string() function</legend>
 				<label for="dumb_input">Enter any input:</label>
 				<input type="text" id="dumb_input" /><span style="padding-left:10px;color:#0000FF;" id="masked_string"></span>
@@ -95,6 +75,7 @@
 					<li><a id="lmask_string3" href="#">Mask input value to {mask:'999.999,999',type:'reverse'}</a></li>
 					<li><a id="lmask_string4" href="#">Mask input value to 'signed-decimal'</a></li>
 				</ul>
+
 				<script type="text/javascript">
 				/*
 					$('lmask_string1').addEvent('click',function(){
@@ -116,15 +97,15 @@
 				*/
 				</script>
 
-
 				<legend>Example with a input and defined callbacks</legend>
 				<label for="cb_test_input">Mask '99.99-99/99':</label>
 				<input type="text" id="cb_test_input" />
 				<span id="cb_alerts"></span>
+				-->
 			</fieldset>
 		</form>
 		
-		-->
+		
 		
 	</div>
 	
@@ -146,14 +127,10 @@
 		});*/
 		
 		
-		var firstInput = $$('input[type=text]')[0];
-		var mask = firstInput.get('data-meiomask');
-		firstInput.meiomask(mask, 'Fixed', {removeInvalidTrailingChars: false});
-		
-		//.each(function(el, i){
-		//	el
-		//	if(i==0){ el.focus(); } 
-		//});
+		var maskInputs = $$('input[type=text]');
+		maskInputs.each(function(el){
+			el.meiomask(el.get('data-meiomask'));
+		});
 	</script>
 	</body>
 </html>
