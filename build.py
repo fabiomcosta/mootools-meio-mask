@@ -89,13 +89,10 @@ if __name__ == '__main__':
 			'moo.meio.mask.inits',
 			'moo.meio.mask.Mask',
 			'moo.meio.mask.Mask.Fixed',
-			'moo.meio.mask.Mask.Repeat',
-			'moo.meio.mask.Mask.Reverse',
-			'moo.meio.mask.Mask.Regexp',
-			'moo.meio.mask.Array',
-			'moo.meio.mask.Element',
-			'moo.meio.mask.Properties',
-			'moo.meio.mask.String'
+			#'moo.meio.mask.Mask.Repeat',
+			#'moo.meio.mask.Mask.Reverse',
+			#'moo.meio.mask.Mask.Regexp',
+			'moo.meio.mask.Extras'
 		)
     )
     

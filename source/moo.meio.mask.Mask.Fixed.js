@@ -192,7 +192,7 @@ Meio.Mask.Fixed = new Class({
 
 
 Meio.Mask.createMasks('Fixed', {
-    'Phone'				: { mask: '(99) 9999-9999)' },
+    'Phone'				: { mask: '(99) 9999-9999' },
     'PhoneUs'			: { mask: '(999) 999-9999' },
     'Cpf'				: { mask: '999.999.999-99' },
     'Cnpj'				: { mask: '99.999.999/9999-99' },
