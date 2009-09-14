@@ -22,8 +22,6 @@ describe('String.meiomask()', {
 		value_of(input.get('maxlength'), 10);
 	},
 	
-
-	
 	'should set properly the placeholder on the input': function(){
 		var el = new Element('input', {'type': 'text'});
 		$(document.body).grab(el);

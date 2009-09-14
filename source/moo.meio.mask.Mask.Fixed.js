@@ -23,76 +23,9 @@ Meio.Mask.Fixed = new Class({
 		this.createUnmaskRegex();
 	},
 	
-	createUnmaskRegex: function(){
-	    var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
-	    this.unmaskRegex = new RegExp('[' + fixedCharsArray.join('').escapeRegExp() + ']', 'g');
-	},
-
-	applyMask: function(elementValue, newRangeStart){
-		var elementValueArray = elementValue.split(''),
-			maskArray = this.maskArray,
-			maskMold = this.maskMold,
-			eli = 0,
-			returnFromTestEntry;
-			
-		while(eli < maskMold.length){
-			if(!elementValueArray[eli]){
-				elementValueArray[eli] = maskMold[eli];
-			}
-			else if(Meio.Mask.rules[maskArray[eli]]){
-				if(!(returnFromTestEntry = this.testEntry(eli, elementValueArray[eli]))){
-					elementValueArray.splice(eli, 1);
-					continue;
-				}
-				else{
-				    if($type(returnFromTestEntry) === 'string') elementValueArray[eli] = returnFromTestEntry;
-				}
-				newStartRange = eli;
-			}
-			else if(maskArray[eli] != elementValueArray[eli]){
-				elementValueArray.splice(eli, 0, maskMold[eli]);
-			}
-			else{
-				elementValueArray[eli] = maskMold[eli];
-			}
-			eli++;
-		}
-		
-		// makes sure the value is not bigger than the mask definition
-		return {value: elementValueArray.slice(0, this.maskMold.length), rangeStart: newRangeStart + 1};
-	},
-
-    removeInvalidTrailingChars: function(elementValue){
-		var truncateIndex = elementValue.length,
-		    i = elementValue.length - 1,
-		    cont;
-		while(i >= 0){
-			cont = false;
-			while(this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== this.options.placeholder){
-				cont = true;
-				i--;
-			}
-			while(elementValue.charAt(i) === this.options.placeholder){
-			    cont = true;
-				truncateIndex = i;
-				i--;
-			}
-			if(!cont) break;
-		}
-		this.element.set('value', elementValue.substring(0, truncateIndex));
-    },
-
-    paste: function(e, o){
-        e.preventDefault();
-		var retApply = this.applyMask(this.element.get('value'), o.range.start);
-		this.maskMoldArray = retApply.value;
-		
-		this.element.set('value', this.maskMoldArray.join(''))
-			.setRange(retApply.rangeStart);
-    },
-
 	focus: function(e, o){
 		this.element.set('value', this.maskMoldArray.join(''));
+		if(this.options.selectOnFocus) this.element.select();
 		this.parent(e, o);
 	},
 
@@ -178,14 +111,82 @@ Meio.Mask.Fixed = new Class({
 		return true;
     },
     
+    paste: function(e, o){
+        e.preventDefault();
+		var retApply = this.applyMask(this.element.get('value'), o.range.start);
+		this.maskMoldArray = retApply.value;
+		
+		this.element.set('value', this.maskMoldArray.join(''))
+			.setRange(retApply.rangeStart);
+		return true;
+    },
+    
     mask: function(str){
         return this.applyMask(str).value.join('');
     },
     
     unmask: function(str){
         return str.replace(this.unmaskRegex, '');
-    }
+    },
+    
+    createUnmaskRegex: function(){
+	    var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
+	    this.unmaskRegex = new RegExp('[' + fixedCharsArray.join('').escapeRegExp() + ']', 'g');
+	},
 
+	applyMask: function(elementValue, newRangeStart){
+		var elementValueArray = elementValue.split(''),
+			maskArray = this.maskArray,
+			maskMold = this.maskMold,
+			eli = 0,
+			returnFromTestEntry;
+			
+		while(eli < maskMold.length){
+			if(!elementValueArray[eli]){
+				elementValueArray[eli] = maskMold[eli];
+			}
+			else if(Meio.Mask.rules[maskArray[eli]]){
+				if(!(returnFromTestEntry = this.testEntry(eli, elementValueArray[eli]))){
+					elementValueArray.splice(eli, 1);
+					continue;
+				}
+				else{
+				    if($type(returnFromTestEntry) === 'string') elementValueArray[eli] = returnFromTestEntry;
+				}
+				newStartRange = eli;
+			}
+			else if(maskArray[eli] != elementValueArray[eli]){
+				elementValueArray.splice(eli, 0, maskMold[eli]);
+			}
+			else{
+				elementValueArray[eli] = maskMold[eli];
+			}
+			eli++;
+		}
+		
+		// makes sure the value is not bigger than the mask definition
+		return {value: elementValueArray.slice(0, this.maskMold.length), rangeStart: newRangeStart + 1};
+	},
+
+    removeInvalidTrailingChars: function(elementValue){
+		var truncateIndex = elementValue.length,
+		    i = elementValue.length - 1,
+		    cont;
+		while(i >= 0){
+			cont = false;
+			while(this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== this.options.placeholder){
+				cont = true;
+				i--;
+			}
+			while(elementValue.charAt(i) === this.options.placeholder){
+			    cont = true;
+				truncateIndex = i;
+				i--;
+			}
+			if(!cont) break;
+		}
+		this.element.set('value', elementValue.substring(0, truncateIndex));
+    }
 });
 
 

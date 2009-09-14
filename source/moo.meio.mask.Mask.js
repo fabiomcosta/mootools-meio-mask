@@ -78,15 +78,14 @@ Meio.Mask = new Class({
     },
     
     focus: function(e, o){
-        var el = this.element;
-        el.store('meiomask:focusvalue', el.get('value'));
-        if(this.options.selectOnFocus) el.select();
+        var element = this.element;
+        element.store('meiomask:focusvalue', element.get('value'));
     },
 
     blur: function(e, o){
-        var el = this.element;
-        if(el.retrieve('meiomask:focusvalue') != el.get('value')){
-			el.fireEvent('change');
+        var element = this.element;
+        if(element.retrieve('meiomask:focusvalue') != element.get('value')){
+			element.fireEvent('change');
 		}
     },
 

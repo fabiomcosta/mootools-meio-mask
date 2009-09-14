@@ -4,7 +4,6 @@ Meio.Mask.Reverse = new Class({
     Extends: Meio.Mask,
 
     options: {
-        selectOnFocus: false,
 		alignText: true,
 		symbol: '',
 		precision: 2,
@@ -21,18 +20,24 @@ Meio.Mask.Reverse = new Class({
         //this.initialCharsRegex = new RegExp('^' + this.options.symbol.escapeRegExp());
     },
     
-    paste: function(e, o){
-        return true;
-    },
-    
     focus: function(e, o){
-        this.element.set('value', this.options.symbol + this.element.get('value'));
+        var element = this.element,
+            elValue = element.get('value'),
+            symbol = this.options.symbol;
+        if(elValue.substring(0, symbol.length) !== symbol)
+            element.set('value', (elValue = symbol + elValue));
+        if(this.options.selectOnFocus)
+            element.setRange(symbol.length, elValue.length);
         this.parent(e, o);
     },
     
     blur: function(e, o){
         this.parent(e, o);
-        this.element.set('value', this.element.get('value').substring(this.options.symbol.length));
+        var symbol = this.options.symbol,
+            element = this.element,
+            elValue = element.get('value');
+        if(elValue.substring(0, symbol.length) === symbol)
+            element.set('value', elValue.substring(symbol.length));
     },
     
     keypress: function(e, o){
@@ -40,17 +45,17 @@ Meio.Mask.Reverse = new Class({
         e.preventDefault();
     	return true;
     },
-    
-    maskThousand: function(str){
-        var replaceStr = '$1' + this.options.thousands + '$2';
-        while(this.thousandRegex.test(str)) {
-            str = str.replace(this.thousandRegex, replaceStr);
-        }
-        return str;
+
+    paste: function(e, o){
+        e.preventDefault();
+		var element = this.element;
+		    elValue = element.get('value');
+		element.set('value', (elValue = this.mask(elValue))).setRange(elValue.length);
+        return true;
     },
     
     mask: function(str){
-        var number = Number(str);
+        var number = Number(str.substring(this.options.symbol.length));
         str = '' + number.toFixed(this.options.precision);
         str = str.replace('.', this.options.decimal);
         return this.options.symbol + (this.options.thousands? this.maskThousand(str): str);
@@ -63,7 +68,16 @@ Meio.Mask.Reverse = new Class({
 	    if(thousandChar) str = str.replace(thousandChar, '');
 	    if(symbol) str = str.substring(symbol.length);
 	    return (precision)? str.replace(this.options.decimal, '.').toFloat().toFixed(precision): str.toInt();
+    },
+    
+    maskThousand: function(str){
+        var replaceStr = '$1' + this.options.thousands + '$2';
+        while(this.thousandRegex.test(str)) {
+            str = str.replace(this.thousandRegex, replaceStr);
+        }
+        return str;
     }
+    
 });
 
 Meio.Mask.createMasks('Reverse', {
