@@ -26,37 +26,34 @@ Meio.Mask = new Class({
     
 	setup: function(options){
 		this.setOptions(options);
-		if(this.options.mask){
-			if(this.element.retrieve('meiomask')) this.remove();
-			var elementValue = this.element.get('value');
-			if(elementValue !== ''){
-				var elValue = elementValue.meiomask(this.constructor, this.options);
-				this.element.set('value', elValue).defaultValue = elValue;
-			}
-			this.ignore = false;
-			this.masklength = this.element.get('maxlength');
-			this.maskArray = this.options.mask.split('');
-    		this.eventsToBind.each(function(evt){
-    			this.element.addEvent(evt, this._onMask.bindWithEvent(this, this['_' + evt]));
-    		}, this);
-			this.element.store('meiomask', this).erase('maxlength');
+		if(this.element.retrieve('meiomask')) this.remove();
+		var elementValue = this.element.get('value');
+		if(elementValue !== ''){
+			var elValue = elementValue.meiomask(this.constructor, this.options);
+			this.element.set('value', elValue).defaultValue = elValue;
 		}
+		this.ignore = false;
+		this.masklength = this.element.get('maxlength');
+		this.eventsToBind.each(function(evt){
+			this.element.addEvent(evt, this.onMask.bindWithEvent(this, this[evt]));
+		}, this);
+		this.element.store('meiomask', this).erase('maxlength');
 		return this;
 	},
 	
 	remove: function(){
 		var mask = this.element.retrieve('meiomask');
 		if(mask){
-			var maxLength = mask.options.maxlength;
-			if(maxLength !== null) this.element.set('maxlength', maxLength);
+			var maxlength = mask.options.maxlength;
+			if(maxlength !== null) this.element.set('maxlength', maxlength);
 			mask.eventsToBind.each(function(evt){
-				this.element.removeEvent(evt, this[evt + 'Event']);
+				this.element.removeEvent(evt, this[evt]);
 			}, mask);
 		}
 		return this;
 	},
 	
-	_onMask: function(e, func){
+	onMask: function(e, func){
 		if(this.element.get('readonly')) return true;
 		var o = {};
 		o.range = this.element.getRange();
@@ -69,7 +66,7 @@ Meio.Mask = new Class({
 		return true;
 	},
 
-    _keydown: function(e, o){
+    keydown: function(e, o){
 		this.ignore = (e.code in Meio.Mask.ignoreKeys);
 		if(this.ignore){
     		// var rep = Meio.Mask.ignoreKeys[e.code];
@@ -80,8 +77,17 @@ Meio.Mask = new Class({
 		|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey))? this._keypress(e, o): true;
     },
     
-    _focus: function(e, o){
-        if(this.options.selectOnFocus) this.element.select();
+    focus: function(e, o){
+        var el = this.element;
+        el.store('meiomask:focusvalue', el.get('value'));
+        if(this.options.selectOnFocus) el.select();
+    },
+
+    blur: function(e, o){
+        var el = this.element;
+        if(el.retrieve('meiomask:focusvalue') != el.get('value')){
+			el.fireEvent('change');
+		}
     },
 
 	testEntry: function(index, _char){
@@ -112,7 +118,7 @@ Meio.Mask = new Class({
 		return returnFromTestEntry || true;
     },
 	
-	isIgnoreKey: function(){
+	isIgnoreKey: function(e){
 	    return this.ignore || e.control || e.meta || e.alt;
 	},
 	
@@ -163,8 +169,8 @@ Meio.Mask.extend({
 	createMasks: function(type, masks){
 	    type = type.capitalize();
 	    for(mask in masks){
-	        Meio.Mask[type][mask.camelCase().capitalize()] = new Class({
-		        Extends: Meio.Mask[type],
+	        this[type][mask.camelCase().capitalize()] = new Class({
+		        Extends: this[type],
 		        options: masks[mask]
 		    });
 	    }

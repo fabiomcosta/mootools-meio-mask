@@ -12,6 +12,7 @@ Meio.Mask.Fixed = new Class({
 
     initialize: function(element, options){
 		this.parent(element, options);
+		this.maskArray = this.options.mask.split('');
 		this.maskMold = this.element.get('value') || this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
@@ -27,7 +28,7 @@ Meio.Mask.Fixed = new Class({
 	    this.unmaskRegex = new RegExp('[' + fixedCharsArray.join('').escapeRegExp() + ']', 'g');
 	},
 
-	_applyMask: function(elementValue, newRangeStart){
+	applyMask: function(elementValue, newRangeStart){
 		var elementValueArray = elementValue.split(''),
 			maskArray = this.maskArray,
 			maskMold = this.maskMold,
@@ -61,7 +62,7 @@ Meio.Mask.Fixed = new Class({
 		return {value: elementValueArray.slice(0, this.maskMold.length), rangeStart: newRangeStart + 1};
 	},
 
-    _removeInvalidTrailingChars: function(elementValue){
+    removeInvalidTrailingChars: function(elementValue){
 		var truncateIndex = elementValue.length,
 		    i = elementValue.length - 1,
 		    cont;
@@ -81,26 +82,23 @@ Meio.Mask.Fixed = new Class({
 		this.element.set('value', elementValue.substring(0, truncateIndex));
     },
 
-    _paste: function(e, o){
+    paste: function(e, o){
         e.preventDefault();
-		var retApply = this._applyMask(this.element.get('value'), o.range.start);
+		var retApply = this.applyMask(this.element.get('value'), o.range.start);
 		this.maskMoldArray = retApply.value;
 		
 		this.element.set('value', this.maskMoldArray.join(''))
 			.setRange(retApply.rangeStart);
     },
 
-	_focus: function(e, o){
-		this.element.set('value', this.maskMoldArray.join(''))
-		    .store('meiomask:focusvalue', this.element.get('value'));
+	focus: function(e, o){
+		this.element.set('value', this.maskMoldArray.join(''));
 		this.parent(e, o);
 	},
 
-	_blur: function(e, o){
+	blur: function(e, o){
+		this.parent(e, o);
 		var elementValue = this.element.get('value');
-		if(this.element.retrieve('meiomask:focusvalue') != elementValue){
-			this.element.fireEvent('change');
-		}
 		if(this.options.removeIfInvalid){
 			if(elementValue.contains(this.options.placeholder)){
 				this.maskMoldArray = this.maskMold.split('');
@@ -108,11 +106,11 @@ Meio.Mask.Fixed = new Class({
 			}
 			return true;
 		} 
-		if(this.options.removeInvalidTrailingChars) this._removeInvalidTrailingChars(elementValue);
+		if(this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
 		return true;
 	},
     
-    _keypress: function(e, o){
+    keypress: function(e, o){
 		if(this.isIgnoreKey(e)) return true;
         
         e.preventDefault();
@@ -181,7 +179,7 @@ Meio.Mask.Fixed = new Class({
     },
     
     mask: function(str){
-        return this._applyMask(str).value.join('');
+        return this.applyMask(str).value.join('');
     },
     
     unmask: function(str){
