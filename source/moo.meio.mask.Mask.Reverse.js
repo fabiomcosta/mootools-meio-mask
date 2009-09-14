@@ -4,29 +4,36 @@ Meio.Mask.Reverse = new Class({
 
     options: {
 		alignText: true,
-		decimal: true
+		symbol: '',
+		precision: 2,
+		decimal: ',',
+		thousands: '.'
+		//decimal: true
 		//signal: false
     },
 
-    initialize: function(mask){
-        this.parent(mask);
-        if(mask){
-			$extend(this.mask.options, this.options);
-			this.mask.options.maskArray.reverse();
-			if(this.mask.options.alignText) this.element.setStyle('text-align', 'right');
-            //if(this.$el.get('value') == '') this.$el.set('value', .mask(this.mask.options));
-        }
+    initialize: function(element, options){
+        this.parent(element, options);
+        if(this.options.alignText) this.element.setStyle('text-align', 'right');
+		//this.maskMold = this.element.get('value') || this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
+		//this.maskMoldArray = this.maskMold.split('');
+		// this.validIndexes = [];
+		// this.maskArray.each(function(c, i){
+		//    if(!this.isFixedChar(c)) this.validIndexes.push(i);
+		// }, this);
+		// this.mask.options.maskArray.reverse();
+        // if(this.$el.get('value') == '') this.$el.set('value', .mask(this.mask.options));
+        this.initRegex = new RegExp('^' + this.options.symbol.escapeRegExp());
+    },
+    
+    _paste: function(e, o){
+        return true;
     },
 
-    _paste: function(e,o){
-    	this.$el.set('value', this.__mask(o.valueArray , this.globals , this.mask.options));
-    	return true;
-    },
-
-    _keypress: function(e,o){
-
-    	if(this.ignore || e.control || e.meta || e.alt) return true;
-
+    _keypress: function(e, o){
+    	if(this.isIgnoreKey(e)) return true;
+        e.preventDefault();
+        
     	var c = String.fromCharCode(e.code),
     		rangeStart = o.range.start,
     		rawValue = o.value,
@@ -54,21 +61,26 @@ Meio.Mask.Reverse = new Class({
     	if(Browser.Engine.trident && ((rangeStart==0 && o.range.end==0) || rangeStart != o.range.end))
     		this.$el.setRange(o.value.length);
 
-    	return false;
+    	return true;
     },
 
-    __mask: function(valueArray, globals, o, extraPos){
-        valueArray.reverse();
-        var newValue = valueArray.__mask(globals, o).reverse();
-		return newValue.join('').substring(newValue.length - o.maskArray.length);
+    mask: function(str){
+        return this._applyMask(str).value.join('');
+    },
+    
+    unmask: function(str){
+        var thousandChar = this.options.thousands,
+	        precision = this.options.precision;
+	    if(thousandChar) str = str.replace(thousandChar, '');
+	    if(this.options.symbol) str = str.replace(this.initRegex, '');
+	    return (precision)? str.replace(this.options.decimal, '.').toFloat().toFixed(precision): str.toInt();
     }
-
 });
 
-/*
-masks: {
-	'integer'			: { mask: '999.999.999.999', type: 'reverse', decimal: false },
-	'decimal'			: { mask: '999.999.999.999,99', type: 'reverse' },
-	'decimal-us'		: { mask: '999,999,999,999.99', type: 'reverse' }
-}
-*/
+Meio.Mask.createMasks('Reverse', {
+    'Integer'			: { precision: 0 },
+	'Decimal'			: { },
+	'DecimalUs'         : { thousands: ',', decimal: '.' },
+	'Reais'			    : { symbol: 'R$' },
+	'Dolar'			    : { symbol: 'US$', thousands: ',', decimal: '.' }
+});

@@ -6,7 +6,6 @@ Meio.Mask = new Class({
 	eventsToBind: ['focus', 'blur', 'keydown', 'keypress', 'paste'],
 
 	options: {
-		
 		selectOnFocus: true,
 		autoTab: false
 		
@@ -112,6 +111,10 @@ Meio.Mask = new Class({
 		this.fireEvent('valid', [this.element, code, _char]);
 		return returnFromTestEntry || true;
     },
+	
+	isIgnoreKey: function(){
+	    return this.ignore || e.control || e.meta || e.alt;
+	},
 	
 	setSize: function(){
 		if(!this.element.get('size')) this.element.set('size', this.maskArray.length);

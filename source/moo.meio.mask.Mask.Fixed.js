@@ -113,7 +113,7 @@ Meio.Mask.Fixed = new Class({
 	},
     
     _keypress: function(e, o){
-		if(this.ignore || e.control || e.meta || e.alt) return true;
+		if(this.isIgnoreKey(e)) return true;
         
         e.preventDefault();
     	var c = String.fromCharCode(e.code),

@@ -42,6 +42,10 @@ describe('String.meiomask()', {
 	
 	'should unmask the passed string': function(){
 		value_of('12/12/2000'.meiounmask('Date', 'Fixed')).should_be('12122000');
+	},
+	
+	'should unmask the passed string to a float number': function(){
+		value_of('R$ 123,12'.meiounmask('reverse.reais')).should_be(123.12);
 	}
 
 });
