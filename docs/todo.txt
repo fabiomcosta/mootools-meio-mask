@@ -25,6 +25,9 @@ Things i don't like about it (will change till version 2.0):
 ** So you can insert a 'B' if someone inputs an 'a', for example. This opens some space to a lot of ideas.
 
 * Work correctly with float and integer numbers, i mean like... if 90 is the value of the input it will mask to 90.00 not 0.90;
+* While selected, the reverse mask is not working fine;
+* While the cursor is not at the end and you insert numbers, it doesnt work fine;
+* Remember to threat the arrow keys on reverse mask;
 * Change the way signed masks work! That's so not pretty!;
 * New mask type that works like this:
 	mask='9-9' and maxlength=5
