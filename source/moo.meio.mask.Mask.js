@@ -74,7 +74,7 @@ Meio.Mask = new Class({
 			this.fireEvent('valid', [this.element, e.code]);
     	}
 		(Browser.Platform.ipod
-		|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey))? this._keypress(e, o): true;
+		|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey))? this.keypress(e, o): true;
     },
     
     focus: function(e, o){

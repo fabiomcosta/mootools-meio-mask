@@ -112,10 +112,8 @@ Meio.Mask.Fixed = new Class({
     },
     
     paste: function(e, o){
-        e.preventDefault();
 		var retApply = this.applyMask(this.element.get('value'), o.range.start);
 		this.maskMoldArray = retApply.value;
-		
 		this.element.set('value', this.maskMoldArray.join(''))
 			.setRange(retApply.rangeStart);
 		return true;
