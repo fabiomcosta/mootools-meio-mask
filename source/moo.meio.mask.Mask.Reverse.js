@@ -49,7 +49,7 @@ Meio.Mask.Reverse = new Class({
     },
     
     keypress: function(e, o){
-    	if(this.isIgnoreKey(e)) return true;
+    	if(this.ignore) return true;
         e.preventDefault();
     	var _char = String.fromCharCode(e.code),
     	    elValueFull = this.element.get('value');
@@ -119,5 +119,5 @@ Meio.Mask.createMasks('Reverse', {
 	'Decimal'			: { },
 	'DecimalUs'         : { thousands: ',', decimal: '.' },
 	'Reais'			    : { symbol: 'R$ ' },
-	'Dollar'			    : { symbol: 'US$ ', thousands: ',', decimal: '.' }
+	'Dollar'			: { symbol: 'US$ ', thousands: ',', decimal: '.' }
 });

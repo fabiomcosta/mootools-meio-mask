@@ -59,15 +59,15 @@ Meio.Mask = new Class({
 		o.range = this.element.getRange();
 		o.isSelection = (o.range.start !== o.range.end);
 		// 8==backspace && 46==delete && 127==iphone's delete (i mean backspace)
-		o.isDelKey = (e.code == 46);
-		o.isBksKey = (e.code == 8 || (Browser.Platform.ipod && e.code == 127));
+		o.isDelKey = (e.event.keyCode == 46);
+		o.isBksKey = (e.event.keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
 		o.isRemoveKey = (o.isBksKey || o.isDelKey);
 		func.call(this, e, o);
 		return true;
 	},
 
     keydown: function(e, o){
-		this.ignore = (e.code in Meio.Mask.ignoreKeys);
+		this.ignore = (e.code in Meio.Mask.ignoreKeys && !o.isRemoveKey) || e.control || e.meta || e.alt;
 		if(this.ignore){
     		// var rep = Meio.Mask.ignoreKeys[e.code];
 			// no more representation of the keys yet... (since this is not so used or usefull you know..., im thinking about that)
@@ -116,10 +116,6 @@ Meio.Mask = new Class({
 		this.fireEvent('valid', [this.element, code, _char]);
 		return returnFromTestEntry || true;
     },
-	
-	isIgnoreKey: function(e){
-	    return this.ignore || e.control || e.meta || e.alt;
-	},
 	
 	setSize: function(){
 		if(!this.element.get('size')) this.element.set('size', this.maskArray.length);
@@ -194,7 +190,7 @@ Meio.Mask.extend({
 }).extend(function(){
     var ignoreKeys;
     var desktopIgnoreKeys = {
-		//8: 'backspace',
+		8       : 'backspace',
 		9 		: 'tab',
 		13      : 'enter',
 		16 	    : 'shift',
@@ -210,12 +206,12 @@ Meio.Mask.extend({
 		39 	    : 'right',
 		40 	    : 'down',
 		45 	    : 'insert',
-		//46: 'delete',
+		46      : 'delete',
 		224  	: 'command'
 	},
 	iphoneIgnoreKeys = {
-		10		: 'go'
-		//127: 'delete'
+		10		: 'go',
+		127     : 'delete'
 	};
 	
 	if(Browser.Platform.ipod){
@@ -235,7 +231,6 @@ Meio.Mask.extend({
 		'a': {regex: /[a-zA-Z]/},
 		'*': {regex: /[0-9a-zA-Z]/},
 		'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, //i doenst work here
-		//its included just to exemplify how to use it, its used on the time mask
 		'h': {regex: /[0-9]/, check: Meio.Mask.upTo(23)},
 		'd': {regex: /[0-9]/, check: Meio.Mask.upTo(31)},
 		'm': {regex: /[0-9]/, check: Meio.Mask.upTo(12)}

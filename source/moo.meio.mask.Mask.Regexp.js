@@ -1,41 +1,33 @@
 Meio.Mask.Regexp = new Class({
 
     Extends : Meio.Mask,
-
-    initialize : function(mask){
-        this.parent(mask);
-        this.regExp = new RegExp(this.mask.options.mask);
+    
+    options: {
+        //maxLength: 18
+        //regex: /^$/
+    },
+    
+    initialize : function(element, options){
+        this.parent(element, options);
+        this.regex = new RegExp(this.options.regex);
     },
 
-    _keyup : function(e,o){
-    	return true;
-    },
-
-    _paste : function(e,o){
-        //for(var i=0 , newValue=''; i < o.value.length; i++) if( this.regExp.test( o.value.charAt(i) ) )
-             //newValue += o.value.charAt(i);
-        this.$el.set('value', this.regExp.test(o.value) ? o.value : '' );
-    	return true;
-    },
-
-    _keypress: function(e,o){
-    	if( this.ignore || e.control || e.meta || e.alt ) return true;
-    	var c = String.fromCharCode(e.code),
-    		rawValue = o.value,
-		 	// the input value from the range start to the value start
-		    valueStart = rawValue.substr(0,o.range.start),
-			// the input value from the range end to the value end
-			valueEnd = rawValue.substr(o.range.end,rawValue.length);
-        rawValue = (valueStart+c+valueEnd);
-        // its a little hard to detect the overflow :s
-        if( this.regExp.test( rawValue ) ){
-            this.mask.fireEvent('valid',[this.$el,c,e.code]);
-            return true;
+    keypress: function(e, o){
+    	if(this.ignore) return true;
+    	e.preventDefault();
+    	
+    	var _char = String.fromCharCode(e.code),
+    	    elValue = this.element.get('value');
+        
+        elValue = elValue.substring(0, o.range.start) + (o.isRemoveKey? '': _char) +  elValue.substring(o.range.end);
+        if(this.regex.test(elValue)){
+            this.element.set('value', elValue);
         }
-        else{
-            this.mask.fireEvent('invalid',[this.$el,c,e.code]);
-            return false;
-        }
+        return true;
     }
 
+});
+
+Meio.Mask.createMasks('Regexp', {
+    'Ip'        : { regex: /^(\d{1,3})(\.\d{1,3}){0,3}?$/, maxLength: 15 }
 });

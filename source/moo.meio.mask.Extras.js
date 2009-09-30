@@ -1,7 +1,6 @@
 
 Meio.Mask.DumbInput = new Element('input', {'type': 'text'});
 
-// sets mask to this input and returns this input
 (function(){
 	
 	var upperCamelize = function(str){
@@ -17,14 +16,17 @@ Meio.Mask.DumbInput = new Element('input', {'type': 'text'});
 	    return {klass: klass, options: options};
 	};
 	
+	var executeFunction = function(functionName, args){
+	    var co = getClassOptions(args);
+	    return new co.klass(Meio.Mask.DumbInput, co.options)[functionName](this);
+	};
+	
     String.implement({
     	meiomask: function(){
-    	    var args = getClassOptions(arguments);
-    	    return new args.klass(Meio.Mask.DumbInput, args.options).mask(this);
+    	    return executeFunction('mask', arguments);
     	},
     	meiounmask: function(){
-    	    var args = getClassOptions(arguments);
-    	    return new args.klass(Meio.Mask.DumbInput, args.options).unmask(this);
+    	    return executeFunction('unmask', arguments);
     	}
     });
 

@@ -29,6 +29,7 @@ Things i don't like about it (will change till version 2.0):
 * While the cursor is not at the end and you insert numbers, it doesnt work fine;
 * Remember to threat the arrow keys on reverse mask;
 * Change the way signed masks work! That's so not pretty!;
+* isIgnoreKey must work in a way that will allow me to say that i dont want some keys to be part of the ignored keys, this will make the work easier in the case of masks that need special threatment for backspace and delete key;
 * New mask type that works like this:
 	mask='9-9' and maxlength=5
 	'22' -> '2-2'
@@ -36,6 +37,9 @@ Things i don't like about it (will change till version 2.0):
 	'2222' -> '222-2'
 	Till it gets to 5.
 * RegexMask should be included too, it is still here at the mootools version, but with the paste bug, that will be easily fixed with the maxLength option, that will not be optional (can't force it but it will break paste if not present);
+** regexmask worked fine with ips but i dont think it will work with links or email for example, but ill keep it.
+** There are still some work to do, like the paste function.
+
 
 
 Fixed Masks Behavior

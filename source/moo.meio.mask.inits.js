@@ -11,4 +11,3 @@ Element.Events.paste = {
 		return false;
 	}
 };
-	
