@@ -199,12 +199,3 @@ Meio.Mask.createMasks('Fixed', {
     'Time'				: { mask: '2h:59' },
     'CC'				: { mask: '9999 9999 9999 9999' }
 });
-
-/*
-Meio.Mask.Fixed.Time = new Class({
-    Extends: Meio.Mask.Fixed,
-    options: {
-        mask: '2h:59'
-    }
-});
-*/

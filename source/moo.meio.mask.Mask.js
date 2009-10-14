@@ -69,9 +69,8 @@ Meio.Mask = new Class({
     keydown: function(e, o){
 		this.ignore = (e.code in Meio.Mask.ignoreKeys && !o.isRemoveKey) || e.control || e.meta || e.alt;
 		if(this.ignore){
-    		// var rep = Meio.Mask.ignoreKeys[e.code];
-			// no more representation of the keys yet... (since this is not so used or usefull you know..., im thinking about that)
-			this.fireEvent('valid', [this.element, e.code]);
+    		var keyRepresentation = Meio.Mask.ignoreKeys[e.code];
+			this.fireEvent('valid', [this.element, e.code, keyRepresentation]);
     	}
 		(Browser.Platform.ipod
 		|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey))? this.keypress(e, o): true;
@@ -99,21 +98,22 @@ Meio.Mask = new Class({
     testEvents: function(index, _char, code, isRemoveKey){
     	var maskArray = this.maskArray,
 		    rule = Meio.Mask.rules[maskArray[index]],
+		    keyRepresentation = Meio.Mask.ignoreKeys[code],
 		    returnFromTestEntry;
 		if(!isRemoveKey){
 			if(!rule){
 	    		//console.log('overflow');
-				this.fireEvent('overflow', [this.element, code, _char]);
+				this.fireEvent('overflow', [this.element, code, _char, keyRepresentation]);
 	    		return false;
 	    	}
 	    	else if(!(returnFromTestEntry = this.testEntry(index, _char))){
 				//console.log('invalid');
-	    		this.fireEvent('invalid', [this.element, code, _char]);
+	    		this.fireEvent('invalid', [this.element, code, _char, keyRepresentation]);
 	    		return false;
 	    	}
 		}
     	//console.log('valid');
-		this.fireEvent('valid', [this.element, code, _char]);
+		this.fireEvent('valid', [this.element, code, _char, keyRepresentation]);
 		return returnFromTestEntry || true;
     },
 	
@@ -177,7 +177,7 @@ Meio.Mask.extend({
 	    number = String(number);
 	    return function(value, index, _char){
 	        if(value.charAt(index-1) == number[0])
-		        return (_char<=number[1]);
+		        return (_char <= number[1]);
 		    return true;
 	    };
 	},
