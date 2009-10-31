@@ -40,6 +40,7 @@ Things i don't like about it (will change till version 2.0):
 ** regexmask worked fine with ips but i dont think it will work with links or email for example, but ill keep it.
 ** There are still some work to do, like the paste function.
 
+* When using meiomask on a string twice it enter on an infinite loop, investigate this problem.
 
 
 Fixed Masks Behavior

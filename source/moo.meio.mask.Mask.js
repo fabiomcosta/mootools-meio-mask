@@ -34,7 +34,6 @@ Meio.Mask = new Class({
 		}, this);
 		this.element.store('meiomask', this).erase('maxlength');
 		var elementValue = this.element.get('value');
-		
 		if(elementValue !== ''){
 			var elValue = elementValue.meiomask(this.constructor, this.options);
 			this.element.set('value', elValue).defaultValue = elValue;
@@ -50,6 +49,7 @@ Meio.Mask = new Class({
 			mask.eventsToBind.each(function(evt){
 				this.element.removeEvent(evt, this[evt]);
 			}, mask);
+			this.element.eliminate('meiomask');
 		}
 		return this;
 	},

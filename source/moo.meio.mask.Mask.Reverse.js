@@ -53,13 +53,13 @@ Meio.Mask.Reverse = new Class({
 		var _char = String.fromCharCode(e.code),
     	    elementValue = this.element.get('value');
 		
-		elementValue = this.getValue(elementValue + (o.isRemoveKey? '': _char));
 	    if(o.isRemoveKey){
 	        elementValue = elementValue.substring(0, elementValue.length - 1);
 	    }
 	    else{
-	        if(!(/^\d$/).test(_char)) return true;
-        	else if(elementValue.length >= this.maxlength) return true;
+			elementValue = this.getValue(elementValue + _char);
+	        if(!(/^\d$/).test(_char)
+			|| elementValue.length >= this.maxlength) return true;
 	    }
 	    elementValue = this.forceMask(elementValue, true);
 		this.element.set('value', elementValue).setRange(elementValue.length);
@@ -78,10 +78,8 @@ Meio.Mask.Reverse = new Class({
 		str = this.cleanup(str);
 		var precision = this.options.precision;
 		if(precision){
-			if(str.length < (precision + 1)){
-				var zeros = (precision + 1) - str.length;
-				str = this.zeroize(str, zeros);
-			}
+			var zeros = precision + 1 - str.length;
+			if(zeros > 0) str = this.zeroize(str, zeros);
 			var decimalIndex = str.length - precision;
 			str = str.substring(0, decimalIndex) + this.options.decimal + str.substring(decimalIndex);
 		}
@@ -134,7 +132,7 @@ Meio.Mask.Reverse = new Class({
 });
 
 Meio.Mask.createMasks('Reverse', {
-    'Integer'			: { precision: 0 },
+    'Integer'			: { precision: 0, maxLength: 20 },
 	'Decimal'			: { },
 	'DecimalUs'         : { thousands: ',', decimal: '.' },
 	'Reais'			    : { symbol: 'R$ ' },
