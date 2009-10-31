@@ -27,24 +27,25 @@ Meio.Mask = new Class({
 	setup: function(options){
 		this.setOptions(options);
 		if(this.element.retrieve('meiomask')) this.remove();
-		var elementValue = this.element.get('value');
-		if(elementValue !== ''){
-			var elValue = elementValue.meiomask(this.constructor, this.options);
-			this.element.set('value', elValue).defaultValue = elValue;
-		}
 		this.ignore = false;
-		this.masklength = this.element.get('maxlength');
+		this.maxlength = this.element.get('maxlength');
 		this.eventsToBind.each(function(evt){
 			this.element.addEvent(evt, this.onMask.bindWithEvent(this, this[evt]));
 		}, this);
 		this.element.store('meiomask', this).erase('maxlength');
+		var elementValue = this.element.get('value');
+		
+		if(elementValue !== ''){
+			var elValue = elementValue.meiomask(this.constructor, this.options);
+			this.element.set('value', elValue).defaultValue = elValue;
+		}
 		return this;
 	},
 	
 	remove: function(){
 		var mask = this.element.retrieve('meiomask');
 		if(mask){
-			var maxlength = mask.options.maxlength;
+			var maxlength = mask.maxlength;
 			if(maxlength !== null) this.element.set('maxlength', maxlength);
 			mask.eventsToBind.each(function(evt){
 				this.element.removeEvent(evt, this[evt]);
@@ -130,7 +131,7 @@ Meio.Mask.extend({
 
     matchRules: '',
     
-    rulesRegex: new RegExp(),
+    rulesRegex: new RegExp(''),
 	
 	rules: {},
 	
@@ -174,7 +175,7 @@ Meio.Mask.extend({
 	// Christoph Pojer's (zilenCe) idea http://cpojer.net/
 	// adapted to MeioMask
 	upTo: function(number){
-	    number = String(number);
+	    number = '' + number;
 	    return function(value, index, _char){
 	        if(value.charAt(index-1) == number[0])
 		        return (_char <= number[1]);

@@ -4,14 +4,13 @@ Meio.Mask.Reverse = new Class({
     Extends: Meio.Mask,
 
     options: {
+		selectOnFocus: false,
 		alignText: true,
 		symbol: '',
 		precision: 2,
 		decimal: ',',
 		thousands: '.',
 		maxLength: 19
-		//decimal: true
-		//signal: false
     },
 
     initialize: function(element, options){
@@ -27,7 +26,7 @@ Meio.Mask.Reverse = new Class({
         this.moveLeftRegex = new RegExp('(\\d)([' + escapedDecimalChar + '])', 'g');
         var elementValue = this.element.get('value');
         if(elementValue === ''){
-            elementValue = this.mask(elementValue);
+			elementValue = this.mask(elementValue);
     		this.element.set('value', elementValue).defaultValue = elementValue;
         }
     },
@@ -52,21 +51,22 @@ Meio.Mask.Reverse = new Class({
     	if(this.ignore) return true;
         e.preventDefault();
     	var _char = String.fromCharCode(e.code),
-    	    elValueFull = this.element.get('value');
+    	    elementValueFull = this.element.get('value');
 
-    	elValueFull = elValueFull.substring(0, o.range.start) + (o.isRemoveKey? '': _char) +  elValueFull.substring(o.range.end);
-    	var elValue = this.getValue(elValueFull);
-	    
+    	elementValueFull = elementValueFull.substring(0, o.range.start) + (o.isRemoveKey? '': _char) +  elementValueFull.substring(o.range.end);
+    	var elementValue = this.getValue(elementValueFull);
+
 	    if(o.isRemoveKey){
-	        elValue = elValue.substring(0, elValue.length - 1).replace(this.moveLeftRegex, '$2$1');
+	        elementValue = elementValue.substring(0, elementValue.length - 1).replace(this.moveLeftRegex, '$2$1');
 	    }
 	    else{
 	        if(!(/^\d$/).test(_char)) return true;
-        	else if(elValue.length >= this.maxlength) return true;
-	        elValue = elValue.replace(this.moveRightRegex, '$2$1');
+        	else if(elementValue.length >= this.maxlength) return true;
+			if((elementValue.length - elementValue.lastIndexOf(this.options.decimal) - 1) > this.options.precision)
+	        	elementValue = elementValue.replace(this.moveRightRegex, '$2$1');
 	    }
-	    elValue = this.mask(elValue, true);
-    	this.element.set('value', elValue).setRange(elValue.length);
+	    elementValue = this.mask(elementValue, true);
+    	this.element.set('value', elementValue).setRange(elementValue.length);
     	return true;
     },
 
