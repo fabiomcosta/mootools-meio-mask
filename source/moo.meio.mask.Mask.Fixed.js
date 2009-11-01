@@ -4,8 +4,8 @@ Meio.Mask.Fixed = new Class({
     Extends: Meio.Mask,
     
     options: {
-        placeholder: '_',
-		autoSetSize: false,
+        autoSetSize: false,
+		placeholder: '_',
 		removeIfInvalid: false, // removes the value onblur if the input is not valid
 		removeInvalidTrailingChars: true
     },
@@ -168,15 +168,16 @@ Meio.Mask.Fixed = new Class({
 
     removeInvalidTrailingChars: function(elementValue){
 		var truncateIndex = elementValue.length,
-		    i = elementValue.length - 1,
+		    placeholder = this.options.placeholder,
+			i = elementValue.length - 1,
 		    cont;
 		while(i >= 0){
 			cont = false;
-			while(this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== this.options.placeholder){
+			while(this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== placeholder){
 				cont = true;
 				i--;
 			}
-			while(elementValue.charAt(i) === this.options.placeholder){
+			while(elementValue.charAt(i) === placeholder){
 			    cont = true;
 				truncateIndex = i;
 				i--;
@@ -184,6 +185,28 @@ Meio.Mask.Fixed = new Class({
 			if(!cont) break;
 		}
 		this.element.set('value', elementValue.substring(0, truncateIndex));
+    },
+	
+	testEntry: function(index, _char){
+		var maskArray = this.maskArray,
+			rule = Meio.Mask.rules[maskArray[index]],
+			ret = (rule && rule.regex.test(_char));
+		return (rule.check && ret)? rule.check(this.element.get('value'), index, _char): ret;
+	},
+	
+	testEvents: function(index, _char, code, isRemoveKey){
+    	var maskArray = this.maskArray,
+		    rule = Meio.Mask.rules[maskArray[index]],
+		    returnFromTestEntry;
+		if(!isRemoveKey){
+			var args = args = [this.element, code, _char];
+	    	if(!rule || !(returnFromTestEntry = this.testEntry(index, _char))){
+	    		this.fireEvent('invalid', args);
+	    		return false;
+	    	}
+			this.fireEvent('valid', args);
+		}
+		return returnFromTestEntry || true;
     }
 });
 

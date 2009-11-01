@@ -18,6 +18,7 @@
 	
 	var executeFunction = function(functionName, args){
 	    var co = getClassOptions(args);
+		Meio.Mask.DumbInput.set('value', '');
 	    return new co.klass(Meio.Mask.DumbInput, co.options)[functionName](this);
 	};
 	

@@ -7,11 +7,9 @@ Meio.Mask = new Class({
 
 	options: {
 		selectOnFocus: true,
-		autoTab: false
 		
 		//onInvalid: $empty,
 		//onValid: $empty,
-		//onOverflow: $empty
 		
 		//REVERSE MASK OPTIONS
 		//signal: false,
@@ -68,9 +66,9 @@ Meio.Mask = new Class({
 	},
 
     keydown: function(e, o){
-		this.ignore = (e.code in Meio.Mask.ignoreKeys && !o.isRemoveKey) || e.control || e.meta || e.alt;
-		if(this.ignore){
-    		var keyRepresentation = Meio.Mask.ignoreKeys[e.code];
+		this.ignore = (Meio.Mask.ignoreKeys[e.code] && !o.isRemoveKey) || e.control || e.meta || e.alt;
+		if(this.ignore || o.isRemoveKey){
+    		var keyRepresentation = Meio.Mask.ignoreKeys[e.code] || '';
 			this.fireEvent('valid', [this.element, e.code, keyRepresentation]);
     	}
 		(Browser.Platform.ipod
@@ -89,35 +87,6 @@ Meio.Mask = new Class({
 		}
     },
 
-	testEntry: function(index, _char){
-		var maskArray = this.maskArray,
-			rule = Meio.Mask.rules[maskArray[index]],
-			ret = (rule && rule.regex.test(_char));
-		return (rule.check && ret)? rule.check(this.element.get('value'), index, _char): ret;
-	},
-
-    testEvents: function(index, _char, code, isRemoveKey){
-    	var maskArray = this.maskArray,
-		    rule = Meio.Mask.rules[maskArray[index]],
-		    keyRepresentation = Meio.Mask.ignoreKeys[code],
-		    returnFromTestEntry;
-		if(!isRemoveKey){
-			if(!rule){
-	    		//console.log('overflow');
-				this.fireEvent('overflow', [this.element, code, _char, keyRepresentation]);
-	    		return false;
-	    	}
-	    	else if(!(returnFromTestEntry = this.testEntry(index, _char))){
-				//console.log('invalid');
-	    		this.fireEvent('invalid', [this.element, code, _char, keyRepresentation]);
-	    		return false;
-	    	}
-		}
-    	//console.log('valid');
-		this.fireEvent('valid', [this.element, code, _char, keyRepresentation]);
-		return returnFromTestEntry || true;
-    },
-	
 	setSize: function(){
 		if(!this.element.get('size')) this.element.set('size', this.maskArray.length);
 	},

@@ -4,6 +4,7 @@ Meio.Mask.Reverse = new Class({
     Extends: Meio.Mask,
 
     options: {
+		autoSetSize: false,
 		alignText: true,
 		symbol: '',
 		precision: 2,
@@ -21,6 +22,7 @@ Meio.Mask.Reverse = new Class({
         this.maxlength = this.maxlength || this.options.maxLength;
         this.thousandsRegex = /(\d+)(\d{3})/;
 		this.removeLeadingZerosRegex = /^0+(.*)$/;
+		this.decimalNumberRegex = /^\d$/;
         this.thousandsReplaceStr = '$1' + thousandsChar + '$2';
         this.thousandsReplaceRegex = new RegExp(escapedThousandsChars, 'g');
 		this.cleanupRegex = new RegExp('[' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
@@ -53,18 +55,25 @@ Meio.Mask.Reverse = new Class({
 		var _char = String.fromCharCode(e.code),
     	    elementValue = this.element.get('value');
 		
-	    if(o.isRemoveKey){
-	        elementValue = elementValue.substring(0, elementValue.length - 1);
-	    }
-	    else{
-			elementValue = this.getValue(elementValue + _char);
-	        if(!(/^\d$/).test(_char)
-			|| elementValue.length >= this.maxlength) return true;
-	    }
+		elementValue = o.isRemoveKey? elementValue.substring(0, elementValue.length - 1): this.getValue(elementValue + _char);
+		
+		if(!this.testEvents(elementValue.length, _char, e.code, o.isRemoveKey)) return true;
 	    elementValue = this.forceMask(elementValue, true);
 		this.element.set('value', elementValue).setRange(elementValue.length);
     	return true;
     },
+
+	testEvents: function(elementValueLength, _char, code, isRemoveKey){
+		var args = [this.element, code, _char];
+		if(!isRemoveKey){
+			if(!(this.decimalNumberRegex).test(_char) || elementValueLength >= this.maxlength){
+				this.fireEvent('invalid', args);				
+	    		return false;
+			}
+			this.fireEvent('valid', args);
+		}
+		return true;
+	},
 
     paste: function(e, o){
         e.preventDefault();
