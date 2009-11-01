@@ -6,8 +6,8 @@ Meio.Mask = new Class({
 	eventsToBind: ['focus', 'blur', 'keydown', 'keypress', 'paste'],
 
 	options: {
-		selectOnFocus: true,
-		
+		selectOnFocus: true
+
 		//onInvalid: $empty,
 		//onValid: $empty,
 		

@@ -1,7 +1,7 @@
 
 (function(){
 
-	Meio.Mask.DumbInput = new Element('input', {'type': 'text'});
+	Meio.Mask.dumbInput = new Element('input', {'type': 'text'});
 	
 	var upperCamelize = function(str){
 	    return str.camelCase().capitalize();
@@ -18,8 +18,8 @@
 	
 	var executeFunction = function(functionName, args){
 	    var co = getClassOptions(args);
-		Meio.Mask.DumbInput.set('value', '');
-	    return new co.klass(Meio.Mask.DumbInput, co.options)[functionName](this);
+		Meio.Mask.dumbInput.set('value', '');
+	    return new co.klass(Meio.Mask.dumbInput, co.options)[functionName](this);
 	};
 	
     String.implement({
