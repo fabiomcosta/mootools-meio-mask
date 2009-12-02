@@ -16,7 +16,7 @@ version:
   0.8
 
 provides:
-	MeioMask.Repeat
+	[MeioMask.Repeat]
 
 ...
 */
