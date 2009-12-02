@@ -7,7 +7,7 @@ authors:
   - Fábio Miranda Costa
 
 requires:
-	MeioMask
+  MeioMask
 
 license:
   MIT-style license
@@ -16,7 +16,7 @@ version:
   0.8
 
 provides:
-	[MeioMask.Regexp]
+  [MeioMask.Regexp]
 
 ...
 */
