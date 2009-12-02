@@ -1,3 +1,22 @@
+/*
+---
+
+description: MeioMask.Extras
+
+authors:
+  - Fábio Miranda Costa
+
+requires:
+	MeioMask
+
+license:
+  MIT-style license
+
+version:
+  0.8
+
+...
+*/
 
 (function(){
 
