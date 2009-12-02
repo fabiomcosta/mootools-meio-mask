@@ -15,6 +15,9 @@ license:
 version:
   0.8
 
+provides:
+	MeioMask.Repeat
+
 ...
 */
 
