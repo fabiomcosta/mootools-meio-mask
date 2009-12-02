@@ -92,12 +92,11 @@ if __name__ == '__main__':
     builder = Builder()
     builder.build('moo.meio.mask',
 		(
-			'moo.meio.mask.inits',
 			'moo.meio.mask.Mask',
 			'moo.meio.mask.Mask.Fixed',
-			#'moo.meio.mask.Mask.Repeat',
-			#'moo.meio.mask.Mask.Reverse',
-			#'moo.meio.mask.Mask.Regexp',
+			'moo.meio.mask.Mask.Repeat',
+			'moo.meio.mask.Mask.Reverse',
+			'moo.meio.mask.Mask.Regexp',
 			'moo.meio.mask.Extras'
 		)
     )

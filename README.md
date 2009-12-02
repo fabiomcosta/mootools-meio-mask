@@ -1,7 +1,20 @@
-meioMask - a mootools plugin for masking text inputs.
+MeioMask - Copyright (c) 2009 [Fábio Miranda Costa](http://meiocodigo.com/)
+========================================================================
 
-Created by Fabio M. Costa on 2008-09-16. Please report any bug at http://www.meiocodigo.com
-Copyright (c) 2008 Fabio M. Costa http://www.meiocodigo.com
+MeioMask - a mootools plugin for masking text inputs.
+
+![Screenshot](http://cpojer.net/Forge/InputMask.png)
+
+How to use
+----------
+
+Soon
+
+### Credits
+
+Inspired by iMask http://zendold.lojcomm.com.br/imask/ and some ideas from InputMask http://cpojer.net.
+
+### License
 
 The MIT License (http://www.opensource.org/licenses/mit-license.php)
 

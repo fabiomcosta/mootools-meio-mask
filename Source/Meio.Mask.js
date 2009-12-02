@@ -1,3 +1,37 @@
+/*
+---
+
+description: MeioMask
+
+authors:
+  - Fábio Miranda Costa
+
+requires:
+  core/1.2.4: '*'
+  more/1.2.4: [Element.Forms]
+
+license:
+  MIT-style license
+
+version:
+  0.8
+
+...
+*/
+
+if(typeof Meio == 'undefined') var Meio = {};
+
+$extend(Element.NativeEvents, {
+	'paste': 2, 'input': 2
+});
+// thanks Jan Kassens
+Element.Events.paste = {
+	base : (Browser.Engine.presto || (Browser.Engine.gecko && Browser.Engine.version < 19))? 'input': 'paste',
+	condition: function(e){
+		this.fireEvent('paste', e, 1);
+		return false;
+	}
+};
 	
 Meio.Mask = new Class({
 
@@ -68,24 +102,24 @@ Meio.Mask = new Class({
     keydown: function(e, o){
 		this.ignore = (Meio.Mask.ignoreKeys[e.code] && !o.isRemoveKey) || e.control || e.meta || e.alt;
 		if(this.ignore || o.isRemoveKey){
-    		var keyRepresentation = Meio.Mask.ignoreKeys[e.code] || '';
+			var keyRepresentation = Meio.Mask.ignoreKeys[e.code] || '';
 			this.fireEvent('valid', [this.element, e.code, keyRepresentation]);
-    	}
+		}
 		(Browser.Platform.ipod
 		|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey))? this.keypress(e, o): true;
-    },
+	},
     
-    focus: function(e, o){
-        var element = this.element;
-        element.store('meiomask:focusvalue', element.get('value'));
-    },
+	focus: function(e, o){
+		var element = this.element;
+		element.store('meiomask:focusvalue', element.get('value'));
+	},
 
-    blur: function(e, o){
-        var element = this.element;
-        if(element.retrieve('meiomask:focusvalue') != element.get('value')){
+	blur: function(e, o){
+		var element = this.element;
+		if(element.retrieve('meiomask:focusvalue') != element.get('value')){
 			element.fireEvent('change');
 		}
-    },
+	},
 
 	setSize: function(){
 		if(!this.element.get('size')) this.element.set('size', this.maskArray.length);
@@ -98,9 +132,9 @@ Meio.Mask = new Class({
 
 Meio.Mask.extend({
 
-    matchRules: '',
-    
-    rulesRegex: new RegExp(''),
+	matchRules: '',
+
+	rulesRegex: new RegExp(''),
 	
 	rules: {},
 	
@@ -109,8 +143,8 @@ Meio.Mask.extend({
 	},
 
 	setRules: function(rulesObj){
-	    $extend(this.rules, rulesObj);
-	    var rulesKeys = [];
+		$extend(this.rules, rulesObj);
+		var rulesKeys = [];
 		for(rule in rulesObj) rulesKeys.push(rule);
 		this.matchRules += rulesKeys.join('');
 		this.recompileRulesRegex();
@@ -128,74 +162,74 @@ Meio.Mask.extend({
 	},
 	
 	recompileRulesRegex: function(){
-	    this.rulesRegex.compile('[' + this.matchRules.escapeRegExp() + ']', 'g');
+		this.rulesRegex.compile('[' + this.matchRules.escapeRegExp() + ']', 'g');
 	},
 	
 	createMasks: function(type, masks){
-	    type = type.capitalize();
-	    for(mask in masks){
-	        this[type][mask.camelCase().capitalize()] = new Class({
-		        Extends: this[type],
-		        options: masks[mask]
-		    });
-	    }
+		type = type.capitalize();
+		for(mask in masks){
+			this[type][mask.camelCase().capitalize()] = new Class({
+				Extends: this[type],
+				options: masks[mask]
+			});
+		}
 	},
 	
 	// Christoph Pojer's (zilenCe) idea http://cpojer.net/
 	// adapted to MeioMask
 	upTo: function(number){
-	    number = '' + number;
-	    return function(value, index, _char){
-	        if(value.charAt(index-1) == number[0])
-		        return (_char <= number[1]);
-		    return true;
-	    };
+		number = '' + number;
+		return function(value, index, _char){
+			if(value.charAt(index-1) == number[0])
+				return (_char <= number[1]);
+			return true;
+		};
 	},
 	
 	// http://unixpapa.com/js/key.html
 	// if only the keydown auto-repeats
 	// if you have a better implementation of this detection tell me
-    onlyKeyDownRepeat: (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
+	onlyKeyDownRepeat: (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
 	
 }).extend(function(){
-    var ignoreKeys;
-    var desktopIgnoreKeys = {
-		8       : 'backspace',
-		9 		: 'tab',
-		13      : 'enter',
-		16 	    : 'shift',
-		17 	    : 'control',
-		18 	    : 'alt',
-		27 	    : 'esc',
-		33	    : 'page up',
-		34 	    : 'page down',
-		35 	    : 'end',
-		36 	    : 'home',
-		37 	    : 'left',
-		38 	    : 'up',
-		39 	    : 'right',
-		40 	    : 'down',
-		45 	    : 'insert',
-		46      : 'delete',
-		224  	: 'command'
+	var ignoreKeys;
+	var desktopIgnoreKeys = {
+		8		: 'backspace',
+		9		: 'tab',
+		13		: 'enter',
+		16		: 'shift',
+		17		: 'control',
+		18		: 'alt',
+		27		: 'esc',
+		33		: 'page up',
+		34		: 'page down',
+		35		: 'end',
+		36		: 'home',
+		37		: 'left',
+		38		: 'up',
+		39		: 'right',
+		40		: 'down',
+		45		: 'insert',
+		46		: 'delete',
+		224		: 'command'
 	},
 	iphoneIgnoreKeys = {
 		10		: 'go',
-		127     : 'delete'
+		127		: 'delete'
 	};
 	
 	if(Browser.Platform.ipod){
-	    ignoreKeys = iphoneIgnoreKeys;
+		ignoreKeys = iphoneIgnoreKeys;
 	}
 	else{
-	    // f1, f2, f3 ... f12
-        for(var i=1; i<=12; i++) desktopIgnoreKeys[111 + i] = 'f' + i;
-        ignoreKeys = desktopIgnoreKeys; 
+		// f1, f2, f3 ... f12
+		for(var i=1; i<=12; i++) desktopIgnoreKeys[111 + i] = 'f' + i;
+		ignoreKeys = desktopIgnoreKeys; 
 	}
-    return {ignoreKeys: ignoreKeys};
+	return {ignoreKeys: ignoreKeys};
 }())
 .setRules((function(){
-    var rules = {
+	var rules = {
 		'z': {regex: /[a-z]/},
 		'Z': {regex: /[A-Z]/},
 		'a': {regex: /[a-zA-Z]/},
