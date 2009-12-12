@@ -3,7 +3,7 @@ MeioMask - Copyright (c) 2009 [Fábio Miranda Costa](http://meiocodigo.com/)
 
 MeioMask - a mootools plugin for masking text inputs.
 
-![Screenshot]()
+![Screenshot](http://github.com/fabiomcosta/mootools-meio-mask/raw/master/Assets/image_forge.png)
 
 How to use
 ----------

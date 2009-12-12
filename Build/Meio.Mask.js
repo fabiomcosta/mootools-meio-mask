@@ -336,8 +336,9 @@ Meio.Mask.Fixed = new Class({
 			if($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
 			this.maskMoldArray[i] = (o.isRemoveKey)? this.options.placeholder: c;
 			
+			var newCarretPosition = $pick(finalRangePosition, this.maskMoldArray.length);
 			this.element.set('value', this.maskMoldArray.join(''))
-				.setRange($pick(finalRangePosition, this.maskMoldArray.length));
+				.selectRange(newCarretPosition, newCarretPosition);
 		}
 		else{
 
@@ -370,7 +371,7 @@ Meio.Mask.Fixed = new Class({
 			}
 			
 			this.element.set('value', this.maskMoldArray.join(''));
-			this.element.setRange(this.validIndexes[start]);
+			this.element.selectRange(this.validIndexes[start], this.validIndexes[start]);
 		}
 		return true;
 	},
@@ -379,7 +380,7 @@ Meio.Mask.Fixed = new Class({
 		var retApply = this.applyMask(this.element.get('value'), o.range.start);
 		this.maskMoldArray = retApply.value;
 		this.element.set('value', this.maskMoldArray.join(''))
-			.setRange(retApply.rangeStart);
+			.selectRange(retApply.rangeStart, retApply.rangeStart);
 		return true;
 	},
 
@@ -545,7 +546,7 @@ Meio.Mask.Reverse = new Class({
 		symbol = this.options.symbol;
 		element.set('value', (elValue = this.getValue(elValue, true)));
 		if(this.options.selectOnFocus)
-			element.setRange(symbol.length, elValue.length);
+			element.selectRange(symbol.length, elValue.length);
 		this.parent(e, o);
 	},
 
@@ -565,7 +566,7 @@ Meio.Mask.Reverse = new Class({
 
 		if(!this.testEvents(elementValue.length, _char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
-		this.element.set('value', elementValue).setRange(elementValue.length);
+		this.element.set('value', elementValue).selectRange(elementValue.length, elementValue.length);
 		return true;
 	},
 
@@ -585,7 +586,7 @@ Meio.Mask.Reverse = new Class({
 		e.preventDefault();
 		var element = this.element;
 		elValue = element.get('value');
-		element.set('value', (elValue = this.forceMask(elValue, true))).setRange(elValue.length);
+		element.set('value', (elValue = this.forceMask(elValue, true))).selectRange(elValue.length, elValue.length);
 		return true;
 	},
 
@@ -753,7 +754,7 @@ Meio.Mask.createMasks('Regexp', {
 /*
 ---
 
-description: Extra functionality for Meio.Mask plugin.
+description: Extra functionality for Meio.Mask plugin. Like String.meiomask that masks a string and Element.meiomask which is a convinience method for setting the masks.
 
 authors:
  - Fábio Miranda Costa
@@ -770,7 +771,7 @@ provides: [Meio.Mask.Extras]
 
 (function(){
 
-	Meio.Mask.dumbInput = new Element('input', {'type': 'text'});
+	Meio.Mask.dummyInput = new Element('input', {'type': 'text'});
 	
 	var upperCamelize = function(str){
 		return str.camelCase().capitalize();
@@ -787,8 +788,8 @@ provides: [Meio.Mask.Extras]
 	
 	var executeFunction = function(functionName, args){
 		var co = getClassOptions(args);
-		Meio.Mask.dumbInput.set('value', '');
-		return new co.klass(Meio.Mask.dumbInput, co.options)[functionName](this);
+		Meio.Mask.dummyInput.set('value', '');
+		return new co.klass(Meio.Mask.dummyInput, co.options)[functionName](this);
 	};
 
 	String.implement({
@@ -817,7 +818,7 @@ provides: [Meio.Mask.Extras]
 		}
 	};
 
-	// fix for maxlength property, you will have to use get/set/erase 'maxlength', lowercased for this to work
+	// fix for maxlength property
 	Element.Properties.maxLength = Element.Properties.maxlength = {
 		set: function(value){
 			this.setAttribute('maxLength', value);
@@ -848,32 +849,6 @@ provides: [Meio.Mask.Extras]
 		meiomask: function(mask, type, options){
 			return this.set('meiomask', mask, type, options);
 		}
-	/*,
-		// http://www.bazon.net/mishoo/articles.epl?art_id=1292
-		setRange : function(start, end){
-			end = $pick(end, start);
-			if (this.setSelectionRange){
-				this.setSelectionRange(start, end);
-			}
-			else{
-				var range = this.createTextRange();
-				range.collapse();
-				range.moveStart('character', start);
-				range.moveEnd('character', end - start);
-				range.select();
-			}
-		},
-
-		// adaptation from http://digitarald.de/project/autocompleter/
-		getRange : function(){
-			if (!Browser.Engine.trident) return {start: this.selectionStart, end: this.selectionEnd};
-			var pos = {start: 0, end: 0},
-				range = document.selection.createRange();
-			pos.start = 0 - range.duplicate().moveStart('character', -100000);
-			pos.end = pos.start + range.text.length;
-			return pos;
-		}
-*/
 	});
 
 })();
