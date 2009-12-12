@@ -29,6 +29,11 @@ How to use
 		</body>
 	</html>
 
+Demos
+-----
+
+You can see it in action into the project at Specs/user/fixed-type.html.
+
 Credits
 -------
 
