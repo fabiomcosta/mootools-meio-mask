@@ -1,7 +1,7 @@
 /*
 ---
 
-description: Extra functionality for Meio.Mask plugin.
+description: Extra functionality for Meio.Mask plugin. Like String.meiomask that masks a string and Element.meiomask which is a convinience method for setting the masks.
 
 authors:
  - Fábio Miranda Costa
@@ -18,7 +18,7 @@ provides: [Meio.Mask.Extras]
 
 (function(){
 
-	Meio.Mask.dumbInput = new Element('input', {'type': 'text'});
+	Meio.Mask.dummyInput = new Element('input', {'type': 'text'});
 	
 	var upperCamelize = function(str){
 		return str.camelCase().capitalize();
@@ -35,8 +35,8 @@ provides: [Meio.Mask.Extras]
 	
 	var executeFunction = function(functionName, args){
 		var co = getClassOptions(args);
-		Meio.Mask.dumbInput.set('value', '');
-		return new co.klass(Meio.Mask.dumbInput, co.options)[functionName](this);
+		Meio.Mask.dummyInput.set('value', '');
+		return new co.klass(Meio.Mask.dummyInput, co.options)[functionName](this);
 	};
 
 	String.implement({
@@ -65,7 +65,7 @@ provides: [Meio.Mask.Extras]
 		}
 	};
 
-	// fix for maxlength property, you will have to use get/set/erase 'maxlength', lowercased for this to work
+	// fix for maxlength property
 	Element.Properties.maxLength = Element.Properties.maxlength = {
 		set: function(value){
 			this.setAttribute('maxLength', value);
@@ -96,32 +96,6 @@ provides: [Meio.Mask.Extras]
 		meiomask: function(mask, type, options){
 			return this.set('meiomask', mask, type, options);
 		}
-	/*,
-		// http://www.bazon.net/mishoo/articles.epl?art_id=1292
-		setRange : function(start, end){
-			end = $pick(end, start);
-			if (this.setSelectionRange){
-				this.setSelectionRange(start, end);
-			}
-			else{
-				var range = this.createTextRange();
-				range.collapse();
-				range.moveStart('character', start);
-				range.moveEnd('character', end - start);
-				range.select();
-			}
-		},
-
-		// adaptation from http://digitarald.de/project/autocompleter/
-		getRange : function(){
-			if (!Browser.Engine.trident) return {start: this.selectionStart, end: this.selectionEnd};
-			var pos = {start: 0, end: 0},
-				range = document.selection.createRange();
-			pos.start = 0 - range.duplicate().moveStart('character', -100000);
-			pos.end = pos.start + range.text.length;
-			return pos;
-		}
-*/
 	});
 
 })();

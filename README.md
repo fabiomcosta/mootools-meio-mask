@@ -7,14 +7,35 @@ MeioMask - a mootools plugin for masking text inputs.
 
 How to use
 ----------
+	<html>
+		<head>
+			<!--include mootools library and meioMask plugin -->
+			<script type="text/javascript" src="mootools-core-1.2.4.js" charset="utf-8"></script>
+			<!-- Just Element.Form is needed -->
+			<script type="text/javascript" src="mootools-more-1.2.4.2.js" charset="utf-8"></script>
+		</head>
+	
+		<body>
+			<form>
+				<label for="cpf">Time Mask:</label>
+				<input type="text" name="time" data-meiomask="fixed.time" />
+			</form>
 
-Soon
+			<script type="text/javascript" >
+				$$('input').each(function(input){
+					input.meiomask(input.get('data-meiomask'));
+				});
+			</script>
+		</body>
+	</html>
 
-### Credits
+Credits
+-------
 
 Inspired by iMask http://zendold.lojcomm.com.br/imask/ and some ideas from InputMask http://cpojer.net.
 
-### License
+License
+-------
 
 The MIT License (http://www.opensource.org/licenses/mit-license.php)
 

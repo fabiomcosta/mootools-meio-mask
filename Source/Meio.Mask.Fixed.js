@@ -89,8 +89,9 @@ Meio.Mask.Fixed = new Class({
 			if($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
 			this.maskMoldArray[i] = (o.isRemoveKey)? this.options.placeholder: c;
 			
+			var newCarretPosition = $pick(finalRangePosition, this.maskMoldArray.length);
 			this.element.set('value', this.maskMoldArray.join(''))
-				.setRange($pick(finalRangePosition, this.maskMoldArray.length));
+				.selectRange(newCarretPosition, newCarretPosition);
 		}
 		else{
 
@@ -123,7 +124,7 @@ Meio.Mask.Fixed = new Class({
 			}
 			
 			this.element.set('value', this.maskMoldArray.join(''));
-			this.element.setRange(this.validIndexes[start]);
+			this.element.selectRange(this.validIndexes[start], this.validIndexes[start]);
 		}
 		return true;
 	},
@@ -132,7 +133,7 @@ Meio.Mask.Fixed = new Class({
 		var retApply = this.applyMask(this.element.get('value'), o.range.start);
 		this.maskMoldArray = retApply.value;
 		this.element.set('value', this.maskMoldArray.join(''))
-			.setRange(retApply.rangeStart);
+			.selectRange(retApply.rangeStart, retApply.rangeStart);
 		return true;
 	},
 
