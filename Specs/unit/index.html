@@ -4,7 +4,8 @@
 		<title>MeioMask Mootools Specs</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		
-		<script src="../../../../assets/mootools/mootools-core-1.2.3.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../Assets/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../Assets/mootools-1.2.4.2-more.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../../../assets/firebug/firebug-lite-compressed.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../../../assets/js-spec/JSSpec.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../../../assets/js-spec/DiffMatchPatch.js" type="text/javascript" charset="utf-8"></script>
@@ -14,16 +15,15 @@
 		
 		<script type="text/javascript" charset="utf-8">
 			Builder.build('../../', {
-				source: [
-					'moo.meio.mask.inits',
-					'moo.meio.mask.Mask',
-					'moo.meio.mask.Mask.Fixed',
-					'moo.meio.mask.Mask.Infinite',
-					'moo.meio.mask.Mask.Reverse',
-					'moo.meio.mask.Mask.Regexp',
-					'moo.meio.mask.Extras'
+				Source: [
+					'Meio.Mask',
+					'Meio.Mask.Fixed',
+					'Meio.Mask.Regexp',
+					'Meio.Mask.Repeat',
+					'Meio.Mask.Reverse',
+					'Meio.Mask.Extras'
 				],
-				tests: {
+				Specs: {
 					unit: {
 						'meio': ['moo.meio.mask']
 					}

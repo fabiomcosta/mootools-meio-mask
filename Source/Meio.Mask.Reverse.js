@@ -1,22 +1,17 @@
 /*
 ---
 
-description: MeioMask.Reverse
+description: A mask used for currency and decimal numbers.
 
 authors:
-  - Fábio Miranda Costa
+ - Fábio Miranda Costa
 
 requires:
-  MeioMask
+ - Meio.Mask
 
-license:
-  MIT-style license
+license: MIT-style license
 
-version:
-  0.8
-
-provides:
-  [MeioMask.Reverse]
+provides: [Meio.Mask.Reverse]
 
 ...
 */

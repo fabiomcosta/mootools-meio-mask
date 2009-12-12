@@ -1,22 +1,17 @@
 /*
 ---
 
-description: MeioMask.Extras
+description: Extra functionality for Meio.Mask plugin.
 
 authors:
-  - Fábio Miranda Costa
+ - Fábio Miranda Costa
 
 requires:
-  MeioMask
+ - Meio.Mask
 
-license:
-  MIT-style license
+license: MIT-style license
 
-version:
-  0.8
-
-provides:
-  [MeioMask.Extras]
+provides: [Meio.Mask.Extras]
 
 ...
 */

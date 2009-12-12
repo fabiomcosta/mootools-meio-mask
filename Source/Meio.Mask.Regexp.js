@@ -1,22 +1,17 @@
 /*
 ---
 
-description: MeioMask.Regexp
+description: A mask that is defined by a regular expression.
 
 authors:
-  - Fábio Miranda Costa
+ - Fábio Miranda Costa
 
 requires:
-  MeioMask
+ - Meio.Mask
 
-license:
-  MIT-style license
+license: MIT-style license
 
-version:
-  0.8
-
-provides:
-  [MeioMask.Regexp]
+provides: [Meio.Mask.Regexp]
 
 ...
 */

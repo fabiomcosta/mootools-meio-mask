@@ -1,23 +1,21 @@
 /*
 ---
 
-description: MeioMask
+description: The base component for the Meio.Mask plugin.
 
 authors:
-  - Fábio Miranda Costa
+ - Fábio Miranda Costa
 
 requires:
-  core/1.2.4: '*'
-  more/1.2.4: [Element.Forms]
+ - core/1.2.3:
+   - Class.Extras
+   - Element.Event
+   - Element.Style
+ - more/1.2.3.1:Element.Forms
 
-license:
-  MIT-style license
+license: MIT-style license
 
-version:
-  0.8
-
-provides:
-  [MeioMask]
+provides: [Meio.Mask]
 
 ...
 */
@@ -92,7 +90,7 @@ Meio.Mask = new Class({
 	onMask: function(e, func){
 		if(this.element.get('readonly')) return true;
 		var o = {};
-		o.range = this.element.getRange();
+		o.range = this.element.getSelectedRange();
 		o.isSelection = (o.range.start !== o.range.end);
 		// 8==backspace && 46==delete && 127==iphone's delete (i mean backspace)
 		o.isDelKey = (e.event.keyCode == 46);

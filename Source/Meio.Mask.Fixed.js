@@ -1,22 +1,17 @@
 /*
 ---
 
-description: MeioMask.Fixed
+description: A mask used for fixed values like date, time, phone, etc.
 
 authors:
-  - Fábio Miranda Costa
+ - Fábio Miranda Costa
 
 requires:
-  MeioMask
+ - Meio.Mask
 
-license:
-  MIT-style license
+license: MIT-style license
 
-version:
-  0.8
-
-provides:
-  [MeioMask.Fixed]
+provides: [Meio.Mask.Fixed]
 
 ...
 */

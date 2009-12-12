@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+
 import os
 from zipfile import ZipFile, BadZipfile
 
@@ -7,7 +8,7 @@ class Builder:
     javascript_files = []
     extra_zip_files = []
 
-    def __init__(self, build_folder='build/', minify_postfix='min', extension='js'):
+    def __init__(self, build_folder='Build/', minify_postfix='min', extension='js'):
         self.minify_posfix = minify_postfix
         self.build_folder = build_folder
         self.extension = '.' + extension
@@ -34,9 +35,8 @@ class Builder:
 
     def create_built_file(self):
         file_name = self.build_folder + self.file_name + self.extension
-        built_file = open(file_name, 'w')
+        built_file = open(file_name, 'w+')
         try:
-            built_file.writelines(self.read_file('CREDITS'))
             for name, absolute_name in self.javascript_files:
                 built_file.writelines(self.read_file(absolute_name))
         finally:
@@ -46,58 +46,36 @@ class Builder:
     def create_minified_file(self):
         uncompressed_file = self.build_folder + self.file_name + self.extension 
         compressed_file = self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension
-        os.system('cat CREDITS > %(compressed)s; java -jar ../../assets/yui-compressor/yui.jar --warn --charset utf8 %(uncompressed)s >> %(compressed)s' % {
+        os.system('java -jar ../../assets/yui-compressor/yui.jar --warn --charset utf8 %(uncompressed)s >> %(compressed)s' % {
             'uncompressed': uncompressed_file,
             'compressed': compressed_file
         })
         print '** Succesfully created minified file. **'
         
-    def create_zip_file(self):
-        zip_file = ZipFile(self.file_name+'.zip','w')
-        
-        file_name = self.build_folder + self.file_name + self.extension
-        zip_file.write(file_name, self.file_name + '/' + file_name)
-        
-        compressed_file_name = self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension
-        zip_file.write(compressed_file_name, self.file_name + '/' + compressed_file_name)
-        
-        for name, absolute_name in self.extra_zip_files:
-            zip_file.write(absolute_name, self.file_name + '/' + name)
-        
-        zip_file.close()
-        
-        #tests the zipfile
-        zip_file = ZipFile(self.file_name + '.zip', 'r')
-        if zip_file.testzip() is not None:
-            raise BadZipfile()
-        else:
-            print '** Succesfully created zipped file. **'
-        zip_file.close()
-        
-    def build(self, file_name, files, extra_zip_files={}, root='source/'):
+    def build(self, file_name, files, root='Source/'):
         self.file_name = file_name
+        try:
+            os.mkdir(self.build_folder)
+        except OSError:
+            # ok the folder might be still there
+            pass
         self.add_files('javascript_files', files, root=root, extension=self.extension)
-        self.add_files('extra_zip_files', extra_zip_files)
         
         print 'Starting to build ' + file_name + ' files...'
         self.create_built_file()
         self.create_minified_file()
-        self.create_zip_file()
         print ''
         
         self.javascript_files = []
-        self.extra_zip_files = []
     
 if __name__ == '__main__':
     builder = Builder()
-    builder.build('moo.meio.mask',
-		(
-			'moo.meio.mask.Mask',
-			'moo.meio.mask.Mask.Fixed',
-			'moo.meio.mask.Mask.Repeat',
-			'moo.meio.mask.Mask.Reverse',
-			'moo.meio.mask.Mask.Regexp',
-			'moo.meio.mask.Extras'
-		)
-    )
+    builder.build('Meio.Mask', (
+        'Meio.Mask',
+        'Meio.Mask.Fixed',
+        'Meio.Mask.Reverse',
+        'Meio.Mask.Repeat',
+        'Meio.Mask.Regexp',
+        'Meio.Mask.Extras'
+    ))
     

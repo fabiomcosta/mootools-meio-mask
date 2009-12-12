@@ -1,25 +1,21 @@
 /*
 ---
 
-description: MeioMask.Repeat
+description: A mask that is defined by a pattern that will match each of the inputted chars.
 
 authors:
-  - Fábio Miranda Costa
+ - Fábio Miranda Costa
 
 requires:
-  MeioMask
+ - Meio.Mask
 
-license:
-  MIT-style license
+license: MIT-style license
 
-version:
-  0.8
-
-provides:
-  [MeioMask.Repeat]
+provides: [Meio.Mask.Repeat]
 
 ...
 */
+
 
 Meio.Mask.Repeat = new Class({
 

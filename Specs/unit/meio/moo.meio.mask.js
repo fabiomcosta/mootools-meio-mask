@@ -40,8 +40,8 @@ describe('String.meiomask()', {
 		value_of('12121212'.meiomask('Date', 'Fixed')).should_be('12/12/1212');
 	},
 	
-	'should mask a string with the reverse.dolar mask': function(){
-		value_of('12121212'.meiomask('reverse.dolar')).should_be('US$ 12,121,212.00');
+	'should mask a string with the reverse.dollar mask': function(){
+		value_of('12121212'.meiomask('reverse.dollar')).should_be('US$ 12,121,212.00');
 	},
 	
 	'should mask a string with the reverse.integer mask': function(){
