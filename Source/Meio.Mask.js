@@ -11,7 +11,7 @@ requires:
    - Class.Extras
    - Element.Event
    - Element.Style
- - more/1.2.3.1:Element.Forms
+ - more/1.2.3.1: Element.Forms
 
 license: MIT-style license
 
