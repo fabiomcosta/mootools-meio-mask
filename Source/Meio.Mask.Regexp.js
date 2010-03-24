@@ -47,11 +47,11 @@ Meio.Mask.Regexp = new Class({
 	},
 	
 	paste: function(e, o){
-		var masked = this.forceMask(this.element.get('value'), true);
+		var masked = this.applyMask(this.element.get('value'), true);
 		this.element.set('value', masked.value).setCaretPosition(masked.index);
 	},
 	
-	forceMask: function(str, fireEvent){
+	applyMask: function(str, fireEvent){
 		var oldValue = '', curValue;
 		for (var i = 1; i <= str.length; i++){
 			curValue = str.substring(0, i);
@@ -65,7 +65,7 @@ Meio.Mask.Regexp = new Class({
 	},
 	
 	mask: function(str){
-		return this.forceMask(str).value;
+		return this.applyMask(str).value;
 	}
 	
 });

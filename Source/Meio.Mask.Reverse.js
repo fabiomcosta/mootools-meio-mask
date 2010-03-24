@@ -46,8 +46,7 @@ Meio.Mask.Reverse = new Class({
 		this.cleanupRegex = new RegExp('[' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
 		var elementValue = this.element.get('value');
 		if (elementValue === '' && !this.options.autoEmpty){
-			elementValue = this.mask(elementValue);
-			this.element.set('value', elementValue).defaultValue = elementValue;
+			this.element.set('value', this.mask(elementValue));
 		}
 	},
 

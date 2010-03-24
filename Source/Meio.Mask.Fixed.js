@@ -25,7 +25,7 @@ Meio.Mask.Fixed = new Class({
 		placeholder: '_',
 		removeIfInvalid: false, // removes the value onblur if the input is not valid
 		removeInvalidTrailingChars: true
-    },
+	},
 
     initialize: function(element, options){
 		this.parent(element, options);
@@ -182,18 +182,19 @@ Meio.Mask.Fixed = new Class({
 
     removeInvalidTrailingChars: function(elementValue){
 		var truncateIndex = elementValue.length,
-		    placeholder = this.options.placeholder,
+			placeholder = this.options.placeholder,
 			i = elementValue.length - 1,
-		    cont;
+			cont;
 		while (i >= 0){
 			cont = false;
 			while (this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== placeholder){
+				if (i === 0) truncateIndex = 0;
 				cont = true;
 				i--;
 			}
 			while (elementValue.charAt(i) === placeholder){
-			    cont = true;
 				truncateIndex = i;
+				cont = true;
 				i--;
 			}
 			if (!cont) break;

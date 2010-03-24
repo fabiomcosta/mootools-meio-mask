@@ -65,8 +65,7 @@ Meio.Mask = new Class({
 		this.element.store('meiomask', this).erase('maxlength');
 		var elementValue = this.element.get('value');
 		if (elementValue !== ''){
-			var elValue = elementValue.meiomask(this.constructor, this.options);
-			this.element.set('value', elValue).defaultValue = elValue;
+			this.element.set('value', elementValue.meiomask(this.constructor, this.options));
 		}
 		return this;
 	},
