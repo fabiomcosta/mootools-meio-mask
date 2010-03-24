@@ -74,7 +74,7 @@
 			<form action="index_submit" method="get">
 				<fieldset>
 					<label>reverse.integer Mask:</label>
-					<input style="width: 200px" type="text" data-meiomask="reverse.integer" />
+					<input style="width: 200px" type="text" data-meiomask-options="{autoEmpty: true}" data-meiomask="reverse.integer" />
 				</fieldset>
 				<fieldset>
 					<label>reverse.decimal Mask:</label>
@@ -113,12 +113,8 @@
 		<div class="content">
 			<form action="index_submit" method="get">
 				<fieldset>
-					<label>Decimal Mask:</label>
-					<input style="width: 200px" type="text" data-meiomask="reverse.decimal" />
-				</fieldset>
-				<fieldset>
-					<label>Integer Mask:</label>
-					<input style="width: 200px" type="text" data-meiomask="reverse.integer" />
+					<label>repeat.test</label>
+					<input style="width: 200px" type="text" data-meiomask-options="{mask: '9', maxLength: 5}" data-meiomask="repeat" />
 				</fieldset>
 			</form>
 		</div>

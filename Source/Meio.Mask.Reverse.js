@@ -28,14 +28,14 @@ Meio.Mask.Reverse = new Class({
 		precision: 2,
 		decimal: ',',
 		thousands: '.',
-		maxLength: 19
+		maxLength: 18
 	},
 
 	initialize: function(element, options){
 		this.parent(element, options);
 		var escapedDecimalChar = this.options.decimal.escapeRegExp(),
-		thousandsChar = this.options.thousands,
-		escapedThousandsChars = thousandsChar.escapeRegExp();
+			thousandsChar = this.options.thousands,
+			escapedThousandsChars = thousandsChar.escapeRegExp();
 		if (this.options.alignText) this.element.setStyle('text-align', 'right');
 		this.maxlength = this.maxlength || this.options.maxLength;
 		this.thousandsRegex = /(\d+)(\d{3})/;
@@ -78,7 +78,7 @@ Meio.Mask.Reverse = new Class({
 		var _char = String.fromCharCode(e.code),
 		elementValue = this.element.get('value');
 
-		elementValue = o.isRemoveKey? elementValue.substring(0, elementValue.length - 1): this.getValue(elementValue + _char);
+		elementValue = o.isRemoveKey ? elementValue.substring(0, elementValue.length - 1) : this.getValue(elementValue + _char);
 
 		if (!this.testEvents(elementValue.length, _char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
@@ -89,7 +89,7 @@ Meio.Mask.Reverse = new Class({
 	testEvents: function(elementValueLength, _char, code, isRemoveKey){
 		var args = [this.element, code, _char];
 		if (!isRemoveKey){
-			if (!(this.decimalNumberRegex).test(_char) || elementValueLength >= this.maxlength){
+			if (!(this.decimalNumberRegex).test(_char) || elementValueLength > this.maxlength){
 				this.fireEvent('invalid', args);
 				return false;
 			}
@@ -109,9 +109,9 @@ Meio.Mask.Reverse = new Class({
 	forceMask: function(str, withSymbol){
 		str = this.cleanup(str);
 		var precision = this.options.precision;
+		var zeros = precision + 1 - str.length;
+		if (zeros > 0) str = this.zeroize(str, zeros);
 		if (precision){
-			var zeros = precision + 1 - str.length;
-			if (zeros > 0) str = this.zeroize(str, zeros);
 			var decimalIndex = str.length - precision;
 			str = str.substring(0, decimalIndex) + this.options.decimal + str.substring(decimalIndex);
 		}
@@ -144,9 +144,9 @@ Meio.Mask.Reverse = new Class({
 
 	getValue: function(str, withSymbol){
 		var symbol = this.options.symbol;
-		return (str.substring(0, symbol.length) === symbol)?
-		withSymbol ? str : str.substring(symbol.length):
-		withSymbol ? symbol + str : str;
+		return (str.substring(0, symbol.length) === symbol) ?
+			withSymbol ? str : str.substring(symbol.length) :
+			withSymbol ? symbol + str : str;
 	},
 
 	maskThousands: function(str){
@@ -164,7 +164,7 @@ Meio.Mask.Reverse = new Class({
 });
 
 Meio.Mask.createMasks('Reverse', {
-	'Integer'		: {precision: 0, maxLength: 20},
+	'Integer'		: {precision: 0, maxLength: 18},
 	'Decimal'		: { },
 	'DecimalUs'		: {thousands: ',', decimal: '.'},
 	'Reais'			: {symbol: 'R$ ' },

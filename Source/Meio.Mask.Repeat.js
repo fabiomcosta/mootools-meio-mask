@@ -21,23 +21,48 @@ Meio.Mask.Repeat = new Class({
 
 	Extends : Meio.Mask,
 
-	_keyup : function(e,o){
-		return true;
+	options: {
+		mask: '',
+		maxLength: 10
 	},
 
-	_paste : function(e,o){
-		this.$el.set('value', this.__mask(o.valueArray, this.globals, this.mask.options));
-		return true;
+	initialize : function(element, options){
+		this.parent(element, options);
 	},
 
-	_keypress: function(e,o){
-		if (this.ignore || e.control || e.meta || e.alt) return true;
-		var c = String.fromCharCode(e.code),
-			maskArray = this.mask.options.maskArray,
-			valueArray = o.value.replace(this.globals.fixedCharsRegG, '').split('');
-		if (!this.testEvents(maskArray, 0, c, e.code)) return false;
-		this.$el.set('value', valueArray.join(''));
+	keypress: function(e, o){
+		if (this.ignore) return true;
+		e.preventDefault();
+			
+		var state = this.getCurrentState(e, o);
+		var ruleRegex = Meio.Mask.rules[this.options.mask.charAt(0)].regex;
+		var args = [this.element, state._char, e.code];
+		
+		if (state.value.length > this.options.maxLength || (!ruleRegex.test(state._char) && !o.isRemoveKey)){
+			this.fireEvent('invalid', args);
+		} else {
+			this.fireEvent('valid', args);
+			this.element.set('value', state.value).setCaretPosition(state.start + (o.isRemoveKey ? 0 : 1));
+		}
+		
 		return true;
+	},
+	
+	paste: function(e, o){
+		var maskedValue = this.mask(this.element.get('value'));
+		this.element.set('value', maskedValue).setCaretPosition(maskedValue.length);
+	},
+	
+	mask: function(str){
+		var strArray = str.split(''),
+			ruleRegex = Meio.Mask.rules[this.options.mask.charAt(0)].regex;
+		for (var i = 0; i < strArray.length; i++){
+			if (!ruleRegex.test(strArray[i])){
+				strArray.splice(i, 1);
+				i--;
+			}
+		}
+		return strArray.join('').substring(0, this.options.maxLength);
 	}
-
+	
 });

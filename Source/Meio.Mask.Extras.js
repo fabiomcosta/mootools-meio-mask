@@ -27,8 +27,8 @@ provides: [Meio.Mask.Extras]
 	var getClassOptions = function(args){
 		var classNames = [];
 		args = Array.link(args, {mask: String.type, type: String.type, options: Object.type, klass: Class.type});
-		if (args.mask) classNames = args.mask.contains('.') ? args.mask.split('.') : [args.type, args.mask];
-		var klass = args.klass || Meio.Mask[upperCamelize(classNames[0])][upperCamelize(classNames[1])],
+		if (args.mask) classNames = args.mask.split('.');
+		var klass = args.klass || (classNames[1] ? Meio.Mask[upperCamelize(classNames[0])][upperCamelize(classNames[1])] : Meio.Mask[upperCamelize(classNames[0])]),
 		    options = args.options || {};
 		return {klass: klass, options: options};
 	};
@@ -69,13 +69,15 @@ provides: [Meio.Mask.Extras]
 		// sets the value but first it applyes the mask (if theres any)
 		set: function(value){
 			var mask = this.retrieve('meiomask');
-			if (mask) value = mask.maskString(value);
+			if (mask) value = mask.mask(value);
 			return this.set('value', value);
 		},
 		
+		// gets the unmasked value
 		get: function(){
 			var mask = this.retrieve('meiomask');
-			if (mask) value = mask.maskString(value);
+			var value = this.get('value');
+			return (mask) ? mask.unmask(value) : value;
 		}
 	};
 

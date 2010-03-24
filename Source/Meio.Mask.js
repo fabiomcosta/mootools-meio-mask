@@ -105,7 +105,7 @@ Meio.Mask = new Class({
 		}
 		return (Browser.Platform.ipod || (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)) ? this.keypress(e, o) : true;
 	},
-    
+	
 	focus: function(e, o){
 		var element = this.element;
 		element.store('meiomask:focusvalue', element.get('value'));
@@ -117,14 +117,32 @@ Meio.Mask = new Class({
 			element.fireEvent('change');
 		}
 	},
-
+	
+	getCurrentState: function(e, o){
+		var _char = String.fromCharCode(e.code),
+			elValue = this.element.get('value');
+		var start = o.range.start, end = o.range.end;
+		if (o.isRemoveKey && !o.isSelection) o.isDelKey ? end++ : start--;
+		return {value: elValue.substring(0, start) + (o.isRemoveKey ? '' : _char) + elValue.substring(end),
+			_char: _char, start: start, end: end};
+	},
+	
 	setSize: function(){
 		if (!this.element.get('size')) this.element.set('size', this.maskArray.length);
 	},
 	
 	isFixedChar: function(_char){
-	    return !Meio.Mask.matchRules.contains(_char);
+		return !Meio.Mask.matchRules.contains(_char);
+	},
+	
+	mask: function(str){
+		return str;
+	},
+
+	unmask: function(str){
+		return str;
 	}
+	
 });
 
 Meio.Mask.extend({
@@ -230,7 +248,7 @@ Meio.Mask.extend({
 		'Z': {regex: /[A-Z]/},
 		'a': {regex: /[a-zA-Z]/},
 		'*': {regex: /[0-9a-zA-Z]/},
-		'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, //i doenst work here
+		'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, // 'i' doesnt work here
 		'h': {regex: /[0-9]/, check: Meio.Mask.upTo(23)},
 		'd': {regex: /[0-9]/, check: Meio.Mask.upTo(31)},
 		'm': {regex: /[0-9]/, check: Meio.Mask.upTo(12)}
