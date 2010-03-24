@@ -22,6 +22,7 @@
 		</script>
 		<style type="text/css">
 			fieldset{ display: block; }
+			label{ float: left; width: 200px; }
 		</style>
 	</head>
 
@@ -77,7 +78,7 @@
 				</fieldset>
 				<fieldset>
 					<label>reverse.decimal Mask:</label>
-					<input style="width: 200px" type="text" data-meiomask="reverse.decimal" />
+					<input style="width: 200px" type="text" data-meiomask-options="{autoEmpty: true}" data-meiomask="reverse.decimal" />
 				</fieldset>
 				<fieldset>
 					<label>reverse.decimal-us Mask:</label>
@@ -124,7 +125,7 @@
 		
 		<script type="text/javascript">
 			$$('input').each(function(input){
-				input.meiomask(input.get('data-meiomask'));
+				input.meiomask(input.get('data-meiomask'), JSON.decode(input.get('data-meiomask-options')));
 			});
 		</script>
 	</body>

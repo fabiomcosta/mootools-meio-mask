@@ -22,6 +22,7 @@ Meio.Mask.Reverse = new Class({
 
 	options: {
 		autoSetSize: false,
+		autoEmpty: false,
 		alignText: true,
 		symbol: '',
 		precision: 2,
@@ -44,7 +45,7 @@ Meio.Mask.Reverse = new Class({
 		this.thousandsReplaceRegex = new RegExp(escapedThousandsChars, 'g');
 		this.cleanupRegex = new RegExp('[' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
 		var elementValue = this.element.get('value');
-		if (elementValue === ''){
+		if (elementValue === '' && !this.options.autoEmpty){
 			elementValue = this.mask(elementValue);
 			this.element.set('value', elementValue).defaultValue = elementValue;
 		}
@@ -54,16 +55,21 @@ Meio.Mask.Reverse = new Class({
 		var element = this.element,
 		elValue = element.get('value'),
 		symbol = this.options.symbol;
-		element.set('value', (elValue = this.getValue(elValue, true)));
-		if (this.options.selectOnFocus)
-			element.selectRange(symbol.length, elValue.length);
+		if (this.options.autoEmpty){
+			if (elValue === '') element.set('value', (elValue = this.mask(elValue)));
+		} else {
+			element.set('value', (elValue = this.getValue(elValue, true)));
+		}
+		if (this.options.selectOnFocus) element.selectRange(symbol.length, elValue.length);
 		this.parent(e, o);
 	},
 
 	blur: function(e, o){
 		this.parent(e, o);
 		var element = this.element;
-		element.set('value', this.getValue(element.get('value')));
+		var value = this.getValue(element.get('value'));
+		if (this.options.autoEmpty && this.mask(value) == this.mask()) value = '';
+		element.set('value', value);
 	},
 
 	keypress: function(e, o){
