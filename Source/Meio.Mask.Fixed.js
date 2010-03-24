@@ -33,35 +33,35 @@ Meio.Mask.Fixed = new Class({
 		this.maskMold = this.element.get('value') || this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
-		if(this.options.autoSetSize) this.setSize();
+		if (this.options.autoSetSize) this.setSize();
 		this.maskArray.each(function(c, i){
-		    if(!this.isFixedChar(c)) this.validIndexes.push(i);
+		    if (!this.isFixedChar(c)) this.validIndexes.push(i);
 		}, this);
 		this.createUnmaskRegex();
 	},
 	
 	focus: function(e, o){
 		this.element.set('value', this.maskMoldArray.join(''));
-		if(this.options.selectOnFocus) this.element.select();
+		if (this.options.selectOnFocus) this.element.select();
 		this.parent(e, o);
 	},
 
 	blur: function(e, o){
 		this.parent(e, o);
 		var elementValue = this.element.get('value');
-		if(this.options.removeIfInvalid){
+		if (this.options.removeIfInvalid){
 			if(elementValue.contains(this.options.placeholder)){
 				this.maskMoldArray = this.maskMold.split('');
 				this.element.set('value', '');
 			}
 			return true;
 		} 
-		if(this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
+		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
 		return true;
 	},
     
 	keypress: function(e, o){
-		if(this.ignore) return true;
+		if (this.ignore) return true;
 
 		e.preventDefault();
 		var c = String.fromCharCode(e.code),
@@ -71,60 +71,60 @@ Meio.Mask.Fixed = new Class({
 		if(!o.isSelection){
 			// no text selected
 			var finalRangePosition;
-			if(o.isBksKey){
-				do{
+			if (o.isBksKey){
+				do {
 					start = this.validIndexes.indexOf(--o.range.start);
-				}while(start === -1 && o.range.start >= 0);
+				} while (start === -1 && o.range.start >= 0);
 				finalRangePosition = this.validIndexes[start] || 0;
 			}
 			else{
-				do{
+				do {
 					start = this.validIndexes.indexOf(o.range.start++);
-				}while(start === -1 && o.range.start < maskArray.length);
+				} while (start === -1 && o.range.start < maskArray.length);
 				finalRangePosition = this.validIndexes[start + 1];
 			}
 			
 			i = this.validIndexes[start];
-			if(!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
-			if($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
-			this.maskMoldArray[i] = (o.isRemoveKey)? this.options.placeholder: c;
+			if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
+			if ($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
+			this.maskMoldArray[i] = (o.isRemoveKey) ? this.options.placeholder : c;
 			
 			var newCarretPosition = $pick(finalRangePosition, this.maskMoldArray.length);
 			this.element.set('value', this.maskMoldArray.join(''))
-				.selectRange(newCarretPosition, newCarretPosition);
-		}
-		else{
+				.setCaretPosition(newCarretPosition);
+		
+		} else {
 
 			var rstart = o.range.start,
 			    rend = o.range.end,
 			    end;
 
 			// text selected
-			do{
+			do {
 				start = this.validIndexes.indexOf(o.range.start++);
-			}while(start === -1 && o.range.start < maskArray.length);
-			do{
+			} while(start === -1 && o.range.start < maskArray.length);
+			do {
 				end = this.validIndexes.indexOf(o.range.end++);
-			}while(end === -1 && o.range.end < maskArray.length);
+			} while(end === -1 && o.range.end < maskArray.length);
 
             // if  you select a fixed char it will ignore your input
-			if(!(end - start)) return true;
+			if (!(end - start)) return true;
 			
 			// removes all the chars into the range
-			for(i=rstart; i<rend; i++){
+			for (i=rstart; i<rend; i++){
 				this.maskMoldArray[i] = this.maskMold.charAt(i);
 			}
 
-			if(!o.isRemoveKey){
+			if (!o.isRemoveKey){
 				i = this.validIndexes[start];
-				if(!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
-				if($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
+				if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
+				if ($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
 				this.maskMoldArray[i] = c;
 				start++;
 			}
 			
 			this.element.set('value', this.maskMoldArray.join(''));
-			this.element.selectRange(this.validIndexes[start], this.validIndexes[start]);
+			this.element.setCaretPosition(this.validIndexes[start]);
 		}
 		return true;
 	},
@@ -133,7 +133,7 @@ Meio.Mask.Fixed = new Class({
 		var retApply = this.applyMask(this.element.get('value'), o.range.start);
 		this.maskMoldArray = retApply.value;
 		this.element.set('value', this.maskMoldArray.join(''))
-			.selectRange(retApply.rangeStart, retApply.rangeStart);
+			.setCaretPosition(retApply.rangeStart);
 		return true;
 	},
 
@@ -157,24 +157,20 @@ Meio.Mask.Fixed = new Class({
 			eli = 0,
 			returnFromTestEntry;
 			
-		while(eli < maskMold.length){
-			if(!elementValueArray[eli]){
+		while (eli < maskMold.length){
+			if (!elementValueArray[eli]){
 				elementValueArray[eli] = maskMold[eli];
-			}
-			else if(Meio.Mask.rules[maskArray[eli]]){
-				if(!(returnFromTestEntry = this.testEntry(eli, elementValueArray[eli]))){
+			} else if (Meio.Mask.rules[maskArray[eli]]){
+				if (!(returnFromTestEntry = this.testEntry(eli, elementValueArray[eli]))){
 					elementValueArray.splice(eli, 1);
 					continue;
-				}
-				else{
+				} else {
 				    if($type(returnFromTestEntry) === 'string') elementValueArray[eli] = returnFromTestEntry;
 				}
 				newStartRange = eli;
-			}
-			else if(maskArray[eli] != elementValueArray[eli]){
+			} else if (maskArray[eli] != elementValueArray[eli]){
 				elementValueArray.splice(eli, 0, maskMold[eli]);
-			}
-			else{
+			} else {
 				elementValueArray[eli] = maskMold[eli];
 			}
 			eli++;
@@ -189,18 +185,18 @@ Meio.Mask.Fixed = new Class({
 		    placeholder = this.options.placeholder,
 			i = elementValue.length - 1,
 		    cont;
-		while(i >= 0){
+		while (i >= 0){
 			cont = false;
-			while(this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== placeholder){
+			while (this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== placeholder){
 				cont = true;
 				i--;
 			}
-			while(elementValue.charAt(i) === placeholder){
+			while (elementValue.charAt(i) === placeholder){
 			    cont = true;
 				truncateIndex = i;
 				i--;
 			}
-			if(!cont) break;
+			if (!cont) break;
 		}
 		this.element.set('value', elementValue.substring(0, truncateIndex));
     },
@@ -209,16 +205,16 @@ Meio.Mask.Fixed = new Class({
 		var maskArray = this.maskArray,
 			rule = Meio.Mask.rules[maskArray[index]],
 			ret = (rule && rule.regex.test(_char));
-		return (rule.check && ret)? rule.check(this.element.get('value'), index, _char): ret;
+		return (rule.check && ret) ? rule.check(this.element.get('value'), index, _char) : ret;
 	},
 	
 	testEvents: function(index, _char, code, isRemoveKey){
 		var maskArray = this.maskArray,
 			rule = Meio.Mask.rules[maskArray[index]],
 			returnFromTestEntry;
-		if(!isRemoveKey){
-			var args = args = [this.element, code, _char];
-			if(!rule || !(returnFromTestEntry = this.testEntry(index, _char))){
+		if (!isRemoveKey){
+			var args = [this.element, code, _char];
+			if (!rule || !(returnFromTestEntry = this.testEntry(index, _char))){
 				this.fireEvent('invalid', args);
 				return false;
 			}
@@ -230,13 +226,13 @@ Meio.Mask.Fixed = new Class({
 
 
 Meio.Mask.createMasks('Fixed', {
-	'Phone'				: { mask: '(99) 9999-9999' },
-	'PhoneUs'			: { mask: '(999) 999-9999' },
-	'Cpf'				: { mask: '999.999.999-99' },
-	'Cnpj'				: { mask: '99.999.999/9999-99' },
-	'Date'				: { mask: '3d/1m/9999' },
-	'DateUs'			: { mask: '1m/3d/9999' },
-	'Cep'				: { mask: '99999-999' },
-	'Time'				: { mask: '2h:59' },
-	'CC'				: { mask: '9999 9999 9999 9999' }
+	'Phone'		: {mask: '(99) 9999-9999'},
+	'PhoneUs'	: {mask: '(999) 999-9999'},
+	'Cpf'		: {mask: '999.999.999-99'},
+	'Cnpj'		: {mask: '99.999.999/9999-99'},
+	'Date'		: {mask: '3d/1m/9999'},
+	'DateUs'	: {mask: '1m/3d/9999'},
+	'Cep'		: {mask: '99999-999'},
+	'Time'		: {mask: '2h:59'},
+	'Cc'		: {mask: '9999 9999 9999 9999'}
 });

@@ -1,15 +1,131 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<title>Plugin's Test Options</title>
+		<title>meioMask - a Mootools Mask Plugin</title>
+		
+		<script src="../../Assets/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../Assets/mootools-1.2.4.2-more.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../Assets/Builder.js" type="text/javascript"></script>
+		<!--<script src="../../../../assets/firebug/firebug-lite-compressed.js" type="text/javascript"></script>-->
+		<script type="text/javascript" charset="utf-8">
+			Builder.build('../../', {
+				Source: [
+					'Meio.Mask',
+					'Meio.Mask.Fixed',
+					'Meio.Mask.Regexp',
+					'Meio.Mask.Repeat',
+					'Meio.Mask.Reverse',
+					'Meio.Mask.Extras'
+				]
+			});
+		</script>
+		<style type="text/css">
+			fieldset{ display: block; }
+		</style>
 	</head>
+
 	<body>
-		<ul>
-			<li><a href="fixed-type.html">fixed</a></li>
-			<li><a href="reverse-type.html">reverse</a></li>
-			<li><a href="regexp-type.html">regexp</a></li>
-		</ul>
+		<h1>Fixed</h1>
+		<div class="content">
+			<form action="index_submit" method="get">
+				<fieldset>
+					<label>fixed.phone Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.phone" />
+				</fieldset>
+				<fieldset>
+					<label>fixed.phone-us Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.phone-us" />
+				</fieldset>
+				<fieldset>
+					<label>fixed.cpf Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.cpf" />
+				</fieldset>
+				<fieldset>
+					<label>fixed.cnpj Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.cnpj" />
+				</fieldset>
+				<fieldset>
+					<label>fixed.date Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.date" />
+				</fieldset>
+				<fieldset>
+					<label>fixed.date-us Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.date-us" />
+				</fieldset>
+				<fieldset>
+					<label>fixed.cep Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.cep" />
+				</fieldset>
+				<fieldset>
+					<label>fixed.time Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.time" />
+				</fieldset>
+				<fieldset>
+					<label>fixed.cc Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="fixed.cc" />
+				</fieldset>
+			</form>
+		</div>
+		
+		<h1>Reverse</h1>
+		<div class="content">
+			<form action="index_submit" method="get">
+				<fieldset>
+					<label>reverse.integer Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="reverse.integer" />
+				</fieldset>
+				<fieldset>
+					<label>reverse.decimal Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="reverse.decimal" />
+				</fieldset>
+				<fieldset>
+					<label>reverse.decimal-us Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="reverse.decimal-us" />
+				</fieldset>
+				<fieldset>
+					<label>reverse.reais Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="reverse.reais" />
+				</fieldset>
+				<fieldset>
+					<label>reverse.dollar Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="reverse.dollar" />
+				</fieldset>
+			</form>
+		</div>
+		
+		<h1>Regexp</h1>
+		<div class="content">
+			<form action="index_submit" method="get">
+				<fieldset>
+					<label>regexp.ip Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="regexp.ip" />
+				</fieldset>
+				<fieldset>
+					<label>regexp.email Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="regexp.email" />
+				</fieldset>
+			</form>
+		</div>
+		
+		<h1>Repeat</h1>
+		<div class="content">
+			<form action="index_submit" method="get">
+				<fieldset>
+					<label>Decimal Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="reverse.decimal" />
+				</fieldset>
+				<fieldset>
+					<label>Integer Mask:</label>
+					<input style="width: 200px" type="text" data-meiomask="reverse.integer" />
+				</fieldset>
+			</form>
+		</div>
+		
+		<script type="text/javascript">
+			$$('input').each(function(input){
+				input.meiomask(input.get('data-meiomask'));
+			});
+		</script>
 	</body>
 </html>

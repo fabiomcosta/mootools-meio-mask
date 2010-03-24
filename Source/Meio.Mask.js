@@ -50,13 +50,13 @@ Meio.Mask = new Class({
 
 	initialize: function(el, options){
 		this.element = $(el);
-		if(this.element.get('tag') !== 'input' || this.element.get('type') !== 'text') return;
+		if (this.element.get('tag') !== 'input' || this.element.get('type') !== 'text') return;
 		this.setup(options);
 	},
     
 	setup: function(options){
 		this.setOptions(options);
-		if(this.element.retrieve('meiomask')) this.remove();
+		if (this.element.retrieve('meiomask')) this.remove();
 		this.ignore = false;
 		this.maxlength = this.element.get('maxlength');
 		this.eventsToBind.each(function(evt){
@@ -64,7 +64,7 @@ Meio.Mask = new Class({
 		}, this);
 		this.element.store('meiomask', this).erase('maxlength');
 		var elementValue = this.element.get('value');
-		if(elementValue !== ''){
+		if (elementValue !== ''){
 			var elValue = elementValue.meiomask(this.constructor, this.options);
 			this.element.set('value', elValue).defaultValue = elValue;
 		}
@@ -73,9 +73,9 @@ Meio.Mask = new Class({
 	
 	remove: function(){
 		var mask = this.element.retrieve('meiomask');
-		if(mask){
+		if (mask){
 			var maxlength = mask.maxlength;
-			if(maxlength !== null) this.element.set('maxlength', maxlength);
+			if (maxlength !== null) this.element.set('maxlength', maxlength);
 			mask.eventsToBind.each(function(evt){
 				this.element.removeEvent(evt, this[evt]);
 			}, mask);
@@ -85,7 +85,7 @@ Meio.Mask = new Class({
 	},
 	
 	onMask: function(e, func){
-		if(this.element.get('readonly')) return true;
+		if (this.element.get('readonly')) return true;
 		var o = {};
 		o.range = this.element.getSelectedRange();
 		o.isSelection = (o.range.start !== o.range.end);
@@ -93,18 +93,17 @@ Meio.Mask = new Class({
 		o.isDelKey = (e.event.keyCode == 46);
 		o.isBksKey = (e.event.keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
 		o.isRemoveKey = (o.isBksKey || o.isDelKey);
-		func.call(this, e, o);
+		func && func.call(this, e, o);
 		return true;
 	},
 
     keydown: function(e, o){
 		this.ignore = (Meio.Mask.ignoreKeys[e.code] && !o.isRemoveKey) || e.control || e.meta || e.alt;
-		if(this.ignore || o.isRemoveKey){
+		if (this.ignore || o.isRemoveKey){
 			var keyRepresentation = Meio.Mask.ignoreKeys[e.code] || '';
 			this.fireEvent('valid', [this.element, e.code, keyRepresentation]);
 		}
-		(Browser.Platform.ipod
-		|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey))? this.keypress(e, o): true;
+		return (Browser.Platform.ipod || (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)) ? this.keypress(e, o) : true;
 	},
     
 	focus: function(e, o){
@@ -114,13 +113,13 @@ Meio.Mask = new Class({
 
 	blur: function(e, o){
 		var element = this.element;
-		if(element.retrieve('meiomask:focusvalue') != element.get('value')){
+		if (element.retrieve('meiomask:focusvalue') != element.get('value')){
 			element.fireEvent('change');
 		}
 	},
 
 	setSize: function(){
-		if(!this.element.get('size')) this.element.set('size', this.maskArray.length);
+		if (!this.element.get('size')) this.element.set('size', this.maskArray.length);
 	},
 	
 	isFixedChar: function(_char){
@@ -143,7 +142,7 @@ Meio.Mask.extend({
 	setRules: function(rulesObj){
 		$extend(this.rules, rulesObj);
 		var rulesKeys = [];
-		for(rule in rulesObj) rulesKeys.push(rule);
+		for (rule in rulesObj) rulesKeys.push(rule);
 		this.matchRules += rulesKeys.join('');
 		this.recompileRulesRegex();
 	},
@@ -156,7 +155,7 @@ Meio.Mask.extend({
 
 	removeRules: function(){
 		var rulesToRemove = Array.flatten(arguments);
-		for(var i=rulesToRemove.length; i--;) this.removeRule(rulesToRemove[i]);
+		for (var i=rulesToRemove.length; i--;) this.removeRule(rulesToRemove[i]);
 	},
 	
 	recompileRulesRegex: function(){
@@ -165,7 +164,7 @@ Meio.Mask.extend({
 	
 	createMasks: function(type, masks){
 		type = type.capitalize();
-		for(mask in masks){
+		for (mask in masks){
 			this[type][mask.camelCase().capitalize()] = new Class({
 				Extends: this[type],
 				options: masks[mask]
@@ -178,7 +177,7 @@ Meio.Mask.extend({
 	upTo: function(number){
 		number = '' + number;
 		return function(value, index, _char){
-			if(value.charAt(index-1) == number[0])
+			if (value.charAt(index-1) == number[0])
 				return (_char <= number[1]);
 			return true;
 		};
@@ -216,12 +215,11 @@ Meio.Mask.extend({
 		127		: 'delete'
 	};
 	
-	if(Browser.Platform.ipod){
+	if (Browser.Platform.ipod){
 		ignoreKeys = iphoneIgnoreKeys;
-	}
-	else{
+	} else {
 		// f1, f2, f3 ... f12
-		for(var i=1; i<=12; i++) desktopIgnoreKeys[111 + i] = 'f' + i;
+		for (var i=1; i<=12; i++) desktopIgnoreKeys[111 + i] = 'f' + i;
 		ignoreKeys = desktopIgnoreKeys; 
 	}
 	return {ignoreKeys: ignoreKeys};
@@ -237,7 +235,7 @@ Meio.Mask.extend({
 		'd': {regex: /[0-9]/, check: Meio.Mask.upTo(31)},
 		'm': {regex: /[0-9]/, check: Meio.Mask.upTo(12)}
 	};
-	for(var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
+	for (var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
 	return rules;
 })());
 

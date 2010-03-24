@@ -31,11 +31,11 @@ Meio.Mask.Repeat = new Class({
 	},
 
 	_keypress: function(e,o){
-		if(this.ignore || e.control || e.meta || e.alt) return true;
+		if (this.ignore || e.control || e.meta || e.alt) return true;
 		var c = String.fromCharCode(e.code),
 			maskArray = this.mask.options.maskArray,
 			valueArray = o.value.replace(this.globals.fixedCharsRegG, '').split('');
-		if(!this.testEvents(maskArray, 0, c, e.code)) return false;
+		if (!this.testEvents(maskArray, 0, c, e.code)) return false;
 		this.$el.set('value', valueArray.join(''));
 		return true;
 	}
