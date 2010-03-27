@@ -36,7 +36,7 @@ Meio.Mask.Regexp = new Class({
 		var state = this.getCurrentState(e, o);
 		var args = [this.element, state._char, e.code];
 		
-		if (this.regex.test(state.value)){
+		if (!this.regex.test(state.value)){
 			this.fireEvent('invalid', args);
 		} else {
 			this.element.set('value', state.value).setCaretPosition(state.start + (o.isRemoveKey ? 0 : 1));
