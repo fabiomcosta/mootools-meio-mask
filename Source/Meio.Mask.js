@@ -89,7 +89,7 @@ Meio.Mask = new Class({
 		o.range = this.element.getSelectedRange();
 		o.isSelection = (o.range.start !== o.range.end);
 		// 8==backspace && 46==delete && 127==iphone's delete (i mean backspace)
-		o.isDelKey = (e.event.keyCode == 46);
+		o.isDelKey = (e.event.keyCode == 46 && !(Browser.Engine.trident && e.event.type == 'keypress'));
 		o.isBksKey = (e.event.keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
 		o.isRemoveKey = (o.isBksKey || o.isDelKey);
 		func && func.call(this, e, o);
