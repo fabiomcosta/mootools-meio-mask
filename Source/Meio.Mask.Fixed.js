@@ -142,12 +142,13 @@ Meio.Mask.Fixed = new Class({
 	},
 
 	unmask: function(str){
-		return str.replace(this.unmaskRegex, '');
+		return this.unmaskRegex ? str.replace(this.unmaskRegex, '') : str;
 	},
 
 	createUnmaskRegex: function(){
 		var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
-		this.unmaskRegex = new RegExp('[' + fixedCharsArray.join('').escapeRegExp() + ']', 'g');
+		var chars = fixedCharsArray.join('').escapeRegExp();
+		this.unmaskRegex = chars ? new RegExp('[' + chars + ']', 'g') : null;
 	},
 
 	applyMask: function(elementValue, newRangeStart){
