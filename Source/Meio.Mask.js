@@ -17,7 +17,7 @@ provides: [Meio.Mask]
 ...
 */
 
-if(typeof Meio == 'undefined') var Meio = {};
+if (typeof Meio == 'undefined') var Meio = {};
 
 $extend(Element.NativeEvents, {
 	'paste': 2, 'input': 2
@@ -88,7 +88,7 @@ Meio.Mask = new Class({
 		var o = {}, keyCode = (e.type == 'paste') ? null : e.event.keyCode;
 		o.range = this.element.getSelectedRange();
 		o.isSelection = (o.range.start !== o.range.end);
-		// 8==backspace && 46==delete && 127==iphone's delete (i mean backspace)
+		// 8 == backspace && 46 == delete && 127 == iphone's delete (i mean backspace)
 		o.isDelKey = (keyCode == 46 && !(Browser.Engine.trident && e.event.type == 'keypress'));
 		o.isBksKey = (keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
 		o.isRemoveKey = (o.isBksKey || o.isDelKey);

@@ -26,10 +26,6 @@ Meio.Mask.Repeat = new Class({
 		maxLength: 10
 	},
 
-	initialize : function(element, options){
-		this.parent(element, options);
-	},
-
 	keypress: function(e, o){
 		if (this.ignore) return true;
 		e.preventDefault();

@@ -74,12 +74,11 @@ Meio.Mask.Reverse = new Class({
 	keypress: function(e, o){
 		if (this.ignore) return true;
 		e.preventDefault();
-		var _char = String.fromCharCode(e.code),
-		elementValue = this.element.get('value');
-
-		elementValue = o.isRemoveKey ? elementValue.substring(0, elementValue.length - 1) : this.getValue(elementValue + _char);
-
-		if (!this.testEvents(elementValue.length, _char, e.code, o.isRemoveKey)) return true;
+		
+		var state = this.getCurrentState(e, o);
+		var elementValue = state.value;
+		
+		if (!this.testEvents(elementValue.length, state._char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
 		this.element.set('value', elementValue).setCaretPosition(elementValue.length);
 		return true;
@@ -121,8 +120,7 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	mask: function(str, withSymbol){
-		str = str || '0';
-		str = this.unmask(str).replace('.', this.options.decimal);
+		str = this.unmask(str || '0').replace('.', this.options.decimal);
 		return this.getValue(this.maskThousands(str), withSymbol);
 	},
 
@@ -131,7 +129,7 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	toNumber: function(str){
-		if(!isFinite(str)){
+		if (!isFinite(str)){
 			var thousandsChar = this.options.thousands,
 			decimalChar = this.options.decimal;
 			if (thousandsChar) str = str.replace(this.thousandsReplaceRegex, '');
