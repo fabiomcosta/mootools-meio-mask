@@ -23,7 +23,7 @@ Meio.Mask.Repeat = new Class({
 
 	options: {
 		mask: '',
-		maxLength: 10
+		maxLength: 0 // 0 for infinite
 	},
 
 	keypress: function(e, o){
@@ -33,8 +33,9 @@ Meio.Mask.Repeat = new Class({
 		var state = this.getCurrentState(e, o);
 		var ruleRegex = Meio.Mask.rules[this.options.mask.charAt(0)].regex;
 		var args = [this.element, state._char, e.code];
+		var maxLength = this.options.maxLength;
 		
-		if (state.value.length > this.options.maxLength || (!ruleRegex.test(state._char) && !o.isRemoveKey)){
+		if ((maxLength && state.value.length > this.options.maxLength) || (!ruleRegex.test(state._char) && !o.isRemoveKey)){
 			this.fireEvent('invalid', args);
 		} else {
 			this.fireEvent('valid', args);
@@ -58,7 +59,8 @@ Meio.Mask.Repeat = new Class({
 				i--;
 			}
 		}
-		return strArray.join('').substring(0, this.options.maxLength);
+		var maxLength = this.options.maxLength;
+		return strArray.join('').substring(0, maxLength ? maxLength : strArray.length);
 	}
 	
 });
