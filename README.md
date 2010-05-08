@@ -5,6 +5,11 @@ MeioMask - a mootools plugin for masking text inputs.
 
 ![Screenshot](http://github.com/fabiomcosta/mootools-meio-mask/raw/master/Assets/image_forge.png)
 
+Notice
+------
+
+You need version mootools-core 1.2.4 because there are some use of the Browser.Engine.gecko engine detection, which is not correct on versions < 1.2.4.
+
 How to use
 ----------
 	<html>
