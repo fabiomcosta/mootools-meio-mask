@@ -78,15 +78,17 @@ Meio.Mask.Reverse = new Class({
 		var state = this.getCurrentState(e, o);
 		var elementValue = state.value;
 		
-		if (!this.testEvents(elementValue.length, state._char, e.code, o.isRemoveKey)) return true;
+		if (!this.testEvents(elementValue, state._char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
 		this.element.set('value', elementValue).setCaretPosition(elementValue.length);
-		return true;
+		
+		return this.parent();
 	},
 
-	testEvents: function(elementValueLength, _char, code, isRemoveKey){
+	testEvents: function(elementValue, _char, code, isRemoveKey){
 		var args = [this.element, code, _char];
 		if (!isRemoveKey){
+			var elementValueLength = this.getValue(elementValue, false).length;
 			if (!(this.decimalNumberRegex).test(_char) || elementValueLength > this.maxlength){
 				this.fireEvent('invalid', args);
 				return false;
@@ -155,8 +157,11 @@ Meio.Mask.Reverse = new Class({
 	zeroize: function(str, zeros){
 		while (zeros--)  str = '0' + str;
 		return str;
-	}
+	},
 
+	shouldFocusNext: function(){
+		return this.getValue(this.element.get('value'), false).length >= this.options.maxLength;
+	}
 });
 
 Meio.Mask.createMasks('Reverse', {

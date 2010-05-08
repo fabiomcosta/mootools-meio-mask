@@ -35,14 +35,14 @@ Meio.Mask.Repeat = new Class({
 		var args = [this.element, state._char, e.code];
 		var maxLength = this.options.maxLength;
 		
-		if ((maxLength && state.value.length > this.options.maxLength) || (!ruleRegex.test(state._char) && !o.isRemoveKey)){
+		if ((maxLength && state.value.length > maxLength) || (!ruleRegex.test(state._char) && !o.isRemoveKey)){
 			this.fireEvent('invalid', args);
 		} else {
 			this.fireEvent('valid', args);
 			this.element.set('value', state.value).setCaretPosition(state.start + (o.isRemoveKey ? 0 : 1));
 		}
 		
-		return true;
+		return this.parent();
 	},
 	
 	paste: function(e, o){

@@ -38,7 +38,8 @@ Meio.Mask = new Class({
 	eventsToBind: ['focus', 'blur', 'keydown', 'keypress', 'paste'],
 
 	options: {
-		selectOnFocus: true
+		selectOnFocus: true,
+		autoTab: false
 
 		//onInvalid: $empty,
 		//onValid: $empty,
@@ -105,6 +106,24 @@ Meio.Mask = new Class({
 		return (Browser.Platform.ipod || (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)) ? this.keypress(e, o) : true;
 	},
 	
+	keypress: function(e, o){
+		if (this.options.autoTab){
+			if (this.shouldFocusNext()){
+				var nextField = this.getNextInput();
+				if (nextField){
+					nextField.focus();
+					if (nextField.select) nextField.select();
+				}
+			}
+		}
+		return true;
+	},
+	
+	shouldFocusNext: function(){
+		var maxLength = this.options.maxLength;
+		return maxLength && this.element.get('value').length >= maxLength;
+	},
+	
 	focus: function(e, o){
 		var element = this.element;
 		element.store('meiomask:focusvalue', element.get('value'));
@@ -140,6 +159,20 @@ Meio.Mask = new Class({
 
 	unmask: function(str){
 		return str;
+	},
+	
+	getNextInput: function(){
+		var fields = $A(this.element.form.elements), field;
+		for (var i = fields.indexOf(this.element) + 1, l = fields.length; i < l; i++){
+			field = fields[i];
+			if (this.isFocusableField(field)) return $(field);
+		}
+		return null;
+	},
+	
+	isFocusableField: function(field){
+		return (field.offsetWidth > 0 || field.offsetHeight > 0) // is it visible?
+			&& field.nodeName != 'FIELDSET';
 	}
 	
 });

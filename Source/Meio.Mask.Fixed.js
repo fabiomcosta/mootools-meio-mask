@@ -42,7 +42,7 @@ Meio.Mask.Fixed = new Class({
 	
 	focus: function(e, o){
 		this.element.set('value', this.maskMoldArray.join(''));
-		if (this.options.selectOnFocus) this.element.select();
+		if (this.options.selectOnFocus && this.element.select) this.element.select();
 		this.parent(e, o);
 	},
 
@@ -50,7 +50,7 @@ Meio.Mask.Fixed = new Class({
 		this.parent(e, o);
 		var elementValue = this.element.get('value');
 		if (this.options.removeIfInvalid){
-			if(elementValue.contains(this.options.placeholder)){
+			if (elementValue.contains(this.options.placeholder)){
 				this.maskMoldArray = this.maskMold.split('');
 				this.element.set('value', '');
 			}
@@ -62,8 +62,8 @@ Meio.Mask.Fixed = new Class({
     
 	keypress: function(e, o){
 		if (this.ignore) return true;
-
 		e.preventDefault();
+
 		var c = String.fromCharCode(e.code),
 			maskArray = this.maskArray,
 			start, i, returnFromTestEntry;
@@ -126,7 +126,7 @@ Meio.Mask.Fixed = new Class({
 			this.element.set('value', this.maskMoldArray.join(''));
 			this.element.setCaretPosition(this.validIndexes[start]);
 		}
-		return true;
+		return this.parent();
 	},
     
 	paste: function(e, o){
@@ -147,7 +147,7 @@ Meio.Mask.Fixed = new Class({
 
 	createUnmaskRegex: function(){
 		var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
-		var chars = fixedCharsArray.join('').escapeRegExp();
+		var chars = (fixedCharsArray.join('') + this.options.placeholder).escapeRegExp() ;
 		this.unmaskRegex = chars ? new RegExp('[' + chars + ']', 'g') : null;
 	},
 
@@ -223,6 +223,10 @@ Meio.Mask.Fixed = new Class({
 			this.fireEvent('valid', args);
 		}
 		return returnFromTestEntry || true;
+	},
+	
+	shouldFocusNext: function(){
+		return this.unmask(this.element.get('value')).length >= this.validIndexes.length;
 	}
 });
 
