@@ -30,7 +30,7 @@ Meio.Mask.Fixed = new Class({
     initialize: function(element, options){
 		this.parent(element, options);
 		this.maskArray = this.options.mask.split('');
-		this.maskMold = this.element.get('value') || this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
+		this.maskMold = this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
 		if (this.options.autoSetSize) this.setSize();
@@ -86,7 +86,7 @@ Meio.Mask.Fixed = new Class({
 			
 			i = this.validIndexes[start];
 			if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
-			if ($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
+			if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
 			this.maskMoldArray[i] = (o.isRemoveKey) ? this.options.placeholder : c;
 			
 			var newCarretPosition = $pick(finalRangePosition, this.maskMoldArray.length);
@@ -118,7 +118,7 @@ Meio.Mask.Fixed = new Class({
 			if (!o.isRemoveKey){
 				i = this.validIndexes[start];
 				if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
-				if ($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
+				if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
 				this.maskMoldArray[i] = c;
 				start++;
 			}
@@ -145,19 +145,13 @@ Meio.Mask.Fixed = new Class({
 		return this.unmaskRegex ? str.replace(this.unmaskRegex, '') : str;
 	},
 
-	createUnmaskRegex: function(){
-		var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
-		var chars = (fixedCharsArray.join('') + this.options.placeholder).escapeRegExp() ;
-		this.unmaskRegex = chars ? new RegExp('[' + chars + ']', 'g') : null;
-	},
-
 	applyMask: function(elementValue, newRangeStart){
 		var elementValueArray = elementValue.split(''),
 			maskArray = this.maskArray,
-			maskMold = this.maskMold,
+			maskMold = this.maskMoldArray,
 			eli = 0,
 			returnFromTestEntry;
-			
+		
 		while (eli < maskMold.length){
 			if (!elementValueArray[eli]){
 				elementValueArray[eli] = maskMold[eli];
@@ -166,7 +160,7 @@ Meio.Mask.Fixed = new Class({
 					elementValueArray.splice(eli, 1);
 					continue;
 				} else {
-				    if($type(returnFromTestEntry) === 'string') elementValueArray[eli] = returnFromTestEntry;
+				    if (typeof returnFromTestEntry == 'string') elementValueArray[eli] = returnFromTestEntry;
 				}
 				newStartRange = eli;
 			} else if (maskArray[eli] != elementValueArray[eli]){
@@ -227,6 +221,12 @@ Meio.Mask.Fixed = new Class({
 	
 	shouldFocusNext: function(){
 		return this.unmask(this.element.get('value')).length >= this.validIndexes.length;
+	},
+	
+	createUnmaskRegex: function(){
+		var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
+		var chars = (fixedCharsArray.join('') + this.options.placeholder).escapeRegExp() ;
+		this.unmaskRegex = chars ? new RegExp('[' + chars + ']', 'g') : null;
 	}
 });
 

@@ -7,8 +7,8 @@ authors:
  - Fábio Miranda Costa
 
 requires:
- - core/1.2.3: [Class.Extras, Element.Event, Element.Style]
- - more/1.2.3.1: Element.Forms
+ - core/1.2.4: [Class.Extras, Element.Event, Element.Style]
+ - more/1.2.4.1: Element.Forms
 
 license: MIT-style license
 
@@ -19,10 +19,10 @@ provides: [Meio.Mask]
 
 if (typeof Meio == 'undefined') var Meio = {};
 
+// credits to Jan Kassens
 $extend(Element.NativeEvents, {
 	'paste': 2, 'input': 2
 });
-// thanks Jan Kassens
 Element.Events.paste = {
 	base : (Browser.Engine.presto || (Browser.Engine.gecko && Browser.Engine.version < 19))? 'input': 'paste',
 	condition: function(e){
@@ -45,8 +45,21 @@ Meio.Mask = new Class({
 		//onValid: $empty,
 		
 		//REVERSE MASK OPTIONS
-		//signal: false,
-		//setSize: false
+		//autoSetSize: false,
+		//autoEmpty: false,
+		//alignText: true,
+		//symbol: '',
+		//precision: 2,
+		//decimal: ',',
+		//thousands: '.',
+		//maxLength: 18
+		
+		//REPEAT MASK OPTIONS
+		//mask: '',
+		//maxLength: 0 // 0 for infinite
+		
+		//REGEXP MASK OPTIONS
+		//regex: null
 	},
 
 	initialize: function(el, options){
@@ -65,7 +78,7 @@ Meio.Mask = new Class({
 		}, this);
 		this.element.store('meiomask', this).erase('maxlength');
 		var elementValue = this.element.get('value');
-		if (elementValue !== ''){
+		if (elementValue != ''){
 			this.element.set('value', elementValue.meiomask(this.constructor, this.options));
 		}
 		return this;
@@ -89,7 +102,7 @@ Meio.Mask = new Class({
 		var o = {}, keyCode = (e.type == 'paste') ? null : e.event.keyCode;
 		o.range = this.element.getSelectedRange();
 		o.isSelection = (o.range.start !== o.range.end);
-		// 8 == backspace && 46 == delete && 127 == iphone's delete (i mean backspace)
+		// 8 == backspace && 46 == delete && 127 == iphone's delete
 		o.isDelKey = (keyCode == 46 && !(Browser.Engine.trident && e.event.type == 'keypress'));
 		o.isBksKey = (keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
 		o.isRemoveKey = (o.isBksKey || o.isDelKey);
@@ -117,11 +130,6 @@ Meio.Mask = new Class({
 			}
 		}
 		return true;
-	},
-	
-	shouldFocusNext: function(){
-		var maxLength = this.options.maxLength;
-		return maxLength && this.element.get('value').length >= maxLength;
 	},
 	
 	focus: function(e, o){
@@ -159,6 +167,11 @@ Meio.Mask = new Class({
 
 	unmask: function(str){
 		return str;
+	},
+	
+	shouldFocusNext: function(){
+		var maxLength = this.options.maxLength;
+		return maxLength && this.element.get('value').length >= maxLength;
 	},
 	
 	getNextInput: function(){
@@ -222,8 +235,7 @@ Meio.Mask.extend({
 		}
 	},
 	
-	// Christoph Pojer's (zilenCe) idea http://cpojer.net/
-	// adapted to MeioMask
+	// credits to Christoph Pojer's (cpojer) http://cpojer.net/
 	upTo: function(number){
 		number = '' + number;
 		return function(value, index, _char){
