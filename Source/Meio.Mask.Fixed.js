@@ -32,6 +32,8 @@ Meio.Mask.Fixed = new Class({
 		this.maskArray = this.options.mask.split('');
 		this.maskMold = this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
 		this.maskMoldArray = this.maskMold.split('');
+		var value = this.element.get('value');
+		if (value) this.maskMoldArray = this.mask(value).split('');
 		this.validIndexes = [];
 		if (this.options.autoSetSize) this.setSize();
 		this.maskArray.each(function(c, i){
