@@ -33,9 +33,9 @@ Meio.Mask.Reverse = new Class({
 
 	initialize: function(element, options){
 		this.parent(element, options);
-		var escapedDecimalChar = this.options.decimal.escapeRegExp(),
-			thousandsChar = this.options.thousands,
-			escapedThousandsChars = thousandsChar.escapeRegExp();
+		var thousandsChar = this.options.thousands,
+			escapedThousandsChars = thousandsChar.escapeRegExp(),
+			escapedDecimalChar = this.options.decimal.escapeRegExp();
 		if (this.options.alignText) this.element.setStyle('text-align', 'right');
 		this.maxlength = this.maxlength || this.options.maxLength;
 		this.thousandsRegex = /(\d+)(\d{3})/;
@@ -52,21 +52,20 @@ Meio.Mask.Reverse = new Class({
 
 	focus: function(e, o){
 		var element = this.element,
-		elValue = element.get('value'),
-		symbol = this.options.symbol;
+			elValue = element.get('value');
 		if (this.options.autoEmpty){
 			if (elValue === '') element.set('value', (elValue = this.mask(elValue)));
 		} else {
 			element.set('value', (elValue = this.getValue(elValue, true)));
 		}
-		if (this.options.selectOnFocus) element.selectRange(symbol.length, elValue.length);
+		if (this.options.selectOnFocus) element.selectRange(this.options.symbol.length, elValue.length);
 		this.parent(e, o);
 	},
 
 	blur: function(e, o){
 		this.parent(e, o);
-		var element = this.element;
-		var value = this.getValue(element.get('value'));
+		var element = this.element,
+			value = this.getValue(element.get('value'));
 		if (this.options.autoEmpty && this.mask(value) == this.mask()) value = '';
 		element.set('value', value);
 	},
@@ -75,8 +74,7 @@ Meio.Mask.Reverse = new Class({
 		if (this.ignore) return true;
 		e.preventDefault();
 		
-		var state = this.getCurrentState(e, o);
-		var elementValue = state.value;
+		var state = this.getCurrentState(e, o), elementValue = state.value;
 		
 		if (!this.testEvents(elementValue, state._char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
@@ -105,7 +103,7 @@ Meio.Mask.Reverse = new Class({
 		return true;
 	},
 
-	forceMask: function(str, withSymbol){
+	forceMask: function(str, applySymbol){
 		str = this.cleanup(str);
 		var precision = this.options.precision;
 		var zeros = precision + 1 - str.length;
@@ -114,16 +112,16 @@ Meio.Mask.Reverse = new Class({
 			var decimalIndex = str.length - precision;
 			str = str.substring(0, decimalIndex) + this.options.decimal + str.substring(decimalIndex);
 		}
-		return this.getValue(this.maskThousands(str), withSymbol);
+		return this.getValue(this.maskThousands(str), applySymbol);
 	},
 
 	cleanup: function(str){
 		return this.getValue(str.replace(this.cleanupRegex, '')).replace(this.removeLeadingZerosRegex, '$1');
 	},
 
-	mask: function(str, withSymbol){
+	mask: function(str){
 		str = this.unmask(str || '0').replace('.', this.options.decimal);
-		return this.getValue(this.maskThousands(str), withSymbol);
+		return this.getValue(this.maskThousands(str), !!this.options.symbol);
 	},
 
 	unmask: function(str){
@@ -132,19 +130,18 @@ Meio.Mask.Reverse = new Class({
 
 	toNumber: function(str){
 		if (!isFinite(str)){
-			var thousandsChar = this.options.thousands,
-			decimalChar = this.options.decimal;
-			if (thousandsChar) str = str.replace(this.thousandsReplaceRegex, '');
+			var decimalChar = this.options.decimal;
+			if (this.options.thousands) str = str.replace(this.thousandsReplaceRegex, '');
 			if (decimalChar) str = str.replace(decimalChar, '.');
 		}
 		return str.toFloat().toFixed(this.options.precision);
 	},
 
-	getValue: function(str, withSymbol){
+	getValue: function(str, applySymbol){
 		var symbol = this.options.symbol;
 		return (str.substring(0, symbol.length) === symbol) ?
-			withSymbol ? str : str.substring(symbol.length) :
-			withSymbol ? symbol + str : str;
+			applySymbol ? str : str.substring(symbol.length) :
+			applySymbol ? symbol + str : str;
 	},
 
 	maskThousands: function(str){
@@ -155,7 +152,7 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	zeroize: function(str, zeros){
-		while (zeros--)  str = '0' + str;
+		while (zeros--) str = '0' + str;
 		return str;
 	},
 
