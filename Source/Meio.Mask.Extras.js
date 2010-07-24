@@ -19,26 +19,25 @@ provides: [Meio.Mask.Extras]
 (function(){
 
 	var meiomask = 'meiomask';
-	
-	Meio.Mask.dummyInput = new Element('input', {'type': 'text'});
+	var dummyInput = new Element('input', {'type': 'text'});
 	
 	var upperCamelize = function(str){
 		return str.camelCase().capitalize();
 	};
 	
 	var getClassOptions = function(args){
-		var classNames = [];
 		args = Array.link(args, {mask: String.type, type: String.type, options: Object.type, klass: Class.type});
-		if (args.mask) classNames = args.mask.split('.');
-		var klass = args.klass || (classNames[1] ? Meio.Mask[upperCamelize(classNames[0])][upperCamelize(classNames[1])] : Meio.Mask[upperCamelize(classNames[0])]),
+		var classPath = [];
+		if (args.mask) classPath = args.mask.split('.');
+		var klass = args.klass || (classPath[1] ? Meio.Mask[upperCamelize(classPath[0])][upperCamelize(classPath[1])] : Meio.Mask[upperCamelize(args.type)][upperCamelize(args.mask)]),
 		    options = args.options || {};
 		return {klass: klass, options: options};
 	};
 	
 	var executeFunction = function(functionName, args){
 		var co = getClassOptions(args);
-		Meio.Mask.dummyInput.set('value', '');
-		return new co.klass(Meio.Mask.dummyInput, co.options)[functionName](this);
+		dummyInput.set('value', '');
+		return new co.klass(dummyInput, co.options)[functionName](this);
 	};
 
 	String.implement({
@@ -84,14 +83,13 @@ provides: [Meio.Mask.Extras]
 	};
 
 	// fix for maxlength property
-	(function(maxLength){
-		if (maxLength != null) Element.Properties.maxlength = Element.Properties.maxLength = {
-			get: function(){
-				var maxlength = this.getAttribute('maxLength');
-				return maxlength == maxLength ? null : maxlength;
-			}
-		};
-	})(document.createElement('input').getAttribute('maxLength'));
+	var maxLength = document.createElement('input').getAttribute('maxLength');
+	if (maxLength != null) Element.Properties.maxlength = Element.Properties.maxLength = {
+		get: function(){
+			var maxlength = this.getAttribute('maxLength');
+			return maxlength == maxLength ? null : maxlength;
+		}
+	};
 	
 	Element.implement({
 		meiomask: function(mask, type, options){
