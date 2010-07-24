@@ -41,7 +41,7 @@ provides: [Meio.Mask.Extras]
 	};
 	
 	var executeFunction = function(functionName, args){
-		var co = getClassOptions(args);
+		var co = getClassOptions.apply(null, args);
 		dummyInput.set('value', '');
 		return new co.klass(dummyInput, co.options)[functionName](this);
 	};
@@ -57,7 +57,7 @@ provides: [Meio.Mask.Extras]
 
 	Element.Properties.meiomask = {
 		set: function(){
-			var args = getClassOptions(arguments);
+			var args = getClassOptions.apply(null, arguments);
 			return this.store(meiomask, new args.klass(this, args.options));
 		},
 		// returns the mask object
