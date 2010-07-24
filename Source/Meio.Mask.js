@@ -120,13 +120,11 @@ Meio.Mask = new Class({
 	},
 	
 	keypress: function(e, o){
-		if (this.options.autoTab){
-			if (this.shouldFocusNext()){
-				var nextField = this.getNextInput();
-				if (nextField){
-					nextField.focus();
-					if (nextField.select) nextField.select();
-				}
+		if (this.options.autoTab && this.shouldFocusNext()){
+			var nextField = this.getNextInput();
+			if (nextField){
+				nextField.focus();
+				if (nextField.select) nextField.select();
 			}
 		}
 		return true;

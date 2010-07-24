@@ -25,7 +25,7 @@ provides: [Meio.Mask.Extras]
 	};
 	
 	var getClassOptions = function(a1, a2, opts){
-		var klass, opt;
+		var klass;
 		if ($type(a1) == 'string'){
 			if ($type(a2) != 'string'){
 				opts = a2;
@@ -33,9 +33,11 @@ provides: [Meio.Mask.Extras]
 				a2 = a1[1];
 				a1 = a1[0];
 			}
-			klass = Meio.Mask[upperCamelize(a1)][upperCamelize(a2)];
+			klass = Meio.Mask[upperCamelize(a1)];
+			if (a2) klass = klass[upperCamelize(a2)];
 		} else {
 			klass = a1;
+			opts = a2;
 		}
 		return {klass: klass, options: opts || {}};
 	};
@@ -64,7 +66,7 @@ provides: [Meio.Mask.Extras]
 		get: function(){
 			return this.retrieve(meiomask);
 		},
-		// removes the mask from this input but maintain the mask object stored at its table
+		// removes completely the mask from this input
 		erase: function(){
 			var mask = this.retrieve(meiomask);
 			if (mask) mask.remove();
