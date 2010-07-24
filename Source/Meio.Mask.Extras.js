@@ -18,20 +18,26 @@ provides: [Meio.Mask.Extras]
 
 (function(){
 
-	var meiomask = 'meiomask';
-	var dummyInput = new Element('input', {'type': 'text'});
+	var meiomask = 'meiomask', dummyInput = new Element('input', {'type': 'text'});
 	
 	var upperCamelize = function(str){
 		return str.camelCase().capitalize();
 	};
 	
-	var getClassOptions = function(args){
-		args = Array.link(args, {mask: String.type, type: String.type, options: Object.type, klass: Class.type});
-		var classPath = [];
-		if (args.mask) classPath = args.mask.split('.');
-		var klass = args.klass || (classPath[1] ? Meio.Mask[upperCamelize(classPath[0])][upperCamelize(classPath[1])] : Meio.Mask[upperCamelize(args.type)][upperCamelize(args.mask)]),
-		    options = args.options || {};
-		return {klass: klass, options: options};
+	var getClassOptions = function(a1, a2, opts){
+		var klass, opt;
+		if ($type(a1) == 'string'){
+			if ($type(a2) != 'string'){
+				opts = a2;
+				a1 = a1.split('.');
+				a2 = a1[1];
+				a1 = a1[0];
+			}
+			klass = Meio.Mask[upperCamelize(a1)][upperCamelize(a2)];
+		} else {
+			klass = a1;
+		}
+		return {klass: klass, options: opts || {}};
 	};
 	
 	var executeFunction = function(functionName, args){
