@@ -82,20 +82,14 @@ provides: [Meio.Mask.Extras]
 	};
 
 	// fix for maxlength property
-	Element.Properties.maxLength = Element.Properties.maxlength = {
-		set: function(value){
-			this.setAttribute('maxLength', value);
-			return this;
-		},
-		get: function(){
-			var ml = this.getAttribute('maxLength', 2);
-			return (ml === 2147483647) ? null : ml;
-		},
-		erase: function(){
-			this.removeAttribute('maxLength');
-			return this;
-		}
-	};
+	(function(maxLength){
+		if (maxLength != null) Element.Properties.maxlength = Element.Properties.maxLength = {
+			get: function(){
+				var maxlength = this.getAttribute('maxLength');
+				return maxlength == maxLength ? null : maxlength;
+			}
+		};
+	})(document.createElement('input').getAttribute('maxLength'));
 	
 	Element.implement({
 		meiomask: function(mask, type, options){
