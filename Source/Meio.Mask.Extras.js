@@ -18,6 +18,8 @@ provides: [Meio.Mask.Extras]
 
 (function(){
 
+	var meiomask = 'meiomask';
+	
 	Meio.Mask.dummyInput = new Element('input', {'type': 'text'});
 	
 	var upperCamelize = function(str){
@@ -51,31 +53,31 @@ provides: [Meio.Mask.Extras]
 	Element.Properties.meiomask = {
 		set: function(){
 			var args = getClassOptions(arguments);
-			return this.store('meiomask', new args.klass(this, args.options));
+			return this.store(meiomask, new args.klass(this, args.options));
 		},
 		// returns the mask object
 		get: function(){
-			return this.retrieve('meiomask');
+			return this.retrieve(meiomask);
 		},
 		// removes the mask from this input but maintain the mask object stored at its table
 		erase: function(){
-			var mask = this.retrieve('meiomask');
+			var mask = this.retrieve(meiomask);
 			if (mask) mask.remove();
 			return this;
 		}
 	};
 	
-	Element.Properties['meiomask:value'] = {
+	Element.Properties[meiomask + ':value'] = {
 		// sets the value but first it applyes the mask (if theres any)
 		set: function(value){
-			var mask = this.retrieve('meiomask');
+			var mask = this.retrieve(meiomask);
 			if (mask) value = mask.mask(value);
 			return this.set('value', value);
 		},
 		
 		// gets the unmasked value
 		get: function(){
-			var mask = this.retrieve('meiomask');
+			var mask = this.retrieve(meiomask);
 			var value = this.get('value');
 			return (mask) ? mask.unmask(value) : value;
 		}
@@ -93,7 +95,7 @@ provides: [Meio.Mask.Extras]
 	
 	Element.implement({
 		meiomask: function(mask, type, options){
-			return this.set('meiomask', mask, type, options);
+			return this.set(meiomask, mask, type, options);
 		}
 	});
 
