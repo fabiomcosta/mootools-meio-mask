@@ -18,7 +18,7 @@ provides: [Meio.Mask.Extras]
 
 (function(){
 
-	var meiomask = 'meiomask', dummyInput = new Element('input', {'type': 'text'});
+	var meiomask = 'meiomask';
 	
 	var upperCamelize = function(str){
 		return str.camelCase().capitalize();
@@ -44,8 +44,7 @@ provides: [Meio.Mask.Extras]
 	
 	var executeFunction = function(functionName, args){
 		var co = getClassOptions.apply(null, args);
-		dummyInput.set('value', '');
-		return new co.klass(dummyInput, co.options)[functionName](this);
+		return new co.klass(co.options)[functionName](this);
 	};
 
 	String.implement({
@@ -60,7 +59,7 @@ provides: [Meio.Mask.Extras]
 	Element.Properties.meiomask = {
 		set: function(){
 			var args = getClassOptions.apply(null, arguments);
-			return this.store(meiomask, new args.klass(this, args.options));
+			return this.store(meiomask, new args.klass(args.options).link(this));
 		},
 		// returns the mask object
 		get: function(){
@@ -69,7 +68,7 @@ provides: [Meio.Mask.Extras]
 		// removes completely the mask from this input
 		erase: function(){
 			var mask = this.retrieve(meiomask);
-			if (mask) mask.remove();
+			if (mask) mask.unlink();
 			return this;
 		}
 	};
@@ -90,6 +89,13 @@ provides: [Meio.Mask.Extras]
 		}
 	};
 
+	Element.implement({
+		meiomask: function(mask, type, options){
+			return this.set(meiomask, mask, type, options);
+		}
+	});
+	
+	
 	// fix for maxlength property
 	var maxLength = document.createElement('input').getAttribute('maxLength');
 	if (maxLength != null) Element.Properties.maxlength = Element.Properties.maxLength = {
@@ -98,11 +104,5 @@ provides: [Meio.Mask.Extras]
 			return maxlength == maxLength ? null : maxlength;
 		}
 	};
-	
-	Element.implement({
-		meiomask: function(mask, type, options){
-			return this.set(meiomask, mask, type, options);
-		}
-	});
 
 })();

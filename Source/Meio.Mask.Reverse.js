@@ -31,22 +31,26 @@ Meio.Mask.Reverse = new Class({
 		maxLength: 18
 	},
 
-	initialize: function(element, options){
-		this.parent(element, options);
+	initialize: function(options){
+		this.parent(options);
 		var thousandsChar = this.options.thousands,
 			escapedThousandsChars = thousandsChar.escapeRegExp(),
 			escapedDecimalChar = this.options.decimal.escapeRegExp();
-		if (this.options.alignText) this.element.setStyle('text-align', 'right');
-		this.maxlength = this.maxlength || this.options.maxLength;
+		this.maxlength = this.options.maxLength;
 		this.thousandsRegex = /(\d+)(\d{3})/;
 		this.removeLeadingZerosRegex = /^0+(.*)$/;
 		this.decimalNumberRegex = /^\d$/;
 		this.thousandsReplaceStr = '$1' + thousandsChar + '$2';
 		this.thousandsReplaceRegex = new RegExp(escapedThousandsChars, 'g');
 		this.cleanupRegex = new RegExp('[' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
+	},
+	
+	link: function(element){
+		this.parent(element);
+		if (this.options.alignText) this.element.setStyle('text-align', 'right');
 		var elementValue = this.element.get('value');
 		if (elementValue === '' && !this.options.autoEmpty){
-			this.element.set('value', this.mask(elementValue));
+			this.element.set('value', this.forceMask(elementValue, false));
 		}
 	},
 
@@ -87,7 +91,7 @@ Meio.Mask.Reverse = new Class({
 		var args = [this.element, code, _char];
 		if (!isRemoveKey){
 			var elementValueLength = this.getValue(elementValue, false).length;
-			if (!(this.decimalNumberRegex).test(_char) || elementValueLength > this.maxlength){
+			if (!(this.decimalNumberRegex).test(_char) || (this.maxlength && elementValueLength > this.maxlength)){
 				this.fireEvent('invalid', args);
 				return false;
 			}
@@ -120,8 +124,7 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	mask: function(str){
-		str = this.unmask(str || '0').replace('.', this.options.decimal);
-		return this.getValue(this.maskThousands(str), !!this.options.symbol);
+		return this.forceMask(str || '0', !!this.options.symbol);
 	},
 
 	unmask: function(str){

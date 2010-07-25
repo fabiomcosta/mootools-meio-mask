@@ -62,35 +62,40 @@ Meio.Mask = new Class({
 		//regex: null
 	},
 
-	initialize: function(el, options){
-		this.element = $(el);
-		if (this.element.get('tag') !== 'input' || this.element.get('type') !== 'text') return;
-		this.setup(options);
-	},
-    
-	setup: function(options){
+	initialize: function(options){
 		this.setOptions(options);
-		if (this.element.retrieve('meiomask')) this.remove();
 		this.ignore = false;
-		this.maxlength = this.element.get('maxlength');
+	},
+	
+	link: function(element){
+		element = $(element);
+		if (element.get('tag') != 'input' || element.get('type') != 'text') return;
+		if (this.element) this.unlink();
+		this.element = element;
+		return this.attach();
+	},
+	
+	unlink: function(){
+		return this.dettach();
+	},
+	
+	attach: function(){
+		if (this.maxlength == null) this.maxlength = this.element.get('maxLength');
+		this.element.removeAttribute('maxLength');
 		this.eventsToBind.each(function(evt){
 			this.element.addEvent(evt, this.onMask.bindWithEvent(this, this[evt]));
 		}, this);
-		this.element.store('meiomask', this).removeAttribute('maxLength');
+		var elementValue = this.element.get('value');
+		if (elementValue != '') this.element.set('value', elementValue.meiomask(this.constructor, this.options));
 		return this;
 	},
 	
-	remove: function(){
-		var mask = this.element.retrieve('meiomask');
-		if (mask){
-			var maxlength = mask.maxlength;
-			if (maxlength !== null) this.element.set('maxlength', maxlength);
-			mask.eventsToBind.each(function(evt){
-				this.element.removeEvent(evt, this[evt]);
-			}, mask);
-			this.element.eliminate('meiomask');
-		}
-		return this;
+	dettach: function(){
+		var maxlength = this.maxlength;
+		if (maxlength != null) this.element.set('maxlength', maxlength);
+		this.eventsToBind.each(function(evt){
+			this.element.removeEvent(evt, this[evt]);
+		}, this);
 	},
 	
 	onMask: function(e, func){
@@ -133,7 +138,7 @@ Meio.Mask = new Class({
 
 	blur: function(e, o){
 		var element = this.element;
-		if (element.retrieve('meiomask:focusvalue') != element.get('value')){
+		if (e && element.retrieve('meiomask:focusvalue') != element.get('value')){
 			element.fireEvent('change');
 		}
 	},
@@ -149,18 +154,6 @@ Meio.Mask = new Class({
 	
 	setSize: function(){
 		if (!this.element.get('size')) this.element.set('size', this.maskArray.length);
-	},
-	
-	isFixedChar: function(_char){
-		return !Meio.Mask.matchRules.contains(_char);
-	},
-	
-	mask: function(str){
-		return str;
-	},
-
-	unmask: function(str){
-		return str;
 	},
 	
 	shouldFocusNext: function(){
@@ -180,6 +173,18 @@ Meio.Mask = new Class({
 	isFocusableField: function(field){
 		return (field.offsetWidth > 0 || field.offsetHeight > 0) // is it visible?
 			&& field.nodeName != 'FIELDSET';
+	},
+	
+	isFixedChar: function(_char){
+		return !Meio.Mask.matchRules.contains(_char);
+	},
+	
+	mask: function(str){
+		return str;
+	},
+
+	unmask: function(str){
+		return str;
 	}
 	
 });
@@ -286,7 +291,7 @@ Meio.Mask.extend({
 		'Z': {regex: /[A-Z]/},
 		'a': {regex: /[a-zA-Z]/},
 		'*': {regex: /[0-9a-zA-Z]/},
-		'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, // 'i' doesnt work here
+		'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, // 'i' regex modifier doesnt work well with unicode chars
 		'h': {regex: /[0-9]/, check: Meio.Mask.upTo(23)},
 		'd': {regex: /[0-9]/, check: Meio.Mask.upTo(31)},
 		'm': {regex: /[0-9]/, check: Meio.Mask.upTo(12)}
