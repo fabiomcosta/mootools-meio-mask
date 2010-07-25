@@ -43,6 +43,7 @@ Meio.Mask.Fixed = new Class({
 		this.parent(element);
 		var elementValue = this.element.get('value');
 		if (elementValue != '') this.maskMoldArray = this.mask(elementValue).split('');
+		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
 		if (this.options.autoSetSize) this.setSize();
 	},
 	
@@ -186,7 +187,7 @@ Meio.Mask.Fixed = new Class({
 	
 	createUnmaskRegex: function(){
 		var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
-		var chars = (fixedCharsArray.join('') + this.options.placeholder).escapeRegExp() ;
+		var chars = (fixedCharsArray.join('') + this.options.placeholder).escapeRegExp();
 		this.unmaskRegex = chars ? new RegExp('[' + chars + ']', 'g') : null;
 	},
 	

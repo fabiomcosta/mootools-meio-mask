@@ -43,7 +43,8 @@ provides: [Meio.Mask.Extras]
 	};
 	
 	var executeFunction = function(functionName, args){
-		var co = getClassOptions.apply(null, args);
+		if (args[0] instanceof Meio.Mask) return args[0][functionName](this);
+		co = getClassOptions.apply(null, args); 
 		return new co.klass(co.options)[functionName](this);
 	};
 

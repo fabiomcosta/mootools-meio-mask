@@ -86,7 +86,7 @@ Meio.Mask = new Class({
 			this.element.addEvent(evt, this.onMask.bindWithEvent(this, this[evt]));
 		}, this);
 		var elementValue = this.element.get('value');
-		if (elementValue != '') this.element.set('value', elementValue.meiomask(this.constructor, this.options));
+		if (elementValue != '') this.element.set('value', this.mask(elementValue));
 		return this;
 	},
 	
