@@ -45,6 +45,7 @@ Meio.Mask.Fixed = new Class({
 		if (elementValue != '') this.maskMoldArray = this.mask(elementValue).split('');
 		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
 		if (this.options.autoSetSize) this.setSize();
+		return this;
 	},
 	
 	focus: function(e, o){

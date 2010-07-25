@@ -52,6 +52,7 @@ Meio.Mask.Reverse = new Class({
 		if (elementValue === '' && !this.options.autoEmpty){
 			this.element.set('value', this.forceMask(elementValue, false));
 		}
+		return this;
 	},
 
 	focus: function(e, o){
@@ -131,11 +132,12 @@ Meio.Mask.Reverse = new Class({
 	unmask: function(str){
 		return this.toNumber(this.getValue(str));
 	},
-
+	
 	toNumber: function(str){
+		str = str.replace(/[^\d\.]/g, '');
 		if (!isFinite(str)){
-			var decimalChar = this.options.decimal;
 			if (this.options.thousands) str = str.replace(this.thousandsReplaceRegex, '');
+			var decimalChar = this.options.decimal;
 			if (decimalChar) str = str.replace(decimalChar, '.');
 		}
 		return str.toFloat().toFixed(this.options.precision);

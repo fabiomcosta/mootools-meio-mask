@@ -35,8 +35,6 @@ Meio.Mask = new Class({
 
 	Implements: [Options, Events],
 	
-	eventsToBind: ['focus', 'blur', 'keydown', 'keypress', 'paste'],
-
 	options: {
 		selectOnFocus: true,
 		autoTab: false
@@ -65,6 +63,7 @@ Meio.Mask = new Class({
 	initialize: function(options){
 		this.setOptions(options);
 		this.ignore = false;
+		this.bound = {'focus': 0, 'blur': 0, 'keydown': 0, 'keypress': 0, 'paste': 0};
 	},
 	
 	link: function(element){
@@ -82,9 +81,10 @@ Meio.Mask = new Class({
 	attach: function(){
 		if (this.maxlength == null) this.maxlength = this.element.get('maxLength');
 		this.element.removeAttribute('maxLength');
-		this.eventsToBind.each(function(evt){
-			this.element.addEvent(evt, this.onMask.bindWithEvent(this, this[evt]));
-		}, this);
+		for (var evt in this.bound){
+			this.bound[evt] = this.onMask.bindWithEvent(this, this[evt]);
+			this.element.addEvent(evt, this.bound[evt]);
+		}
 		var elementValue = this.element.get('value');
 		if (elementValue != '') this.element.set('value', this.mask(elementValue));
 		return this;
@@ -93,9 +93,12 @@ Meio.Mask = new Class({
 	dettach: function(){
 		var maxlength = this.maxlength;
 		if (maxlength != null) this.element.set('maxlength', maxlength);
-		this.eventsToBind.each(function(evt){
-			this.element.removeEvent(evt, this[evt]);
-		}, this);
+		for (var evt in this.bound){
+			this.element.removeEvent(evt, this.bound[evt]);
+			this.bound[evt] = 0;
+		}
+		this.element = null;
+		return this;
 	},
 	
 	onMask: function(e, func){

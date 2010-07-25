@@ -43,7 +43,6 @@ provides: [Meio.Mask.Extras]
 	};
 	
 	var executeFunction = function(functionName, args){
-		if (args[0] instanceof Meio.Mask) return args[0][functionName](this);
 		co = getClassOptions.apply(null, args); 
 		return new co.klass(co.options)[functionName](this);
 	};
@@ -60,7 +59,10 @@ provides: [Meio.Mask.Extras]
 	Element.Properties.meiomask = {
 		set: function(){
 			var args = getClassOptions.apply(null, arguments), mask = this.retrieve(meiomask);
-			if (mask) mask.unlink();
+			if (mask){
+				mask.unlink();
+				mask = null;
+			}
 			return this.store(meiomask, new args.klass(args.options).link(this));
 		},
 		// returns the mask object
