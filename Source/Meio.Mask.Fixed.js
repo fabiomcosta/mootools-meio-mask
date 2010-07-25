@@ -80,13 +80,13 @@ Meio.Mask.Fixed = new Class({
 			if (o.isBksKey){
 				do {
 					start = this.validIndexes.indexOf(--o.range.start);
-				} while (start === -1 && o.range.start >= 0);
+				} while (start == -1 && o.range.start >= 0);
 				finalRangePosition = this.validIndexes[start] || 0;
 			}
 			else{
 				do {
 					start = this.validIndexes.indexOf(o.range.start++);
-				} while (start === -1 && o.range.start < maskArray.length);
+				} while (start == -1 && o.range.start < maskArray.length);
 				finalRangePosition = this.validIndexes[start + 1];
 			}
 			
@@ -108,10 +108,10 @@ Meio.Mask.Fixed = new Class({
 			// text selected
 			do {
 				start = this.validIndexes.indexOf(o.range.start++);
-			} while(start === -1 && o.range.start < maskArray.length);
+			} while(start == -1 && o.range.start < maskArray.length);
 			do {
 				end = this.validIndexes.indexOf(o.range.end++);
-			} while(end === -1 && o.range.end < maskArray.length);
+			} while(end == -1 && o.range.end < maskArray.length);
 
             // if  you select a fixed char it will ignore your input
 			if (!(end - start)) return true;
