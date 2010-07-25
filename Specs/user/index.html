@@ -27,13 +27,15 @@
 	</head>
 
 	<body>
+		
 		<h1>Fixed</h1>
 		<div class="content">
 			<form action="index_submit" method="get">
 				<fieldset>
 					<label>fixed Mask:</label>
-					<input style="width: 200px" type="text"data-meiomask-options="{mask: ':99:99:', autoTab: true}" data-meiomask="fixed" />
+					<input id="change-mask-input" style="width: 200px" type="text" data-meiomask-options="{mask: ':99:99:', autoTab: true}" data-meiomask="fixed" />
 				</fieldset>
+				<a id="change-mask" title="change mask" href="#">change mask</a>
 				<fieldset>
 					<label>fixed.phone Mask:</label>
 					<input style="width: 200px" type="text" data-meiomask="fixed.phone" />
@@ -80,7 +82,7 @@
 				</fieldset>
 			</form>
 		</div>
-		
+
 		<h1>Reverse</h1>
 		<div class="content">
 			<form action="index_submit" method="get">
@@ -130,11 +132,15 @@
 				</fieldset>
 			</form>
 		</div>
-		
+
 		<script type="text/javascript">
+			$('change-mask').addEvent('click', function(){
+				$('change-mask-input').meiomask('reverse.integer');
+			});
 			$$('input').each(function(input){
 				input.meiomask(input.get('data-meiomask'), JSON.decode(input.get('data-meiomask-options')));
 			});
+			
 			/*
 			$$('input').each(function(input){
 				console.log(input.get('meiomask'));
