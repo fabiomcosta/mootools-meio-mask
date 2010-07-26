@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os
+import os, re
 from zipfile import ZipFile, BadZipfile
 
 class Builder:
@@ -24,13 +24,13 @@ class Builder:
             getattr(self, list_name).append((files, root + path + files + extension))
             
     def read_file(self, _file):
-        f = open(_file,'r')
+        f = open(_file, 'r')
         ret = []
         try:
             ret = f.readlines()
         finally:
             f.close()
-        ret.append('\r\n')
+        ret.append('\n')
         return ret
 
     def create_built_file(self):
@@ -43,10 +43,23 @@ class Builder:
             built_file.close()
         print '** Succesfully created "' + file_name + '" file. **'
     
+    def add_comment(self, compressed_file):
+        try:
+            os.remove(compressed_file)
+        except os.error:
+            pass # might have been yet removed
+        compressed_built_file = open(compressed_file, 'w+')
+        try:
+            compressed_built_file.write(re.search(r'\/\*(.*?)\*\/', ''.join(self.read_file(self.javascript_files[0][1])), re.S | re.U).group(0))
+            compressed_built_file.write('\n')
+        finally:
+            compressed_built_file.close()
+
     def create_minified_file(self):
         uncompressed_file = self.build_folder + self.file_name + self.extension 
         compressed_file = self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension
-        os.system('java -jar Assets/yui.jar --warn --charset utf8 %(uncompressed)s > %(compressed)s' % {
+        self.add_comment(compressed_file)
+        os.system('java -jar Assets/yui.jar --warn --charset utf8 %(uncompressed)s >> %(compressed)s' % {
             'uncompressed': uncompressed_file,
             'compressed': compressed_file
         })
