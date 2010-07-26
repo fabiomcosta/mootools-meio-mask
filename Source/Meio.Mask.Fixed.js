@@ -43,7 +43,6 @@ Meio.Mask.Fixed = new Class({
 		this.parent(element);
 		var elementValue = this.element.get('value');
 		if (elementValue != '') this.maskMoldArray = this.mask(elementValue).split('');
-		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
 		if (this.options.autoSetSize) this.setSize();
 		return this;
 	},
@@ -64,7 +63,7 @@ Meio.Mask.Fixed = new Class({
 			}
 			return true;
 		}
-		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
+		if (this.options.removeInvalidTrailingChars) this.element.set('value', this.removeInvalidTrailingChars(elementValue));
 		return true;
 	},
     
@@ -164,7 +163,7 @@ Meio.Mask.Fixed = new Class({
 			}
 			if (!cont) break;
 		}
-		this.element.set('value', elementValue.substring(0, truncateIndex));
+		return elementValue.substring(0, truncateIndex);
     },
 	
 	testEvents: function(index, _char, code, isRemoveKey){
@@ -230,7 +229,9 @@ Meio.Mask.Fixed = new Class({
 	},
 	
 	mask: function(str){
-		return this.applyMask(str).value.join('');
+		str = this.applyMask(str).value.join('');
+		if (this.options.removeInvalidTrailingChars) str = this.removeInvalidTrailingChars(str);
+		return str;
 	},
 
 	unmask: function(str){
