@@ -7,11 +7,8 @@ authors:
  - Fábio Miranda Costa
 
 requires:
- - core/1.2.3:
-   - Class.Extras
-   - Element.Event
-   - Element.Style
- - more/1.2.3.1:Element.Forms
+ - core/1.2.4: [Class.Extras, Element.Event, Element.Style]
+ - more/1.2.4.1: Element.Forms
 
 license: MIT-style license
 
@@ -20,12 +17,12 @@ provides: [Meio.Mask]
 ...
 */
 
-if(typeof Meio == 'undefined') var Meio = {};
+if (typeof Meio == 'undefined') var Meio = {};
 
+// credits to Jan Kassens
 $extend(Element.NativeEvents, {
 	'paste': 2, 'input': 2
 });
-// thanks Jan Kassens
 Element.Events.paste = {
 	base : (Browser.Engine.presto || (Browser.Engine.gecko && Browser.Engine.version < 19))? 'input': 'paste',
 	condition: function(e){
@@ -38,78 +35,105 @@ Meio.Mask = new Class({
 
 	Implements: [Options, Events],
 	
-	eventsToBind: ['focus', 'blur', 'keydown', 'keypress', 'paste'],
-
 	options: {
-		selectOnFocus: true
+		selectOnFocus: true,
+		autoTab: false
 
 		//onInvalid: $empty,
 		//onValid: $empty,
 		
 		//REVERSE MASK OPTIONS
-		//signal: false,
-		//setSize: false
+		//autoSetSize: false,
+		//autoEmpty: false,
+		//alignText: true,
+		//symbol: '',
+		//precision: 2,
+		//decimal: ',',
+		//thousands: '.',
+		//maxLength: 18
+		
+		//REPEAT MASK OPTIONS
+		//mask: '',
+		//maxLength: 0 // 0 for infinite
+		
+		//REGEXP MASK OPTIONS
+		//regex: null
 	},
 
-	initialize: function(el, options){
-		this.element = $(el);
-		if(this.element.get('tag') !== 'input' || this.element.get('type') !== 'text') return;
-		this.setup(options);
-	},
-    
-	setup: function(options){
+	initialize: function(options){
 		this.setOptions(options);
-		if(this.element.retrieve('meiomask')) this.remove();
 		this.ignore = false;
-		this.maxlength = this.element.get('maxlength');
-		this.eventsToBind.each(function(evt){
-			this.element.addEvent(evt, this.onMask.bindWithEvent(this, this[evt]));
-		}, this);
-		this.element.store('meiomask', this).erase('maxlength');
-		var elementValue = this.element.get('value');
-		if(elementValue !== ''){
-			var elValue = elementValue.meiomask(this.constructor, this.options);
-			this.element.set('value', elValue).defaultValue = elValue;
+		this.bound = {'focus': 0, 'blur': 0, 'keydown': 0, 'keypress': 0, 'paste': 0};
+	},
+	
+	link: function(element){
+		element = $(element);
+		if (element.get('tag') != 'input' || element.get('type') != 'text') return;
+		if (this.element) this.unlink();
+		this.element = element;
+		return this.attach();
+	},
+	
+	unlink: function(){
+		return this.dettach();
+	},
+	
+	attach: function(){
+		if (this.maxlength == null) this.maxlength = this.element.get('maxLength');
+		this.element.removeAttribute('maxLength');
+		for (var evt in this.bound){
+			this.bound[evt] = this.onMask.bindWithEvent(this, this[evt]);
+			this.element.addEvent(evt, this.bound[evt]);
 		}
+		var elementValue = this.element.get('value');
+		if (elementValue != '') this.element.set('value', this.mask(elementValue));
 		return this;
 	},
 	
-	remove: function(){
-		var mask = this.element.retrieve('meiomask');
-		if(mask){
-			var maxlength = mask.maxlength;
-			if(maxlength !== null) this.element.set('maxlength', maxlength);
-			mask.eventsToBind.each(function(evt){
-				this.element.removeEvent(evt, this[evt]);
-			}, mask);
-			this.element.eliminate('meiomask');
+	dettach: function(){
+		var maxlength = this.maxlength;
+		if (maxlength != null) this.element.set('maxlength', maxlength);
+		for (var evt in this.bound){
+			this.element.removeEvent(evt, this.bound[evt]);
+			this.bound[evt] = 0;
 		}
+		this.element = null;
 		return this;
 	},
 	
 	onMask: function(e, func){
-		if(this.element.get('readonly')) return true;
-		var o = {};
+		if (this.element.get('readonly')) return true;
+		var o = {}, keyCode = (e.type == 'paste') ? null : e.event.keyCode;
 		o.range = this.element.getSelectedRange();
 		o.isSelection = (o.range.start !== o.range.end);
-		// 8==backspace && 46==delete && 127==iphone's delete (i mean backspace)
-		o.isDelKey = (e.event.keyCode == 46);
-		o.isBksKey = (e.event.keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
+		// 8 == backspace && 46 == delete && 127 == iphone's delete
+		o.isDelKey = (keyCode == 46 && !(Browser.Engine.trident && e.event.type == 'keypress'));
+		o.isBksKey = (keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
 		o.isRemoveKey = (o.isBksKey || o.isDelKey);
-		func.call(this, e, o);
+		func && func.call(this, e, o);
 		return true;
 	},
 
     keydown: function(e, o){
 		this.ignore = (Meio.Mask.ignoreKeys[e.code] && !o.isRemoveKey) || e.control || e.meta || e.alt;
-		if(this.ignore || o.isRemoveKey){
+		if (this.ignore || o.isRemoveKey){
 			var keyRepresentation = Meio.Mask.ignoreKeys[e.code] || '';
 			this.fireEvent('valid', [this.element, e.code, keyRepresentation]);
 		}
-		(Browser.Platform.ipod
-		|| (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey))? this.keypress(e, o): true;
+		return (Browser.Platform.ipod || (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)) ? this.keypress(e, o) : true;
 	},
-    
+	
+	keypress: function(e, o){
+		if (this.options.autoTab && this.shouldFocusNext()){
+			var nextField = this.getNextInput();
+			if (nextField){
+				nextField.focus();
+				if (nextField.select) nextField.select();
+			}
+		}
+		return true;
+	},
+	
 	focus: function(e, o){
 		var element = this.element;
 		element.store('meiomask:focusvalue', element.get('value'));
@@ -117,18 +141,55 @@ Meio.Mask = new Class({
 
 	blur: function(e, o){
 		var element = this.element;
-		if(element.retrieve('meiomask:focusvalue') != element.get('value')){
+		if (e && element.retrieve('meiomask:focusvalue') != element.get('value')){
 			element.fireEvent('change');
 		}
 	},
-
+	
+	getCurrentState: function(e, o){
+		var _char = String.fromCharCode(e.code),
+			elValue = this.element.get('value');
+		var start = o.range.start, end = o.range.end;
+		if (o.isRemoveKey && !o.isSelection) o.isDelKey ? end++ : start--;
+		return {value: elValue.substring(0, start) + (o.isRemoveKey ? '' : _char) + elValue.substring(end),
+			_char: _char, start: start, end: end};
+	},
+	
 	setSize: function(){
-		if(!this.element.get('size')) this.element.set('size', this.maskArray.length);
+		if (!this.element.get('size')) this.element.set('size', this.maskArray.length);
+	},
+	
+	shouldFocusNext: function(){
+		var maxLength = this.options.maxLength;
+		return maxLength && this.element.get('value').length >= maxLength;
+	},
+	
+	getNextInput: function(){
+		var fields = $A(this.element.form.elements), field;
+		for (var i = fields.indexOf(this.element) + 1, l = fields.length; i < l; i++){
+			field = fields[i];
+			if (this.isFocusableField(field)) return $(field);
+		}
+		return null;
+	},
+	
+	isFocusableField: function(field){
+		return (field.offsetWidth > 0 || field.offsetHeight > 0) // is it visible?
+			&& field.nodeName != 'FIELDSET';
 	},
 	
 	isFixedChar: function(_char){
-	    return !Meio.Mask.matchRules.contains(_char);
+		return !Meio.Mask.matchRules.contains(_char);
+	},
+	
+	mask: function(str){
+		return str;
+	},
+
+	unmask: function(str){
+		return str;
 	}
+	
 });
 
 Meio.Mask.extend({
@@ -146,7 +207,7 @@ Meio.Mask.extend({
 	setRules: function(rulesObj){
 		$extend(this.rules, rulesObj);
 		var rulesKeys = [];
-		for(rule in rulesObj) rulesKeys.push(rule);
+		for (rule in rulesObj) rulesKeys.push(rule);
 		this.matchRules += rulesKeys.join('');
 		this.recompileRulesRegex();
 	},
@@ -159,7 +220,7 @@ Meio.Mask.extend({
 
 	removeRules: function(){
 		var rulesToRemove = Array.flatten(arguments);
-		for(var i=rulesToRemove.length; i--;) this.removeRule(rulesToRemove[i]);
+		for (var i=rulesToRemove.length; i--;) this.removeRule(rulesToRemove[i]);
 	},
 	
 	recompileRulesRegex: function(){
@@ -168,7 +229,7 @@ Meio.Mask.extend({
 	
 	createMasks: function(type, masks){
 		type = type.capitalize();
-		for(mask in masks){
+		for (mask in masks){
 			this[type][mask.camelCase().capitalize()] = new Class({
 				Extends: this[type],
 				options: masks[mask]
@@ -176,12 +237,11 @@ Meio.Mask.extend({
 		}
 	},
 	
-	// Christoph Pojer's (zilenCe) idea http://cpojer.net/
-	// adapted to MeioMask
+	// credits to Christoph Pojer's (cpojer) http://cpojer.net/
 	upTo: function(number){
 		number = '' + number;
 		return function(value, index, _char){
-			if(value.charAt(index-1) == number[0])
+			if (value.charAt(index-1) == number[0])
 				return (_char <= number[1]);
 			return true;
 		};
@@ -219,12 +279,11 @@ Meio.Mask.extend({
 		127		: 'delete'
 	};
 	
-	if(Browser.Platform.ipod){
+	if (Browser.Platform.ipod){
 		ignoreKeys = iphoneIgnoreKeys;
-	}
-	else{
+	} else {
 		// f1, f2, f3 ... f12
-		for(var i=1; i<=12; i++) desktopIgnoreKeys[111 + i] = 'f' + i;
+		for (var i=1; i<=12; i++) desktopIgnoreKeys[111 + i] = 'f' + i;
 		ignoreKeys = desktopIgnoreKeys; 
 	}
 	return {ignoreKeys: ignoreKeys};
@@ -235,12 +294,12 @@ Meio.Mask.extend({
 		'Z': {regex: /[A-Z]/},
 		'a': {regex: /[a-zA-Z]/},
 		'*': {regex: /[0-9a-zA-Z]/},
-		'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, //i doenst work here
+		'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, // 'i' regex modifier doesnt work well with unicode chars
 		'h': {regex: /[0-9]/, check: Meio.Mask.upTo(23)},
 		'd': {regex: /[0-9]/, check: Meio.Mask.upTo(31)},
 		'm': {regex: /[0-9]/, check: Meio.Mask.upTo(12)}
 	};
-	for(var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
+	for (var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
 	return rules;
 })());
 
@@ -272,45 +331,53 @@ Meio.Mask.Fixed = new Class({
 		placeholder: '_',
 		removeIfInvalid: false, // removes the value onblur if the input is not valid
 		removeInvalidTrailingChars: true
-    },
+	},
 
-    initialize: function(element, options){
-		this.parent(element, options);
+    initialize: function(options){
+		this.parent(options);
 		this.maskArray = this.options.mask.split('');
-		this.maskMold = this.element.get('value') || this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
+		this.maskMold = this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
 		this.maskMoldArray = this.maskMold.split('');
 		this.validIndexes = [];
-		if(this.options.autoSetSize) this.setSize();
 		this.maskArray.each(function(c, i){
-		    if(!this.isFixedChar(c)) this.validIndexes.push(i);
+			if (!this.isFixedChar(c)) this.validIndexes.push(i);
 		}, this);
 		this.createUnmaskRegex();
 	},
 	
+	link: function(element){
+		this.parent(element);
+		var elementValue = this.element.get('value');
+		if (elementValue != '') this.maskMoldArray = this.mask(elementValue).split('');
+		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
+		if (this.options.autoSetSize) this.setSize();
+		return this;
+	},
+	
 	focus: function(e, o){
 		this.element.set('value', this.maskMoldArray.join(''));
-		if(this.options.selectOnFocus) this.element.select();
+		if (this.options.selectOnFocus && this.element.select) this.element.select();
 		this.parent(e, o);
 	},
 
 	blur: function(e, o){
 		this.parent(e, o);
 		var elementValue = this.element.get('value');
-		if(this.options.removeIfInvalid){
-			if(elementValue.contains(this.options.placeholder)){
+		if (this.options.removeIfInvalid){
+			if (elementValue.contains(this.options.placeholder)){
 				this.maskMoldArray = this.maskMold.split('');
 				this.element.set('value', '');
 			}
 			return true;
-		} 
-		if(this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
+		}
+		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
 		return true;
 	},
     
 	keypress: function(e, o){
-		if(this.ignore) return true;
-
+		if (this.ignore) return true;
 		e.preventDefault();
+
 		var c = String.fromCharCode(e.code),
 			maskArray = this.maskArray,
 			start, i, returnFromTestEntry;
@@ -318,174 +385,177 @@ Meio.Mask.Fixed = new Class({
 		if(!o.isSelection){
 			// no text selected
 			var finalRangePosition;
-			if(o.isBksKey){
-				do{
+			if (o.isBksKey){
+				do {
 					start = this.validIndexes.indexOf(--o.range.start);
-				}while(start === -1 && o.range.start >= 0);
+				} while (start == -1 && o.range.start >= 0);
 				finalRangePosition = this.validIndexes[start] || 0;
 			}
 			else{
-				do{
+				do {
 					start = this.validIndexes.indexOf(o.range.start++);
-				}while(start === -1 && o.range.start < maskArray.length);
+				} while (start == -1 && o.range.start < maskArray.length);
 				finalRangePosition = this.validIndexes[start + 1];
 			}
 			
 			i = this.validIndexes[start];
-			if(!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
-			if($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
-			this.maskMoldArray[i] = (o.isRemoveKey)? this.options.placeholder: c;
+			if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
+			if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
+			this.maskMoldArray[i] = (o.isRemoveKey) ? this.options.placeholder : c;
 			
 			var newCarretPosition = $pick(finalRangePosition, this.maskMoldArray.length);
 			this.element.set('value', this.maskMoldArray.join(''))
-				.selectRange(newCarretPosition, newCarretPosition);
-		}
-		else{
+				.setCaretPosition(newCarretPosition);
+		
+		} else {
 
 			var rstart = o.range.start,
 			    rend = o.range.end,
 			    end;
 
 			// text selected
-			do{
+			do {
 				start = this.validIndexes.indexOf(o.range.start++);
-			}while(start === -1 && o.range.start < maskArray.length);
-			do{
+			} while(start == -1 && o.range.start < maskArray.length);
+			do {
 				end = this.validIndexes.indexOf(o.range.end++);
-			}while(end === -1 && o.range.end < maskArray.length);
+			} while(end == -1 && o.range.end < maskArray.length);
 
             // if  you select a fixed char it will ignore your input
-			if(!(end - start)) return true;
+			if (!(end - start)) return true;
 			
 			// removes all the chars into the range
-			for(i=rstart; i<rend; i++){
+			for (i=rstart; i<rend; i++){
 				this.maskMoldArray[i] = this.maskMold.charAt(i);
 			}
 
-			if(!o.isRemoveKey){
+			if (!o.isRemoveKey){
 				i = this.validIndexes[start];
-				if(!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
-				if($type(returnFromTestEntry) === 'string') c = returnFromTestEntry;
+				if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
+				if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
 				this.maskMoldArray[i] = c;
 				start++;
 			}
 			
 			this.element.set('value', this.maskMoldArray.join(''));
-			this.element.selectRange(this.validIndexes[start], this.validIndexes[start]);
+			this.element.setCaretPosition(this.validIndexes[start]);
 		}
-		return true;
+		return this.parent();
 	},
     
 	paste: function(e, o){
 		var retApply = this.applyMask(this.element.get('value'), o.range.start);
 		this.maskMoldArray = retApply.value;
 		this.element.set('value', this.maskMoldArray.join(''))
-			.selectRange(retApply.rangeStart, retApply.rangeStart);
+			.setCaretPosition(retApply.rangeStart);
 		return true;
 	},
 
-	mask: function(str){
-		return this.applyMask(str).value.join('');
-	},
-
-	unmask: function(str){
-		return str.replace(this.unmaskRegex, '');
-	},
-
-	createUnmaskRegex: function(){
-		var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
-		this.unmaskRegex = new RegExp('[' + fixedCharsArray.join('').escapeRegExp() + ']', 'g');
-	},
-
-	applyMask: function(elementValue, newRangeStart){
-		var elementValueArray = elementValue.split(''),
-			maskArray = this.maskArray,
-			maskMold = this.maskMold,
-			eli = 0,
-			returnFromTestEntry;
-			
-		while(eli < maskMold.length){
-			if(!elementValueArray[eli]){
-				elementValueArray[eli] = maskMold[eli];
-			}
-			else if(Meio.Mask.rules[maskArray[eli]]){
-				if(!(returnFromTestEntry = this.testEntry(eli, elementValueArray[eli]))){
-					elementValueArray.splice(eli, 1);
-					continue;
-				}
-				else{
-				    if($type(returnFromTestEntry) === 'string') elementValueArray[eli] = returnFromTestEntry;
-				}
-				newStartRange = eli;
-			}
-			else if(maskArray[eli] != elementValueArray[eli]){
-				elementValueArray.splice(eli, 0, maskMold[eli]);
-			}
-			else{
-				elementValueArray[eli] = maskMold[eli];
-			}
-			eli++;
-		}
-		
-		// makes sure the value is not bigger than the mask definition
-		return {value: elementValueArray.slice(0, this.maskMold.length), rangeStart: newRangeStart + 1};
-	},
-
-    removeInvalidTrailingChars: function(elementValue){
+	removeInvalidTrailingChars: function(elementValue){
 		var truncateIndex = elementValue.length,
-		    placeholder = this.options.placeholder,
+			placeholder = this.options.placeholder,
 			i = elementValue.length - 1,
-		    cont;
-		while(i >= 0){
+			cont;
+		while (i >= 0){
 			cont = false;
-			while(this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== placeholder){
+			while (this.isFixedChar(elementValue.charAt(i)) && elementValue.charAt(i) !== placeholder){
+				if (i == 0) truncateIndex = 0;
 				cont = true;
 				i--;
 			}
-			while(elementValue.charAt(i) === placeholder){
-			    cont = true;
+			while (elementValue.charAt(i) === placeholder){
 				truncateIndex = i;
+				cont = true;
 				i--;
 			}
-			if(!cont) break;
+			if (!cont) break;
 		}
 		this.element.set('value', elementValue.substring(0, truncateIndex));
     },
-	
-	testEntry: function(index, _char){
-		var maskArray = this.maskArray,
-			rule = Meio.Mask.rules[maskArray[index]],
-			ret = (rule && rule.regex.test(_char));
-		return (rule.check && ret)? rule.check(this.element.get('value'), index, _char): ret;
-	},
 	
 	testEvents: function(index, _char, code, isRemoveKey){
 		var maskArray = this.maskArray,
 			rule = Meio.Mask.rules[maskArray[index]],
 			returnFromTestEntry;
-		if(!isRemoveKey){
-			var args = args = [this.element, code, _char];
-			if(!rule || !(returnFromTestEntry = this.testEntry(index, _char))){
+		if (!isRemoveKey){
+			var args = [this.element, code, _char];
+			if (!rule || !(returnFromTestEntry = this.testEntry(this.element.get('value'), index, _char))){
 				this.fireEvent('invalid', args);
 				return false;
 			}
 			this.fireEvent('valid', args);
 		}
-		return returnFromTestEntry || true;
+		return (returnFromTestEntry != null) ? returnFromTestEntry : true;
+	},
+	
+	shouldFocusNext: function(){
+		return this.unmask(this.element.get('value')).length >= this.validIndexes.length;
+	},
+	
+	createUnmaskRegex: function(){
+		var fixedCharsArray = [].combine(this.options.mask.replace(Meio.Mask.rulesRegex, '').split(''));
+		var chars = (fixedCharsArray.join('') + this.options.placeholder).escapeRegExp();
+		this.unmaskRegex = chars ? new RegExp('[' + chars + ']', 'g') : null;
+	},
+	
+	testEntry: function(str, index, _char){
+		var maskArray = this.maskArray,
+			rule = Meio.Mask.rules[maskArray[index]],
+			ret = (rule && rule.regex.test(_char));
+		return (rule.check && ret) ? rule.check(str, index, _char) : ret;
+	},
+
+	applyMask: function(str, newRangeStart){
+		var strArray = str.split(''),
+			maskArray = this.maskArray,
+			maskMold = this.maskMoldArray,
+			rules = Meio.Mask.rules,
+			eli = 0,
+			returnFromTestEntry;
+		
+		while (eli < maskMold.length){
+			if (!strArray[eli]){
+				strArray[eli] = maskMold[eli];
+			} else if (rules[maskArray[eli]]){
+				if (!(returnFromTestEntry = this.testEntry(str, eli, strArray[eli]))){
+					strArray.splice(eli, 1);
+					continue;
+				} else {
+					if (typeof returnFromTestEntry == 'string') strArray[eli] = returnFromTestEntry;
+				}
+				newStartRange = eli;
+			} else if (maskArray[eli] != strArray[eli]){
+				strArray.splice(eli, 0, maskMold[eli]);
+			} else {
+				strArray[eli] = maskMold[eli];
+			}
+			eli++;
+		}
+
+		return {value: strArray.slice(0, this.maskMold.length), rangeStart: newRangeStart + 1};
+	},
+	
+	mask: function(str){
+		return this.applyMask(str).value.join('');
+	},
+
+	unmask: function(str){
+		return this.unmaskRegex ? str.replace(this.unmaskRegex, '') : str;
 	}
+	
 });
 
 
 Meio.Mask.createMasks('Fixed', {
-	'Phone'				: { mask: '(99) 9999-9999' },
-	'PhoneUs'			: { mask: '(999) 999-9999' },
-	'Cpf'				: { mask: '999.999.999-99' },
-	'Cnpj'				: { mask: '99.999.999/9999-99' },
-	'Date'				: { mask: '3d/1m/9999' },
-	'DateUs'			: { mask: '1m/3d/9999' },
-	'Cep'				: { mask: '99999-999' },
-	'Time'				: { mask: '2h:59' },
-	'CC'				: { mask: '9999 9999 9999 9999' }
+	'Phone'		: {mask: '(99) 9999-9999'},
+	'PhoneUs'	: {mask: '(999) 999-9999'},
+	'Cpf'		: {mask: '999.999.999-99'},
+	'Cnpj'		: {mask: '99.999.999/9999-99'},
+	'Date'		: {mask: '3d/1m/9999'},
+	'DateUs'	: {mask: '1m/3d/9999'},
+	'Cep'		: {mask: '99999-999'},
+	'Time'		: {mask: '2h:59'},
+	'Cc'		: {mask: '9999 9999 9999 9999'}
 });
 
 /*
@@ -512,68 +582,78 @@ Meio.Mask.Reverse = new Class({
 
 	options: {
 		autoSetSize: false,
+		autoEmpty: false,
 		alignText: true,
 		symbol: '',
 		precision: 2,
 		decimal: ',',
 		thousands: '.',
-		maxLength: 19
+		maxLength: 18
 	},
 
-	initialize: function(element, options){
-		this.parent(element, options);
-		var escapedDecimalChar = this.options.decimal.escapeRegExp(),
-		thousandsChar = this.options.thousands,
-		escapedThousandsChars = thousandsChar.escapeRegExp();
-		if(this.options.alignText) this.element.setStyle('text-align', 'right');
-		this.maxlength = this.maxlength || this.options.maxLength;
-		this.thousandsRegex = /(\d+)(\d{3})/;
-		this.removeLeadingZerosRegex = /^0+(.*)$/;
-		this.decimalNumberRegex = /^\d$/;
+	initialize: function(options){
+		this.parent(options);
+		var thousandsChar = this.options.thousands,
+			escapedThousandsChars = thousandsChar.escapeRegExp(),
+			escapedDecimalChar = this.options.decimal.escapeRegExp();
+		this.maxlength = this.options.maxLength;
+		this.reThousands = /(\d+)(\d{3})/;
+		this.reRemoveLeadingZeros = /^0+(.*)$/;
+		this.reDecimalNumber = /^\d$/;
 		this.thousandsReplaceStr = '$1' + thousandsChar + '$2';
-		this.thousandsReplaceRegex = new RegExp(escapedThousandsChars, 'g');
-		this.cleanupRegex = new RegExp('[' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
+		this.reThousandsReplace = new RegExp(escapedThousandsChars, 'g');
+		this.reCleanup = new RegExp('[' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
+		this.reRemoveNonNumbers = new RegExp('[^\\d' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
+	},
+	
+	link: function(element){
+		this.parent(element);
+		if (this.options.alignText) this.element.setStyle('text-align', 'right');
 		var elementValue = this.element.get('value');
-		if(elementValue === ''){
-			elementValue = this.mask(elementValue);
-			this.element.set('value', elementValue).defaultValue = elementValue;
+		if (elementValue === '' && !this.options.autoEmpty){
+			this.element.set('value', this.forceMask(elementValue, false));
 		}
+		return this;
 	},
 
 	focus: function(e, o){
 		var element = this.element,
-		elValue = element.get('value'),
-		symbol = this.options.symbol;
-		element.set('value', (elValue = this.getValue(elValue, true)));
-		if(this.options.selectOnFocus)
-			element.selectRange(symbol.length, elValue.length);
+			elValue = element.get('value');
+		if (this.options.autoEmpty){
+			if (elValue === '') element.set('value', (elValue = this.mask(elValue)));
+		} else {
+			element.set('value', (elValue = this.getValue(elValue, true)));
+		}
+		if (this.options.selectOnFocus) element.selectRange(this.options.symbol.length, elValue.length);
 		this.parent(e, o);
 	},
 
 	blur: function(e, o){
 		this.parent(e, o);
-		var element = this.element;
-		element.set('value', this.getValue(element.get('value')));
+		var element = this.element,
+			value = this.getValue(element.get('value'));
+		if (this.options.autoEmpty && this.mask(value) == this.mask()) value = '';
+		element.set('value', value);
 	},
 
 	keypress: function(e, o){
-		if(this.ignore) return true;
+		if (this.ignore) return true;
 		e.preventDefault();
-		var _char = String.fromCharCode(e.code),
-		elementValue = this.element.get('value');
-
-		elementValue = o.isRemoveKey? elementValue.substring(0, elementValue.length - 1): this.getValue(elementValue + _char);
-
-		if(!this.testEvents(elementValue.length, _char, e.code, o.isRemoveKey)) return true;
+		
+		var state = this.getCurrentState(e, o), elementValue = state.value;
+		
+		if (!this.testEvents(elementValue, state._char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
-		this.element.set('value', elementValue).selectRange(elementValue.length, elementValue.length);
-		return true;
+		this.element.set('value', elementValue).setCaretPosition(elementValue.length);
+		
+		return this.parent();
 	},
 
-	testEvents: function(elementValueLength, _char, code, isRemoveKey){
+	testEvents: function(elementValue, _char, code, isRemoveKey){
 		var args = [this.element, code, _char];
-		if(!isRemoveKey){
-			if(!(this.decimalNumberRegex).test(_char) || elementValueLength >= this.maxlength){
+		if (!isRemoveKey){
+			var elementValueLength = this.getValue(elementValue, false).length;
+			if (!(this.reDecimalNumber).test(_char) || (this.maxlength && elementValueLength > this.maxlength)){
 				this.fireEvent('invalid', args);
 				return false;
 			}
@@ -583,76 +663,77 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	paste: function(e, o){
-		e.preventDefault();
 		var element = this.element;
 		elValue = element.get('value');
-		element.set('value', (elValue = this.forceMask(elValue, true))).selectRange(elValue.length, elValue.length);
+		element.set('value', (elValue = this.forceMask(elValue, true))).setCaretPosition(elValue.length);
 		return true;
 	},
 
-	forceMask: function(str, withSymbol){
+	forceMask: function(str, applySymbol){
 		str = this.cleanup(str);
 		var precision = this.options.precision;
-		if(precision){
-			var zeros = precision + 1 - str.length;
-			if(zeros > 0) str = this.zeroize(str, zeros);
+		var zeros = precision + 1 - str.length;
+		if (zeros > 0) str = this.zeroize(str, zeros);
+		if (precision){
 			var decimalIndex = str.length - precision;
 			str = str.substring(0, decimalIndex) + this.options.decimal + str.substring(decimalIndex);
 		}
-		return this.getValue(this.maskThousands(str), withSymbol);
+		return this.getValue(this.maskThousands(str), applySymbol);
 	},
 
 	cleanup: function(str){
-		return this.getValue(str.replace(this.cleanupRegex, '')).replace(this.removeLeadingZerosRegex, '$1');
+		return this.getValue(str.replace(this.reCleanup, '')).replace(this.reRemoveLeadingZeros, '$1');
 	},
 
-	mask: function(str, withSymbol){
-		str = str || '0';
-		str = this.unmask(str).replace('.', this.options.decimal);
-		return this.getValue(this.maskThousands(str), withSymbol);
+	mask: function(str){
+		str = this.unmask(str || '0').replace('.', this.options.decimal);
+		return this.getValue(this.maskThousands(str), false);
 	},
 
 	unmask: function(str){
 		return this.toNumber(this.getValue(str));
 	},
-
+	
 	toNumber: function(str){
-		if(!isFinite(str)){
-			var thousandsChar = this.options.thousands,
-			decimalChar = this.options.decimal;
-			if(thousandsChar) str = str.replace(this.thousandsReplaceRegex, '');
-			if(decimalChar) str = str.replace(decimalChar, '.');
+		str = str.replace(this.reRemoveNonNumbers, '');
+		if (!isFinite(str)){
+			if (this.options.thousands) str = str.replace(this.reThousandsReplace, '');
+			var decimalChar = this.options.decimal;
+			if (decimalChar) str = str.replace(decimalChar, '.');
 		}
 		return str.toFloat().toFixed(this.options.precision);
 	},
 
-	getValue: function(str, withSymbol){
+	getValue: function(str, applySymbol){
 		var symbol = this.options.symbol;
-		return (str.substring(0, symbol.length) === symbol)?
-		withSymbol? str: str.substring(symbol.length):
-		withSymbol? symbol + str: str;
+		return (str.substring(0, symbol.length) === symbol) ?
+			applySymbol ? str : str.substring(symbol.length) :
+			applySymbol ? symbol + str : str;
 	},
 
 	maskThousands: function(str){
-		if(this.options.thousands){
-			while(this.thousandsRegex.test(str)) str = str.replace(this.thousandsRegex, this.thousandsReplaceStr);
+		if (this.options.thousands){
+			while (this.reThousands.test(str)) str = str.replace(this.reThousands, this.thousandsReplaceStr);
 		}
 		return str;
 	},
 
 	zeroize: function(str, zeros){
-		while(zeros--)  str = '0' + str;
+		while (zeros--) str = '0' + str;
 		return str;
-	}
+	},
 
+	shouldFocusNext: function(){
+		return this.getValue(this.element.get('value'), false).length >= this.options.maxLength;
+	}
 });
 
 Meio.Mask.createMasks('Reverse', {
-	'Integer'			: { precision: 0, maxLength: 20 },
-	'Decimal'			: { },
-	'DecimalUs'			: { thousands: ',', decimal: '.' },
-	'Reais'				: { symbol: 'R$ ' },
-	'Dollar'			: { symbol: 'US$ ', thousands: ',', decimal: '.' }
+	'Integer'		: {precision: 0, maxLength: 18},
+	'Decimal'		: { },
+	'DecimalUs'		: {thousands: ',', decimal: '.'},
+	'Reais'			: {symbol: 'R$ ' },
+	'Dollar'		: {symbol: 'US$ ', thousands: ',', decimal: '.'}
 });
 
 /*
@@ -678,25 +759,48 @@ Meio.Mask.Repeat = new Class({
 
 	Extends : Meio.Mask,
 
-	_keyup : function(e,o){
-		return true;
+	options: {
+		mask: '',
+		maxLength: 0 // 0 for infinite
 	},
 
-	_paste : function(e,o){
-		this.$el.set('value', this.__mask(o.valueArray, this.globals, this.mask.options));
-		return true;
+	keypress: function(e, o){
+		if (this.ignore) return true;
+		e.preventDefault();
+			
+		var state = this.getCurrentState(e, o);
+		var ruleRegex = Meio.Mask.rules[this.options.mask.charAt(0)].regex;
+		var args = [this.element, state._char, e.code];
+		var maxLength = this.options.maxLength;
+		
+		if ((maxLength && state.value.length > maxLength) || (!ruleRegex.test(state._char) && !o.isRemoveKey)){
+			this.fireEvent('invalid', args);
+		} else {
+			this.fireEvent('valid', args);
+			this.element.set('value', state.value).setCaretPosition(state.start + (o.isRemoveKey ? 0 : 1));
+		}
+		
+		return this.parent();
 	},
-
-	_keypress: function(e,o){
-		if(this.ignore || e.control || e.meta || e.alt) return true;
-		var c = String.fromCharCode(e.code),
-			maskArray = this.mask.options.maskArray,
-			valueArray = o.value.replace(this.globals.fixedCharsRegG, '').split('');
-		if(!this.testEvents(maskArray, 0, c, e.code)) return false;
-		this.$el.set('value', valueArray.join(''));
-		return true;
+	
+	paste: function(e, o){
+		var maskedValue = this.mask(this.element.get('value'));
+		this.element.set('value', maskedValue).setCaretPosition(maskedValue.length);
+	},
+	
+	mask: function(str){
+		var strArray = str.split(''),
+			ruleRegex = Meio.Mask.rules[this.options.mask.charAt(0)].regex;
+		for (var i = 0; i < strArray.length; i++){
+			if (!ruleRegex.test(strArray[i])){
+				strArray.splice(i, 1);
+				i--;
+			}
+		}
+		var maxLength = this.options.maxLength;
+		return strArray.join('').substring(0, maxLength ? maxLength : strArray.length);
 	}
-
+	
 });
 
 /*
@@ -722,8 +826,7 @@ Meio.Mask.Regexp = new Class({
 	Extends : Meio.Mask,
 
 	options: {
-		//maxLength: 18
-		//regex: /^$/
+		regex: null
 	},
 
 	initialize : function(element, options){
@@ -732,23 +835,49 @@ Meio.Mask.Regexp = new Class({
 	},
 
 	keypress: function(e, o){
-		if(this.ignore) return true;
+		if (this.ignore) return true;
 		e.preventDefault();
-	
-		var _char = String.fromCharCode(e.code),
-			elValue = this.element.get('value');
-    
-		elValue = elValue.substring(0, o.range.start) + (o.isRemoveKey? '': _char) +  elValue.substring(o.range.end);
-		if(this.regex.test(elValue)){
-			this.element.set('value', elValue);
+		
+		var state = this.getCurrentState(e, o);
+		var args = [this.element, state._char, e.code];
+		
+		if (!this.regex.test(state.value)){
+			this.fireEvent('invalid', args);
+		} else {
+			this.element.set('value', state.value).setCaretPosition(state.start + (o.isRemoveKey ? 0 : 1));
+			this.fireEvent('valid', args);
 		}
+		
 		return true;
+	},
+	
+	paste: function(e, o){
+		var masked = this.applyMask(this.element.get('value'), true);
+		this.element.set('value', masked.value).setCaretPosition(masked.index);
+	},
+	
+	applyMask: function(str, fireEvent){
+		var oldValue = '', curValue;
+		for (var i = 1; i <= str.length; i++){
+			curValue = str.substring(0, i);
+			if (!this.regex.test(curValue)){
+				if (fireEvent) this.fireEvent('invalid', [this.element, str.charAt(i), str.charCodeAt(i)]);
+				break;
+			}
+			oldValue = curValue;
+		}
+		return {value: oldValue, index: i};
+	},
+	
+	mask: function(str){
+		return this.applyMask(str).value;
 	}
-
+	
 });
 
 Meio.Mask.createMasks('Regexp', {
-    'Ip'		: { regex: /^(\d{1,3})(\.\d{1,3}){0,3}?$/, maxLength: 15 }
+	'Ip'		: {regex: /^(\d{0,3}\.){0,3}(\d{0,3})?$/},
+	'Email'		: {regex: /^[\w.!#$%&'*+=?~^_`{|}\/-]*@?[.\w-]*$/}
 });
 
 /*
@@ -771,25 +900,33 @@ provides: [Meio.Mask.Extras]
 
 (function(){
 
-	Meio.Mask.dummyInput = new Element('input', {'type': 'text'});
+	var meiomask = 'meiomask';
 	
 	var upperCamelize = function(str){
 		return str.camelCase().capitalize();
 	};
 	
-	var getClassOptions = function(args){
-		var classNames = [];
-		args = Array.link(args, {mask: String.type, type: String.type, options: Object.type, klass: Class.type});
-		if(args.mask) classNames = args.mask.contains('.')? args.mask.split('.'): [args.type, args.mask];
-		var klass = args.klass || Meio.Mask[upperCamelize(classNames[0])][upperCamelize(classNames[1])],
-		    options = args.options || {};
-		return {klass: klass, options: options};
+	var getClassOptions = function(a1, a2, opts){
+		var klass;
+		if ($type(a1) == 'string'){
+			if ($type(a2) != 'string'){
+				opts = a2;
+				a1 = a1.split('.');
+				a2 = a1[1];
+				a1 = a1[0];
+			}
+			klass = Meio.Mask[upperCamelize(a1)];
+			if (a2) klass = klass[upperCamelize(a2)];
+		} else {
+			klass = a1;
+			opts = a2;
+		}
+		return {klass: klass, options: opts || {}};
 	};
 	
 	var executeFunction = function(functionName, args){
-		var co = getClassOptions(args);
-		Meio.Mask.dummyInput.set('value', '');
-		return new co.klass(Meio.Mask.dummyInput, co.options)[functionName](this);
+		co = getClassOptions.apply(null, args); 
+		return new co.klass(co.options)[functionName](this);
 	};
 
 	String.implement({
@@ -803,53 +940,56 @@ provides: [Meio.Mask.Extras]
 
 	Element.Properties.meiomask = {
 		set: function(){
-			var args = getClassOptions(arguments);
-			return this.store('meiomask', new args.klass(this, args.options));
+			var args = getClassOptions.apply(null, arguments), mask = this.retrieve(meiomask);
+			if (mask){
+				mask.unlink();
+				mask = null;
+			}
+			return this.store(meiomask, new args.klass(args.options).link(this));
 		},
 		// returns the mask object
 		get: function(){
-			return this.retrieve('meiomask');
+			return this.retrieve(meiomask);
 		},
-		// removes the mask from this input but maintain the mask object stored at its table
+		// removes completely the mask from this input
 		erase: function(){
-			var mask = this.retrieve('meiomask');
-			if(mask) mask.remove();
+			var mask = this.retrieve(meiomask);
+			if (mask) mask.unlink();
 			return this;
+		}
+	};
+	
+	Element.Properties[meiomask + ':value'] = {
+		// sets the value but first it applyes the mask (if theres any)
+		set: function(value){
+			var mask = this.retrieve(meiomask);
+			if (mask) value = mask.mask(value);
+			return this.set('value', value);
+		},
+		
+		// gets the unmasked value
+		get: function(){
+			var mask = this.retrieve(meiomask);
+			var value = this.get('value');
+			return (mask) ? mask.unmask(value) : value;
 		}
 	};
 
-	// fix for maxlength property
-	Element.Properties.maxLength = Element.Properties.maxlength = {
-		set: function(value){
-			this.setAttribute('maxLength', value);
-			return this;
-		},
-		get: function(){
-			var ml = this.getAttribute('maxLength', 2);
-			return (ml === 2147483647)? null: ml;
-		},
-		erase: function(){
-			this.removeAttribute('maxLength');
-			return this;
-		}
-	};
-	
-	/*
-	Element.Properties.value = {
-		// sets the value but first it applyes the mask (if theres any)
-		set: function(value){
-			var mask = this.retrieve('meiomask');
-			if(mask) value = mask.maskString(value);
-			return this.setProperty('value', value);
-		}
-	};
-	*/
-	
 	Element.implement({
 		meiomask: function(mask, type, options){
-			return this.set('meiomask', mask, type, options);
+			return this.set(meiomask, mask, type, options);
 		}
 	});
+	
+	
+	// fix for maxlength property
+	var maxLength = document.createElement('input').getAttribute('maxLength');
+	if (maxLength != null) Element.Properties.maxlength = Element.Properties.maxLength = {
+		get: function(){
+			var maxlength = this.getAttribute('maxLength');
+			return maxlength == maxLength ? null : maxlength;
+		}
+	};
 
 })();
 
