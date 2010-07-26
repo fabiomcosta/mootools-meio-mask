@@ -46,7 +46,7 @@ class Builder:
     def create_minified_file(self):
         uncompressed_file = self.build_folder + self.file_name + self.extension 
         compressed_file = self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension
-        os.system('java -jar Assets/yui.jar --warn --charset utf8 %(uncompressed)s >> %(compressed)s' % {
+        os.system('java -jar Assets/yui.jar --warn --charset utf8 %(uncompressed)s > %(compressed)s' % {
             'uncompressed': uncompressed_file,
             'compressed': compressed_file
         })
