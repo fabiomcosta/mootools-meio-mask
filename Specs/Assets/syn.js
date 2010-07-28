@@ -178,6 +178,7 @@ extend(Syn,{
 	init : function(type, options, element, callback){
 		var args = Syn.args(options,element, callback),
 			self = this;
+		
 		this.queue = [];
 		this.element = args.element;
 		
