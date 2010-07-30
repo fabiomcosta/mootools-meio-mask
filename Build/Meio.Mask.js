@@ -103,11 +103,11 @@ Meio.Mask = new Class({
 	
 	onMask: function(e, func){
 		if (this.element.get('readonly')) return true;
-		var o = {}, keyCode = (e.type == 'paste') ? null : e.event.keyCode;
+		var o = {}, event = e.event, keyCode = (e.type == 'paste') ? null : event.keyCode;
 		o.range = this.element.getSelectedRange();
 		o.isSelection = (o.range.start !== o.range.end);
 		// 8 == backspace && 46 == delete && 127 == iphone's delete
-		o.isDelKey = (keyCode == 46 && !(Browser.Engine.trident && e.event.type == 'keypress'));
+		o.isDelKey = (keyCode == 46 && (event.type != 'keypress' || ((Browser.Engine.gecko || Browser.Engine.presto) && !event.which)));
 		o.isBksKey = (keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
 		o.isRemoveKey = (o.isBksKey || o.isDelKey);
 		func && func.call(this, e, o);
@@ -250,7 +250,7 @@ Meio.Mask.extend({
 	// http://unixpapa.com/js/key.html
 	// if only the keydown auto-repeats
 	// if you have a better implementation of this detection tell me
-	onlyKeyDownRepeat: (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
+	onlyKeyDownRepeat: !!(Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
 	
 }).extend(function(){
 	var ignoreKeys;
@@ -349,7 +349,6 @@ Meio.Mask.Fixed = new Class({
 		this.parent(element);
 		var elementValue = this.element.get('value');
 		if (elementValue != '') this.maskMoldArray = this.mask(elementValue).split('');
-		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
 		if (this.options.autoSetSize) this.setSize();
 		return this;
 	},
@@ -370,7 +369,7 @@ Meio.Mask.Fixed = new Class({
 			}
 			return true;
 		}
-		if (this.options.removeInvalidTrailingChars) this.removeInvalidTrailingChars(elementValue);
+		if (this.options.removeInvalidTrailingChars) this.element.set('value', this.removeInvalidTrailingChars(elementValue));
 		return true;
 	},
     
@@ -390,12 +389,11 @@ Meio.Mask.Fixed = new Class({
 					start = this.validIndexes.indexOf(--o.range.start);
 				} while (start == -1 && o.range.start >= 0);
 				finalRangePosition = this.validIndexes[start] || 0;
-			}
-			else{
+			} else {
 				do {
 					start = this.validIndexes.indexOf(o.range.start++);
 				} while (start == -1 && o.range.start < maskArray.length);
-				finalRangePosition = this.validIndexes[start + 1];
+				finalRangePosition = (start == -1) ? this.maskMoldArray.length : this.validIndexes[start + 1];
 			}
 			
 			i = this.validIndexes[start];
@@ -403,7 +401,7 @@ Meio.Mask.Fixed = new Class({
 			if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
 			this.maskMoldArray[i] = (o.isRemoveKey) ? this.options.placeholder : c;
 			
-			var newCarretPosition = $pick(finalRangePosition, this.maskMoldArray.length);
+			var newCarretPosition = (finalRangePosition == null) ? this.maskMoldArray.length : finalRangePosition;
 			this.element.set('value', this.maskMoldArray.join(''))
 				.setCaretPosition(newCarretPosition);
 		
@@ -470,7 +468,7 @@ Meio.Mask.Fixed = new Class({
 			}
 			if (!cont) break;
 		}
-		this.element.set('value', elementValue.substring(0, truncateIndex));
+		return elementValue.substring(0, truncateIndex);
     },
 	
 	testEvents: function(index, _char, code, isRemoveKey){
@@ -536,7 +534,9 @@ Meio.Mask.Fixed = new Class({
 	},
 	
 	mask: function(str){
-		return this.applyMask(str).value.join('');
+		str = this.applyMask(str).value.join('');
+		if (this.options.removeInvalidTrailingChars) str = this.removeInvalidTrailingChars(str);
+		return str;
 	},
 
 	unmask: function(str){
