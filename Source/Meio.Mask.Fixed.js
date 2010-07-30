@@ -83,12 +83,11 @@ Meio.Mask.Fixed = new Class({
 					start = this.validIndexes.indexOf(--o.range.start);
 				} while (start == -1 && o.range.start >= 0);
 				finalRangePosition = this.validIndexes[start] || 0;
-			}
-			else{
+			} else {
 				do {
 					start = this.validIndexes.indexOf(o.range.start++);
 				} while (start == -1 && o.range.start < maskArray.length);
-				finalRangePosition = this.validIndexes[start + 1];
+				finalRangePosition = (start == -1) ? this.maskMoldArray.length : this.validIndexes[start + 1];
 			}
 			
 			i = this.validIndexes[start];
@@ -96,7 +95,7 @@ Meio.Mask.Fixed = new Class({
 			if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
 			this.maskMoldArray[i] = (o.isRemoveKey) ? this.options.placeholder : c;
 			
-			var newCarretPosition = $pick(finalRangePosition, this.maskMoldArray.length);
+			var newCarretPosition = (finalRangePosition == null) ? this.maskMoldArray.length : finalRangePosition;
 			this.element.set('value', this.maskMoldArray.join(''))
 				.setCaretPosition(newCarretPosition);
 		

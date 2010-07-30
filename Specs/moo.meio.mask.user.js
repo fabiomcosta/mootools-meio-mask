@@ -11,9 +11,18 @@ module('Automated Functional Tests', {
 test('should mask the typed value with the Fixed mask type', function(){
 	input.meiomask('Fixed', 'Time');
 	stop();
-	Syn.click({}, input).type('111', function(){
+	Syn.click({}, input).type('111[left][left][left][delete]', function(){
 		start();
-		equals(input.value, '11:1_');
+		equals(input.value, '1_:1_');
+	});
+});
+
+test('should mask the typed value with the Fixed mask type', function(){
+	input.meiomask('Fixed', 'Time');
+	stop();
+	Syn.click({}, input).type('1111[delete][delete]', function(){
+		start();
+		equals(input.value, '11:11');
 	});
 });
 
@@ -52,4 +61,3 @@ test('should mask the typed value with the Regexp mask type', function(){
 		equals(input.value, '123.456.999.123');
 	});
 });
-

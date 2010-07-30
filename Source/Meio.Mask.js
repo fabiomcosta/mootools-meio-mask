@@ -107,7 +107,7 @@ Meio.Mask = new Class({
 		o.range = this.element.getSelectedRange();
 		o.isSelection = (o.range.start !== o.range.end);
 		// 8 == backspace && 46 == delete && 127 == iphone's delete
-		o.isDelKey = (keyCode == 46 && (event.type != 'keypress' && !event.which));
+		o.isDelKey = (keyCode == 46 && (event.type != 'keypress' || ((Browser.Engine.gecko || Browser.Engine.presto) && !event.which)));
 		o.isBksKey = (keyCode == 8 || (Browser.Platform.ipod && e.code == 127));
 		o.isRemoveKey = (o.isBksKey || o.isDelKey);
 		func && func.call(this, e, o);
@@ -250,7 +250,7 @@ Meio.Mask.extend({
 	// http://unixpapa.com/js/key.html
 	// if only the keydown auto-repeats
 	// if you have a better implementation of this detection tell me
-	onlyKeyDownRepeat: (Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
+	onlyKeyDownRepeat: !!(Browser.Engine.trident || (Browser.Engine.webkit && Browser.Engine.version >= 525))
 	
 }).extend(function(){
 	var ignoreKeys;
