@@ -1,6 +1,8 @@
 /*
 ---
 
+name: Meio.Mask.Regexp
+
 description: A mask that is defined by a regular expression.
 
 authors:

@@ -1,6 +1,8 @@
 /*
 ---
 
+name: Meio.Mask.Fixed
+
 description: A mask used for fixed values like date, time, phone, etc.
 
 authors:

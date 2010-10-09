@@ -4,11 +4,13 @@
 description: The base component for the Meio.Mask plugin.
 
 authors:
- - Fábio Miranda Costa
+  - Fábio Miranda Costa
 
 requires:
- - core/1.2.4: [Class.Extras, Element.Event, Element.Style]
- - more/1.2.4.1: Element.Forms
+  - Core/Class.Extras
+  - Core/Element.Event
+  - Core/Element.Style
+  - More/Element.Forms
 
 license: MIT-style license
 

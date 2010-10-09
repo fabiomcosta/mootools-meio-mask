@@ -1,6 +1,8 @@
 /*
 ---
 
+name: Meio.Mask.Extras
+
 description: Extra functionality for Meio.Mask plugin. Like String.meiomask that masks a string and Element.meiomask which is a convinience method for setting the masks.
 
 authors:

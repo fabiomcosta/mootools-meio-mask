@@ -1,6 +1,8 @@
 /*
 ---
 
+name: Meio.Mask.Reverse
+
 description: A mask used for currency and decimal numbers.
 
 authors:
