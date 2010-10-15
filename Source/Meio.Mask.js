@@ -1,6 +1,8 @@
 /*
 ---
 
+name: Meio.Mask
+
 description: The base component for the Meio.Mask plugin.
 
 authors:
