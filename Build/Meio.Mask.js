@@ -1,14 +1,18 @@
 /*
 ---
 
+name: Meio.Mask
+
 description: The base component for the Meio.Mask plugin.
 
 authors:
- - Fábio Miranda Costa
+  - Fábio Miranda Costa
 
 requires:
- - core/1.2.4: [Class.Extras, Element.Event, Element.Style]
- - more/1.2.4.1: Element.Forms
+  - Core/Class.Extras
+  - Core/Element.Event
+  - Core/Element.Style
+  - More/Element.Forms
 
 license: MIT-style license
 
@@ -307,6 +311,8 @@ Meio.Mask.extend({
 /*
 ---
 
+name: Meio.Mask.Fixed
+
 description: A mask used for fixed values like date, time, phone, etc.
 
 authors:
@@ -561,6 +567,8 @@ Meio.Mask.createMasks('Fixed', {
 /*
 ---
 
+name: Meio.Mask.Reverse
+
 description: A mask used for currency and decimal numbers.
 
 authors:
@@ -739,6 +747,8 @@ Meio.Mask.createMasks('Reverse', {
 /*
 ---
 
+name: Meio.Mask.Repeat
+
 description: A mask that is defined by a pattern that will match each of the inputted chars.
 
 authors:
@@ -805,6 +815,8 @@ Meio.Mask.Repeat = new Class({
 
 /*
 ---
+
+name: Meio.Mask.Regexp
 
 description: A mask that is defined by a regular expression.
 
@@ -883,6 +895,8 @@ Meio.Mask.createMasks('Regexp', {
 /*
 ---
 
+name: Meio.Mask.Extras
+
 description: Extra functionality for Meio.Mask plugin. Like String.meiomask that masks a string and Element.meiomask which is a convinience method for setting the masks.
 
 authors:
@@ -925,7 +939,7 @@ provides: [Meio.Mask.Extras]
 	};
 	
 	var executeFunction = function(functionName, args){
-		co = getClassOptions.apply(null, args); 
+		var co = getClassOptions.apply(null, args); 
 		return new co.klass(co.options)[functionName](this);
 	};
 
