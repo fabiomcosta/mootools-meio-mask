@@ -28,8 +28,8 @@ provides: [Meio.Mask.Extras]
 	
 	var getClassOptions = function(a1, a2, opts){
 		var klass;
-		if ($type(a1) == 'string'){
-			if ($type(a2) != 'string'){
+		if (typeOf(a1) == 'string'){
+			if (typeOf(a2) != 'string'){
 				opts = a2;
 				a1 = a1.split('.');
 				a2 = a1[1];
@@ -59,8 +59,8 @@ provides: [Meio.Mask.Extras]
 	});
 
 	Element.Properties.meiomask = {
-		set: function(){
-			var args = getClassOptions.apply(null, arguments), mask = this.retrieve(meiomask);
+		set: function(args){
+			args = getClassOptions.apply(null, args), mask = this.retrieve(meiomask);
 			if (mask){
 				mask.unlink();
 				mask = null;
@@ -97,18 +97,8 @@ provides: [Meio.Mask.Extras]
 
 	Element.implement({
 		meiomask: function(mask, type, options){
-			return this.set(meiomask, mask, type, options);
+			return this.set(meiomask, [mask, type, options]);
 		}
 	});
 	
-	
-	// fix for maxlength property
-	var maxLength = document.createElement('input').getAttribute('maxLength');
-	if (maxLength != null) Element.Properties.maxlength = Element.Properties.maxLength = {
-		get: function(){
-			var maxlength = this.getAttribute('maxLength');
-			return maxlength == maxLength ? null : maxlength;
-		}
-	};
-
 })();

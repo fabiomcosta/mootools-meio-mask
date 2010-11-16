@@ -9,16 +9,16 @@ Notice
 ------
 
 Versions 1.x will support MooTools 1.2.x while 2.x will support 1.3.x.
-You need version mootools-core 1.2.4 (or greater) because there are some use of the Browser.Engine.gecko engine detection, which is not correct on versions < 1.2.4.
+If you are using version 1.x, you'll need version 1.2.4 or greater of mootools-core because the plugin uses Browser.Engine.gecko engine detection, which just work on those versions.
 
 How to use
 ----------
 	<html>
 		<head>
 			<!--include mootools library and meioMask plugin -->
-			<script type="text/javascript" src="mootools-core-1.2.4.js" charset="utf-8"></script>
+			<script type="text/javascript" src="mootools-core-1.3.0.js" charset="utf-8"></script>
 			<!-- Just Element.Form is needed -->
-			<script type="text/javascript" src="mootools-more-1.2.4.2.js" charset="utf-8"></script>
+			<script type="text/javascript" src="mootools-more-1.3.0.1.js" charset="utf-8"></script>
 		</head>
 	
 		<body>

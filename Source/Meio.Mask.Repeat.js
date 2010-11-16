@@ -18,7 +18,6 @@ provides: [Meio.Mask.Repeat]
 ...
 */
 
-
 Meio.Mask.Repeat = new Class({
 
 	Extends : Meio.Mask,
