@@ -4,7 +4,7 @@ web: "[mootools.net/forge/p/meiomask](http://mootools.net/forge/p/meiomask)"
 
 description: "MeioMask - A mootools plugin for masking text inputs"
 
-authors: "[Fábio M. Costa](http://www.meiocodigo.com/)"
+authors: "[Fábio M. Costa](http://meiocodigo.com/)"
 
 license: "MIT License"
 
@@ -22,11 +22,11 @@ sources:
 
 author: fabiomiranda
 
-current: 0.9.2
+current: 2.0
 
 docs: http://meiocodigo.com/projects/moomeiomask
 
-demo: http://mootools.net/shell/XJ2AN/38/
+demo: http://jsfiddle.net/fabiomcosta/8TFvp/1/
 
 category: Forms
 
