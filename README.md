@@ -8,7 +8,8 @@ MeioMask - a mootools plugin for masking text inputs.
 Notice
 ------
 
-You need version mootools-core 1.2.4 because there are some use of the Browser.Engine.gecko engine detection, which is not correct on versions < 1.2.4.
+Versions 1.x will support MooTools 1.2.x while 2.x will support 1.3.x.
+You need version mootools-core 1.2.4 (or greater) because there are some use of the Browser.Engine.gecko engine detection, which is not correct on versions < 1.2.4.
 
 How to use
 ----------
@@ -37,7 +38,7 @@ How to use
 Demos
 -----
 
-You can see it in action into the project at Specs/user/fixed-type.html.
+You can see it in action into the project at Specs/user/index.html.
 
 Credits
 -------

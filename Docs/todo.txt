@@ -4,10 +4,10 @@ Things i don't like about it (will change till version 2.0):
 ** OK, i've overwritten the maxlength Property, now its cleaner.
 * Some crazy if's - This will need a total rewrite from the plugin;
 ** Its becoming better every commit.
-* Mask types should have, in some way, different options for each of them, i mean, they should be threated separately, each of theyre's event. It's being done right now... but i feel that it can be even better;
+* Mask types should have, in some way, different options for each of them, i mean, they should be treated separately, each of theyre's event. It's being done right now... but i feel that it can be even better;
 ** It can always be better but im happy right now.
-* Try not to polute the native objects with crazy and unusefull methods;
-** I won't sir! I promice.
+* Try not to polute the native objects with crazy and not useful methods;
+** I won't sir! I promise.
 * Try to add a placeholder option, not that necessary but it would be nice;
 ** IT IS STILL THERE! And working like a charm
 * the String.meiomask function is too ugly. Remake it please!;
@@ -34,7 +34,7 @@ Things i don't like about it (will change till version 2.0):
 * Remember to threat the arrow keys on reverse mask;
 ** wont do anything with arrow keys, it will block the user for using it for any other hotkeys he uses so i wont do it;
 * Change the way signed masks work! That's so not pretty!;
-* isIgnoreKey must work in a way that will allow me to say that i dont want some keys to be part of the ignored keys, this will make the work easier in the case of masks that need special threatment for backspace and delete key;
+* isIgnoreKey must work in a way that will allow me to say that i don't want some keys to be part of the ignored keys, this will make the work easier in the case of masks that need special treatment for backspace and delete key;
 ** Its working this way right now! Its not a method anymore;
 * New mask type that works like this:
 	mask='9-9' and maxlength=5
