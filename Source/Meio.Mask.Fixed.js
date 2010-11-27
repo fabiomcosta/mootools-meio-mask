@@ -31,9 +31,10 @@ Meio.Mask.Fixed = new Class({
 
     initialize: function(options){
 		this.parent(options);
+		this.slice = Array.prototype.slice;
 		this.maskArray = this.options.mask.split('');
-		this.maskMold = this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder);
-		this.maskMoldArray = this.maskMold.split('');
+		this.maskMold = this.options.mask.replace(Meio.Mask.rulesRegex, this.options.placeholder).split('');
+		this.maskMoldEmpty = this.slice.call(this.maskMold);
 		this.validIndexes = [];
 		this.maskArray.each(function(c, i){
 			if (!this.isFixedChar(c)) this.validIndexes.push(i);
@@ -44,13 +45,13 @@ Meio.Mask.Fixed = new Class({
 	link: function(element){
 		this.parent(element);
 		var elementValue = this.element.get('value');
-		if (elementValue != '') this.maskMoldArray = this.mask(elementValue).split('');
+		if (elementValue != '') this.maskMold = this.mask(elementValue).split('');
 		if (this.options.autoSetSize) this.setSize();
 		return this;
 	},
 	
 	focus: function(e, o){
-		this.element.set('value', this.maskMoldArray.join(''));
+		this.element.set('value', this.maskMold.join(''));
 		if (this.options.selectOnFocus && this.element.select) this.element.select();
 		this.parent(e, o);
 	},
@@ -60,7 +61,7 @@ Meio.Mask.Fixed = new Class({
 		var elementValue = this.element.get('value');
 		if (this.options.removeIfInvalid){
 			if (elementValue.contains(this.options.placeholder)){
-				this.maskMoldArray = this.maskMold.split('');
+				this.maskMold = this.split.call(this.maskMoldEmpty);
 				this.element.set('value', '');
 			}
 			return true;
@@ -89,16 +90,16 @@ Meio.Mask.Fixed = new Class({
 				do {
 					start = this.validIndexes.indexOf(o.range.start++);
 				} while (start == -1 && o.range.start < maskArray.length);
-				finalRangePosition = (start == -1) ? this.maskMoldArray.length : this.validIndexes[start + 1];
+				finalRangePosition = (start == -1) ? this.maskMold.length : this.validIndexes[start + 1];
 			}
 			
 			i = this.validIndexes[start];
 			if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
 			if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
-			this.maskMoldArray[i] = (o.isRemoveKey) ? this.options.placeholder : c;
+			this.maskMold[i] = (o.isRemoveKey) ? this.options.placeholder : c;
 			
-			var newCarretPosition = (finalRangePosition == null) ? this.maskMoldArray.length : finalRangePosition;
-			this.element.set('value', this.maskMoldArray.join(''))
+			var newCarretPosition = (finalRangePosition == null) ? this.maskMold.length : finalRangePosition;
+			this.element.set('value', this.maskMold.join(''))
 				.setCaretPosition(newCarretPosition);
 		
 		} else {
@@ -120,18 +121,18 @@ Meio.Mask.Fixed = new Class({
 			
 			// removes all the chars into the range
 			for (i=rstart; i<rend; i++){
-				this.maskMoldArray[i] = this.maskMold.charAt(i);
+				this.maskMold[i] = this.maskMoldEmpty[i];
 			}
 
 			if (!o.isRemoveKey){
 				i = this.validIndexes[start];
 				if (!(returnFromTestEntry = this.testEvents(i, c, e.code, o.isRemoveKey))) return true;
 				if (typeof returnFromTestEntry == 'string') c = returnFromTestEntry;
-				this.maskMoldArray[i] = c;
+				this.maskMold[i] = c;
 				start++;
 			}
 			
-			this.element.set('value', this.maskMoldArray.join(''));
+			this.element.set('value', this.maskMold.join(''));
 			this.element.setCaretPosition(this.validIndexes[start]);
 		}
 		return this.parent();
@@ -139,8 +140,8 @@ Meio.Mask.Fixed = new Class({
     
 	paste: function(e, o){
 		var retApply = this.applyMask(this.element.get('value'), o.range.start);
-		this.maskMoldArray = retApply.value;
-		this.element.set('value', this.maskMoldArray.join(''))
+		this.maskMold = retApply.value;
+		this.element.set('value', this.maskMold.join(''))
 			.setCaretPosition(retApply.rangeStart);
 		return true;
 	},
@@ -202,7 +203,7 @@ Meio.Mask.Fixed = new Class({
 	applyMask: function(str, newRangeStart){
 		var strArray = str.split(''),
 			maskArray = this.maskArray,
-			maskMold = this.maskMoldArray,
+			maskMold = this.maskMold,
 			rules = Meio.Mask.rules,
 			eli = 0,
 			returnFromTestEntry;
@@ -226,7 +227,7 @@ Meio.Mask.Fixed = new Class({
 			eli++;
 		}
 
-		return {value: strArray.slice(0, this.maskMold.length), rangeStart: newRangeStart + 1};
+		return {value: strArray.slice(0, this.maskMoldEmpty.length), rangeStart: newRangeStart + 1};
 	},
 	
 	mask: function(str){
