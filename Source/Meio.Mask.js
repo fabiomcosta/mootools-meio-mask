@@ -81,7 +81,7 @@ provides: [Meio.Mask]
 		},
 
 		unlink: function(){
-			return this.dettach();
+			return this.detach();
 		},
 
 		attach: function(){
@@ -205,8 +205,6 @@ provides: [Meio.Mask]
 
 	});
 	
-	Meio.Mask.implement('dettach', Meio.Mask.prototype.detach);
-
 	Meio.Mask.extend({
 
 		matchRules: '',

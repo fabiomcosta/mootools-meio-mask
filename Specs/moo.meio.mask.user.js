@@ -64,6 +64,7 @@ test('should mask the typed value with the Regexp mask type', function(){
 
 test('should mask inputs with pre-defined values', function(){
 	input.set('value', '333').meiomask('fixed.cpf');
+	equals(input.value, '333.');
 	stop();
 	Syn.click({}, input).type('12322255500', function(){
 		start();

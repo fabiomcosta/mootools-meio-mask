@@ -45,7 +45,12 @@ Meio.Mask.Fixed = new Class({
 	link: function(element){
 		this.parent(element);
 		var elementValue = this.element.get('value');
-		if (elementValue != '') this.maskMold = this.mask(elementValue).split('');
+		if (elementValue != ''){
+			var maskedValue = this.mask(elementValue);
+			for (var i = maskedValue.length; i--;){
+				this.maskMold[i] = maskedValue.charAt(i);
+			}
+		}
 		if (this.options.autoSetSize) this.setSize();
 		return this;
 	},
@@ -77,7 +82,7 @@ Meio.Mask.Fixed = new Class({
 		var c = String.fromCharCode(e.code),
 			maskArray = this.maskArray,
 			start, i, returnFromTestEntry;
-
+			
 		if(!o.isSelection){
 			// no text selected
 			var finalRangePosition;
