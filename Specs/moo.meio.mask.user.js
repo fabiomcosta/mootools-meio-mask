@@ -61,3 +61,12 @@ test('should mask the typed value with the Regexp mask type', function(){
 		equals(input.value, '123.456.999.123');
 	});
 });
+
+test('should mask inputs with pre-defined values', function(){
+	input.set('value', '333').meiomask('fixed.cpf');
+	stop();
+	Syn.click({}, input).type('12322255500', function(){
+		start();
+		equals(input.value, '123.222.555-00');
+	});
+});
