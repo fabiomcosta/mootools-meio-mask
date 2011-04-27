@@ -30,7 +30,7 @@ provides: [Meio.Mask]
 		'paste': 2, 'input': 2
 	});
 	Element.Events.paste = {
-		base : (Browser.opera || (Browser.firefox && Browser.version < 3))? 'input': 'paste',
+		base : (Browser.Platform.ios || Browser.opera || (Browser.firefox && Browser.version < 3))? 'input': 'paste',
 		condition: function(e){
 			this.fireEvent('paste', e, 1);
 			return false;
