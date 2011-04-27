@@ -29,6 +29,15 @@ test('should mask the typed value with the Fixed mask type', function(){
 test('should mask the typed value with the Reverse mask type', function(){
 	input.meiomask('Reverse', 'Reais');
 	stop();
+	Syn.click({}, input).type('0', function(){
+		start();
+		equals(input.value, 'R$ 0,00');
+	});
+});
+
+test('should mask the typed value with the Reverse mask type', function(){
+	input.meiomask('Reverse', 'Reais');
+	stop();
 	Syn.click({}, input).type('443212', function(){
 		start();
 		equals(input.value, 'R$ 4.432,12');

@@ -57,7 +57,7 @@ Meio.Mask.Fixed = new Class({
 	
 	focus: function(e, o){
 		this.element.set('value', this.maskMold.join(''));
-		if (this.options.selectOnFocus && this.element.select) this.element.select();
+		if (this.options.selectOnFocus && this.element.select) this.element.select.delay(0, this.element);
 		this.parent(e, o);
 	},
 

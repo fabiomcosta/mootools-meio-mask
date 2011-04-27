@@ -62,11 +62,11 @@ Meio.Mask.Reverse = new Class({
 		var element = this.element,
 			elValue = element.get('value');
 		if (this.options.autoEmpty){
-			if (elValue === '') element.set('value', (elValue = this.mask(elValue)));
+			if (elValue === '') element.set('value', this.mask(elValue));
 		} else {
-			element.set('value', (elValue = this.getValue(elValue, true)));
+			element.set('value', this.getValue(elValue, true));
 		}
-		if (this.options.selectOnFocus) element.selectRange(this.options.symbol.length, elValue.length);
+		if (this.options.selectOnFocus && element.select) element.select.delay(0, element);
 		this.parent(e, o);
 	},
 
