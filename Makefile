@@ -1,0 +1,2 @@
+compile:
+	@python build.py
