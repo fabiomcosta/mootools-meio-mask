@@ -133,7 +133,7 @@ provides: [Meio.Mask]
 				var keyRepresentation = Meio.Mask.ignoreKeys[e.code] || '';
 				this.fireEvent('valid', [this.element, e.code, keyRepresentation]);
 			}
-			return (Browser.Platform.ios || (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey)) ? this.keypress(e, o) : true;
+			return (Meio.Mask.onlyKeyDownRepeat && o.isRemoveKey) ? this.keypress(e, o) : true;
 		},
 
 		keypress: function(e, o){
