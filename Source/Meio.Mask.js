@@ -74,7 +74,7 @@ provides: [Meio.Mask]
 
 		link: function(element){
 			element = $(element);
-			if (element.get('tag') != 'input' || element.get('type') != 'text') return;
+			if (element.get('tag') != 'input') return;
 			if (this.element) this.unlink();
 			this.element = element;
 			return this.attach();
