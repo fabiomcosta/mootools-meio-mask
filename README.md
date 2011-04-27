@@ -11,6 +11,19 @@ Notice
 Versions 1.x will support MooTools 1.2.x while 2.x will support 1.3.x.
 If you are using version 1.x, you'll need version 1.2.4 or greater of mootools-core because the plugin uses Browser.Engine.gecko engine detection, which just work on those versions.
 
+Building
+--------
+
+Just do `make` and a Build folder will be created cointaining the complete library for debugging/development and the minified file for
+use in production.
+
+You can create your own customized build by editing the modules included in the built file in the build.py script.
+
+Dependencies
+------------
+
+The only dependency is Element.Forms, which you can grab at [http://mootools.net/more/].
+
 How to use
 ----------
 	<html>
