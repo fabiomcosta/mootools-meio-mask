@@ -24,6 +24,11 @@ Dependencies
 
 The only dependency is Element.Forms, which you can grab at [http://mootools.net/more/].
 
+Run the Tests
+-------------
+
+You can easily run the tests on your default browser by using `make run`.
+
 How to use
 ----------
 	<html>
