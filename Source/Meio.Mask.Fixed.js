@@ -57,7 +57,6 @@ Meio.Mask.Fixed = new Class({
 	
 	focus: function(e, o){
 		this.element.set('value', this.maskMold.join(''));
-		if (this.options.selectOnFocus && this.element.select) this.element.select.delay(0, this.element);
 		this.parent(e, o);
 	},
 
@@ -66,7 +65,7 @@ Meio.Mask.Fixed = new Class({
 		var elementValue = this.element.get('value');
 		if (this.options.removeIfInvalid){
 			if (elementValue.contains(this.options.placeholder)){
-				this.maskMold = this.split.call(this.maskMoldEmpty);
+				this.maskMold = this.slice.call(this.maskMoldEmpty, 0);
 				this.element.set('value', '');
 			}
 			return true;

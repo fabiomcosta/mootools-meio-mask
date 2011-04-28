@@ -42,7 +42,6 @@ provides: [Meio.Mask]
 		Implements: [Options, Events],
 
 		options: {
-			selectOnFocus: true,
 			autoTab: false
 
 			//onInvalid: function(){},

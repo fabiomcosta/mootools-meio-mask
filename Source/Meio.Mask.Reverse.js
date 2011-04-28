@@ -66,7 +66,6 @@ Meio.Mask.Reverse = new Class({
 		} else {
 			element.set('value', this.getValue(elValue, true));
 		}
-		if (this.options.selectOnFocus && element.select) element.select.delay(0, element);
 		this.parent(e, o);
 	},
 
