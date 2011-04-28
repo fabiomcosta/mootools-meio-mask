@@ -77,6 +77,6 @@ test('should mask inputs with pre-defined values', function(){
 	stop();
 	Syn.click({}, input).type('12322255500', function(){
 		start();
-		equals(input.value, '123.222.555-00');
+		equals(input.value, '333.123.222-55');
 	});
 });

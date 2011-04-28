@@ -68,7 +68,7 @@ provides: [Meio.Mask]
 		initialize: function(options){
 			this.setOptions(options);
 			this.ignore = false;
-			this.bound = {'focus': 0, 'blur': 0, 'keydown': 0, 'keypress': 0, 'paste': 0};
+			this.bound = {focus: 0, blur: 0, keydown: 0, keypress: 0, paste: 0};
 		},
 
 		link: function(element){
@@ -110,7 +110,7 @@ provides: [Meio.Mask]
 			this.element = null;
 			return this;
 		},
-		
+
 		dettach: function(){ this.detach(); }, // deprecated (incorrect syntax, sorry), use detach instead
 
 		onMask: function(e, func){
@@ -126,7 +126,7 @@ provides: [Meio.Mask]
 			return true;
 		},
 
-	    keydown: function(e, o){
+		keydown: function(e, o){
 			this.ignore = (Meio.Mask.ignoreKeys[e.code] && !o.isRemoveKey) || e.control || e.meta || e.alt;
 			if (this.ignore || o.isRemoveKey){
 				var keyRepresentation = Meio.Mask.ignoreKeys[e.code] || '';
@@ -203,7 +203,7 @@ provides: [Meio.Mask]
 		}
 
 	});
-	
+
 	Meio.Mask.extend({
 
 		matchRules: '',
@@ -296,7 +296,7 @@ provides: [Meio.Mask]
 		} else {
 			// f1, f2, f3 ... f12
 			for (var i=1; i<=12; i++) desktopIgnoreKeys[111 + i] = 'f' + i;
-			ignoreKeys = desktopIgnoreKeys; 
+			ignoreKeys = desktopIgnoreKeys;
 		}
 		return {ignoreKeys: ignoreKeys};
 	}())
@@ -314,9 +314,9 @@ provides: [Meio.Mask]
 		for (var i=0; i<=9; i++) rules[i] = {regex: new RegExp('[0-' + i + ']')};
 		return rules;
 	})());
-	
+
 	global.Meio = Meio;
-	
+
 })(this, document.id);
 
 
