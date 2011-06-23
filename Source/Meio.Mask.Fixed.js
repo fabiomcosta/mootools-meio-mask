@@ -229,7 +229,7 @@ Meio.Mask.Fixed = new Class({
 				} else {
 					if (typeof returnFromTestEntry == 'string') strArray[eli] = returnFromTestEntry;
 				}
-				newStartRange = eli;
+				newRangeStart = eli;
 			} else if (maskArray[eli] != strArray[eli]){
 				strArray.splice(eli, 0, maskMold[eli]);
 			} else {

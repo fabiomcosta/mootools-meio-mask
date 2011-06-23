@@ -219,7 +219,7 @@ provides: [Meio.Mask]
 		setRules: function(rulesObj){
 			Object.append(this.rules, rulesObj);
 			var rulesKeys = [];
-			for (rule in rulesObj) rulesKeys.push(rule);
+			for (var rule in rulesObj) rulesKeys.push(rule);
 			this.matchRules += rulesKeys.join('');
 			this.recompileRulesRegex();
 		},
@@ -241,7 +241,7 @@ provides: [Meio.Mask]
 
 		createMasks: function(type, masks){
 			type = type.capitalize();
-			for (mask in masks){
+			for (var mask in masks){
 				this[type][mask.camelCase().capitalize()] = new Class({
 					Extends: this[type],
 					options: masks[mask]

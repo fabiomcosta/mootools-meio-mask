@@ -60,7 +60,8 @@ provides: [Meio.Mask.Extras]
 
 	Element.Properties.meiomask = {
 		set: function(args){
-			args = getClassOptions.apply(null, args), mask = this.retrieve(meiomask);
+			args = getClassOptions.apply(null, args);
+			var mask = this.retrieve(meiomask);
 			if (mask){
 				mask.unlink();
 				mask = null;

@@ -105,7 +105,7 @@ Meio.Mask.Reverse = new Class({
 
 	paste: function(e, o){
 		var element = this.element;
-		elValue = element.get('value');
+		var elValue = element.get('value');
 		element.set('value', (elValue = this.forceMask(elValue, true))).setCaretPosition(elValue.length);
 		return true;
 	},
