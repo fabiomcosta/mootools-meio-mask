@@ -213,7 +213,9 @@ provides: [Meio.Mask]
 		rules: {},
 
 		setRule: function(ruleKey, properties){
-			this.setRules({ruleKey: properties});
+			var rules = {};
+			rules[ruleKey] = properties;
+			this.setRules(rules);
 		},
 
 		setRules: function(rulesObj){
