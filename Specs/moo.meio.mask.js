@@ -52,7 +52,7 @@ test('should mask a string with the reverse.integer mask', function(){
 test('should mask a string with the reverse.decimal mask', function(){
 	equals('345678.728'.meiomask('reverse.decimal'), '345.678,73');
 });
-	
+
 test('should unmask the passed string', function(){
 	equals('12/12/2000'.meiounmask('Fixed', 'Date'), '12122000');
 });
@@ -60,3 +60,21 @@ test('should unmask the passed string', function(){
 test('should unmask the passed string to a float number', function(){
 	equals('R$ 123,12'.meiounmask('reverse.reais'), 123.12);
 });
+
+test('should apply a precision: 5 mask to the 0 string', function(){
+	equals('0'.meiomask('Reverse', 'Decimal', { precision: 5 }), '0,00000');
+});
+
+test('should apply a precision: 5 mask to the 1 string', function(){
+	equals('1'.meiomask('Reverse', 'Decimal', { precision: 5 }), '1,00000');
+});
+
+test('should apply a precision: 5 mask to the 1000 string', function(){
+	equals('1000'.meiomask('Reverse', 'Decimal', { precision: 5 }), '1.000,00000');
+});
+
+test('should apply a precision: 5 mask to the 0.001 string', function(){
+	equals('0.001'.meiomask('Reverse', 'Decimal', { precision: 5 }), '0,00100');
+});
+
+

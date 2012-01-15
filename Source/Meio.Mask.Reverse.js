@@ -36,16 +36,16 @@ Meio.Mask.Reverse = new Class({
 	initialize: function(options){
 		this.parent(options);
 		var thousandsChar = this.options.thousands,
-			escapedThousandsChars = thousandsChar.escapeRegExp(),
+			escapedThousandsChar = thousandsChar.escapeRegExp(),
 			escapedDecimalChar = this.options.decimal.escapeRegExp();
 		this.maxlength = this.options.maxLength;
-		this.reThousands = /(\d+)(\d{3})/;
+		this.reThousands = new RegExp('^([^\\D'+ escapedThousandsChar +']+)(\\d{3})');
 		this.reRemoveLeadingZeros = /^0+(.*)$/;
 		this.reDecimalNumber = /^\d$/;
 		this.thousandsReplaceStr = '$1' + thousandsChar + '$2';
-		this.reThousandsReplace = new RegExp(escapedThousandsChars, 'g');
-		this.reCleanup = new RegExp('[' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
-		this.reRemoveNonNumbers = new RegExp('[^\\d' + escapedThousandsChars + escapedDecimalChar + ']', 'g');
+		this.reThousandsReplace = new RegExp(escapedThousandsChar, 'g');
+		this.reCleanup = new RegExp('[' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
+		this.reRemoveNonNumbers = new RegExp('[^\\d' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
 	},
 	
 	link: function(element){

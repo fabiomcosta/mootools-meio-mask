@@ -21,11 +21,11 @@ provides: [Meio.Mask.Extras]
 (function(){
 
 	var meiomask = 'meiomask';
-	
+
 	var upperCamelize = function(str){
 		return str.camelCase().capitalize();
 	};
-	
+
 	var getClassOptions = function(a1, a2, opts){
 		var klass;
 		if (typeOf(a1) == 'string'){
@@ -43,9 +43,9 @@ provides: [Meio.Mask.Extras]
 		}
 		return {klass: klass, options: opts || {}};
 	};
-	
+
 	var executeFunction = function(functionName, args){
-		var co = getClassOptions.apply(null, args); 
+		var co = getClassOptions.apply(null, args);
 		return new co.klass(co.options)[functionName](this);
 	};
 
@@ -79,7 +79,7 @@ provides: [Meio.Mask.Extras]
 			return this;
 		}
 	};
-	
+
 	Element.Properties[meiomask + ':value'] = {
 		// sets the value but first it applyes the mask (if theres any)
 		set: function(value){
@@ -87,7 +87,7 @@ provides: [Meio.Mask.Extras]
 			if (mask) value = mask.mask(value);
 			return this.set('value', value);
 		},
-		
+
 		// gets the unmasked value
 		get: function(){
 			var mask = this.retrieve(meiomask);
@@ -101,5 +101,5 @@ provides: [Meio.Mask.Extras]
 			return this.set(meiomask, [mask, type, options]);
 		}
 	});
-	
+
 })();
