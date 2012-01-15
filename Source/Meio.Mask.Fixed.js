@@ -253,7 +253,6 @@ Meio.Mask.Fixed = new Class({
 
 });
 
-
 Meio.Mask.createMasks('Fixed', {
 	'Phone'		: {mask: '(99) 9999-9999'},
 	'PhoneUs'	: {mask: '(999) 999-9999'},
@@ -263,5 +262,6 @@ Meio.Mask.createMasks('Fixed', {
 	'DateUs'	: {mask: '1m/3d/9999'},
 	'Cep'		: {mask: '99999-999'},
 	'Time'		: {mask: '2h:59'},
-	'Cc'		: {mask: '9999 9999 9999 9999'}
+	'Cc'		: {mask: '9999 9999 9999 9999'},
+	'Mac'		: {mask: 'HH:HH:HH:HH:HH:HH'}
 });

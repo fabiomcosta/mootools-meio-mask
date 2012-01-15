@@ -26,6 +26,15 @@ test('should mask the typed value with the Fixed mask type', function(){
 	});
 });
 
+test('should mask the typed value with the fixed.mac mask type', function(){
+	input.meiomask('Fixed', 'Mac');
+	stop();
+	Syn.click({}, input).type('ab23FGee5iu9876AAf', function(){
+		start();
+		equals(input.value, 'ab:23:Fe:e5:98:76');
+	});
+});
+
 test('should mask the typed value with the Reverse mask type', function(){
 	input.meiomask('Reverse', 'Reais');
 	stop();
@@ -80,3 +89,4 @@ test('should mask inputs with pre-defined values', function(){
 		equals(input.value, '333.123.222-55');
 	});
 });
+

@@ -308,6 +308,7 @@ provides: [Meio.Mask]
 			'Z': {regex: /[A-Z]/},
 			'a': {regex: /[a-zA-Z]/},
 			'*': {regex: /[0-9a-zA-Z]/},
+			'H': {regex: /[0-9a-fA-F]/}, // hexadecimal
 			'@': {regex: /[0-9a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ]/}, // 'i' regex modifier doesnt work well with unicode chars
 			'h': {regex: /[0-9]/, check: Meio.Mask.upTo(23)},
 			'd': {regex: /[0-9]/, check: Meio.Mask.upTo(31)},
