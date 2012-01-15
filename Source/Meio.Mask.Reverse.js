@@ -128,7 +128,7 @@ Meio.Mask.Reverse = new Class({
 
 	mask: function(str){
 		str = this.unmask(str || '0').replace('.', this.options.decimal);
-		return this.getValue(this.maskThousands(str), false);
+		return this.getValue(this.maskThousands(str), true);
 	},
 
 	unmask: function(str){

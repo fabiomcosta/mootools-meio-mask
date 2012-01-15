@@ -42,11 +42,15 @@ test('should mask a string with the fixed mask type option', function(){
 });
 
 test('should mask a string with the reverse.dollar mask', function(){
-	equals('12121212'.meiomask('reverse.dollar'), '12,121,212.00');
+	equals('12121212'.meiomask('reverse.dollar'), 'US$ 12,121,212.00');
 });
 
 test('should mask a string with the reverse.integer mask', function(){
 	equals('345678.723'.meiomask('reverse.integer'), '345.679');
+});
+
+test('should mask a string with the reverse.decimal mask and', function(){
+	equals('345678.728'.meiomask('reverse.decimal', {precision: 5, symbol: 'R$ '}), 'R$ 345.678,72800');
 });
 
 test('should mask a string with the reverse.decimal mask', function(){
@@ -62,19 +66,19 @@ test('should unmask the passed string to a float number', function(){
 });
 
 test('should apply a precision: 5 mask to the 0 string', function(){
-	equals('0'.meiomask('Reverse', 'Decimal', { precision: 5 }), '0,00000');
+	equals('0'.meiomask('Reverse', 'Decimal', {precision: 5}), '0,00000');
 });
 
 test('should apply a precision: 5 mask to the 1 string', function(){
-	equals('1'.meiomask('Reverse', 'Decimal', { precision: 5 }), '1,00000');
+	equals('1'.meiomask('Reverse', 'Decimal', {precision: 5}), '1,00000');
 });
 
 test('should apply a precision: 5 mask to the 1000 string', function(){
-	equals('1000'.meiomask('Reverse', 'Decimal', { precision: 5 }), '1.000,00000');
+	equals('1000'.meiomask('Reverse', 'Decimal', {precision: 5}), '1.000,00000');
 });
 
 test('should apply a precision: 5 mask to the 0.001 string', function(){
-	equals('0.001'.meiomask('Reverse', 'Decimal', { precision: 5 }), '0,00100');
+	equals('0.001'.meiomask('Reverse', 'Decimal', {precision: 5}), '0,00100');
 });
 
 
