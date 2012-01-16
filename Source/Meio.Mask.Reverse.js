@@ -123,7 +123,8 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	cleanup: function(str){
-		return this.getValue(str.replace(this.reCleanup, '')).replace(this.reRemoveLeadingZeros, '$1');
+		str = str.replace(this.reRemoveNonNumbers, '').replace(this.reCleanup, '');
+		return this.getValue(str).replace(this.reRemoveLeadingZeros, '$1');
 	},
 
 	mask: function(str){

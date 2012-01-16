@@ -53,6 +53,33 @@ test('should mask the typed value with the Reverse mask type', function(){
 	});
 });
 
+test('should mask the typed value with the Reverse mask type', function(){
+	input.meiomask('Reverse', 'Reais');
+	stop();
+	Syn.click({}, input).type('[left][left][left][left][left][left][left]4', function(){
+		start();
+		equals(input.value, 'R$ 40,00');
+	});
+});
+
+test('should mask the typed value with the Reverse mask type', function(){
+	input.meiomask('Reverse', 'Reais');
+	stop();
+	Syn.click({}, input).type('[left][left][left][left][left][left]4', function(){
+		start();
+		equals(input.value, 'R$ 40,00');
+	});
+});
+
+test('should mask the typed value with the Reverse mask type', function(){
+	input.meiomask('Reverse', 'Reais');
+	stop();
+	Syn.click({}, input).type('[left][left][left][left][left]4', function(){
+		start();
+		equals(input.value, 'R$ 40,00');
+	});
+});
+
 test('should mask the typed value with the Repeat mask type', function(){
 	input.meiomask('Repeat', {mask: '9', maxLength: 4});
 	stop();
