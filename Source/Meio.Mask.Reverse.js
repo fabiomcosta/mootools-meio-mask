@@ -47,7 +47,7 @@ Meio.Mask.Reverse = new Class({
 		this.reCleanup = new RegExp('[' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
 		this.reRemoveNonNumbers = new RegExp('[^\\d' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
 	},
-	
+
 	link: function(element){
 		this.parent(element);
 		if (this.options.alignText) this.element.setStyle('text-align', 'right');
@@ -80,13 +80,13 @@ Meio.Mask.Reverse = new Class({
 	keypress: function(e, o){
 		if (this.ignore) return true;
 		e.preventDefault();
-		
+
 		var state = this.getCurrentState(e, o), elementValue = state.value;
-		
+
 		if (!this.testEvents(elementValue, state._char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
 		this.element.set('value', elementValue).setCaretPosition(elementValue.length);
-		
+
 		return this.parent();
 	},
 
@@ -134,7 +134,7 @@ Meio.Mask.Reverse = new Class({
 	unmask: function(str){
 		return this.toNumber(this.getValue(str));
 	},
-	
+
 	toNumber: function(str){
 		str = str.replace(this.reRemoveNonNumbers, '');
 		if (!isFinite(str)){
@@ -173,6 +173,7 @@ Meio.Mask.createMasks('Reverse', {
 	'Integer'		: {precision: 0, maxLength: 18},
 	'Decimal'		: { },
 	'DecimalUs'		: {thousands: ',', decimal: '.'},
-	'Reais'			: {symbol: 'R$ ' },
+	'Reais'			: {symbol: 'R$ '},
+	'Euro'			: {symbol: '€ '},
 	'Dollar'		: {symbol: 'US$ ', thousands: ',', decimal: '.'}
 });
