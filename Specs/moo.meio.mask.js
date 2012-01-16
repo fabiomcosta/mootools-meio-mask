@@ -81,4 +81,3 @@ test('should apply a precision: 5 mask to the 0.001 string', function(){
 	equals('0.001'.meiomask('Reverse', 'Decimal', {precision: 5}), '0,00100');
 });
 
-
