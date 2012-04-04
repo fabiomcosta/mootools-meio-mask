@@ -172,6 +172,7 @@ Meio.Mask.Reverse = new Class({
 
 Meio.Mask.createMasks('Reverse', {
 	'Integer'		: {precision: 0, maxLength: 18},
+	'IntegerUs'		: {precision: 0, maxLength: 18, thousands: ',', decimal: '.'},
 	'Decimal'		: { },
 	'DecimalUs'		: {thousands: ',', decimal: '.'},
 	'Reais'			: {symbol: 'R$ '},
