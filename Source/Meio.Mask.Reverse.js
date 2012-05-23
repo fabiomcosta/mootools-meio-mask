@@ -39,9 +39,9 @@ Meio.Mask.Reverse = new Class({
 			escapedThousandsChar = thousandsChar.escapeRegExp(),
 			escapedDecimalChar = this.options.decimal.escapeRegExp();
 		this.maxlength = this.options.maxLength;
-		this.reThousands = new RegExp('^([^\\D'+ escapedThousandsChar +']+)(\\d{3})');
+		this.reThousands = new RegExp('^(-?[^\\D'+ escapedThousandsChar +']+)(\\d{3})');
 		this.reRemoveLeadingZeros = /^0+(.*)$/;
-		this.reDecimalNumber = /^\d$/;
+		this.reDecimalNumber = /^-?\d$/;
 		this.thousandsReplaceStr = '$1' + thousandsChar + '$2';
 		this.reThousandsReplace = new RegExp(escapedThousandsChar, 'g');
 		this.reCleanup = new RegExp('[' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
@@ -111,6 +111,7 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	forceMask: function(str, applySymbol){
+	    var negative = this.isNegative(str);
 		str = this.cleanup(str);
 		var precision = this.options.precision;
 		var zeros = precision + 1 - str.length;
@@ -119,7 +120,8 @@ Meio.Mask.Reverse = new Class({
 			var decimalIndex = str.length - precision;
 			str = str.substring(0, decimalIndex) + this.options.decimal + str.substring(decimalIndex);
 		}
-		return this.getValue(this.maskThousands(str), applySymbol);
+		var value = this.getValue(this.maskThousands(str), applySymbol);
+		return this.negativize(value, negative);
 	},
 
 	cleanup: function(str){
@@ -137,20 +139,25 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	toNumber: function(str){
+	    var negative = this.isNegative(str);
 		str = str.replace(this.reRemoveNonNumbers, '');
 		if (!isFinite(str)){
 			if (this.options.thousands) str = str.replace(this.reThousandsReplace, '');
 			var decimalChar = this.options.decimal;
 			if (decimalChar) str = str.replace(decimalChar, '.');
 		}
-		return str.toFloat().toFixed(this.options.precision);
+		var number = str.toFloat().toFixed(this.options.precision);
+		return this.negativize(number, negative);
 	},
 
 	getValue: function(str, applySymbol){
+	    var negative = this.isNegative(str);
+	    str = negative ? str.substring(1) : str;
 		var symbol = this.options.symbol;
-		return (str.substring(0, symbol.length) === symbol) ?
+		var value = (str.substring(0, symbol.length) === symbol) ?
 			applySymbol ? str : str.substring(symbol.length) :
 			applySymbol ? symbol + str : str;
+		return this.negativize(value, negative);
 	},
 
 	maskThousands: function(str){
@@ -163,6 +170,14 @@ Meio.Mask.Reverse = new Class({
 	zeroize: function(str, zeros){
 		while (zeros--) str = '0' + str;
 		return str;
+	},
+	
+	isNegative : function(str) {
+	    return str.indexOf('-') == 0;
+	},
+	
+	negativize : function(str, negative) {
+	  return negative ? '-' + str : str;
 	},
 
 	shouldFocusNext: function(){

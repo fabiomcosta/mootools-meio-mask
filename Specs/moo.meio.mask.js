@@ -45,16 +45,32 @@ test('should mask a string with the reverse.dollar mask', function(){
 	equals('12121212'.meiomask('reverse.dollar'), 'US$ 12,121,212.00');
 });
 
+test('should mask a string with the reverse.dollar mask (negative)', function(){
+  equals('-12121212'.meiomask('reverse.dollar'), '-US$ 12,121,212.00');
+});
+
 test('should mask a string with the reverse.integer mask', function(){
 	equals('345678.723'.meiomask('reverse.integer'), '345.679');
+});
+
+test('should mask a string with the reverse.integer mask (negative)', function(){
+  equals('-345678.723'.meiomask('reverse.integer'), '-345.679');
 });
 
 test('should mask a string with the reverse.decimal mask and', function(){
 	equals('345678.728'.meiomask('reverse.decimal', {precision: 5, symbol: 'R$ '}), 'R$ 345.678,72800');
 });
 
+test('should mask a string with the reverse.decimal mask and (negative)', function(){
+  equals('-345678.728'.meiomask('reverse.decimal', {precision: 5, symbol: 'R$ '}), '-R$ 345.678,72800');
+});
+
 test('should mask a string with the reverse.decimal mask', function(){
 	equals('345678.728'.meiomask('reverse.decimal'), '345.678,73');
+});
+
+test('should mask a string with the reverse.decimal mask (negative)', function(){
+  equals('-345678.728'.meiomask('reverse.decimal'), '-345.678,73');
 });
 
 test('should unmask the passed string', function(){
@@ -63,6 +79,10 @@ test('should unmask the passed string', function(){
 
 test('should unmask the passed string to a float number', function(){
 	equals('R$ 123,12'.meiounmask('reverse.reais'), 123.12);
+});
+
+test('should unmask the passed string to a float number (negative)', function(){
+  equals('-R$ 123,12'.meiounmask('reverse.reais'), -123.12);
 });
 
 test('should apply a precision: 5 mask to the 0 string', function(){
