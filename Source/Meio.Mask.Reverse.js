@@ -41,7 +41,7 @@ Meio.Mask.Reverse = new Class({
 		this.maxlength = this.options.maxLength;
 		this.reThousands = new RegExp('^(-?[^\\D'+ escapedThousandsChar +']+)(\\d{3})');
 		this.reRemoveLeadingZeros = /^0+(.*)$/;
-		this.reDecimalNumber = /^-?\d$/;
+		this.reDecimalNumber = /^[\d-+]$/;
 		this.thousandsReplaceStr = '$1' + thousandsChar + '$2';
 		this.reThousandsReplace = new RegExp(escapedThousandsChar, 'g');
 		this.reCleanup = new RegExp('[' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
@@ -82,9 +82,14 @@ Meio.Mask.Reverse = new Class({
 		e.preventDefault();
 
 		var state = this.getCurrentState(e, o), elementValue = state.value;
-
+		
 		if (!this.testEvents(elementValue, state._char, e.code, o.isRemoveKey)) return true;
 		elementValue = this.forceMask(elementValue, true);
+
+		var forcePositive = state._char === '+';
+		var isNegative = this.isNegative(elementValue);
+		elementValue = forcePositive ? isNegative ? elementValue.substring(1) : elementValue : elementValue;
+		
 		this.element.set('value', elementValue).setCaretPosition(elementValue.length);
 
 		return this.parent();
@@ -111,7 +116,7 @@ Meio.Mask.Reverse = new Class({
 	},
 
 	forceMask: function(str, applySymbol){
-	    var negative = this.isNegative(str);
+	    var negative = str.contains('-');
 		str = this.cleanup(str);
 		var precision = this.options.precision;
 		var zeros = precision + 1 - str.length;
