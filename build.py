@@ -4,7 +4,7 @@ import os, re
 from zipfile import ZipFile, BadZipfile
 
 class Builder:
-    
+
     javascript_files = []
     extra_zip_files = []
 
@@ -12,7 +12,7 @@ class Builder:
         self.minify_posfix = minify_postfix
         self.build_folder = build_folder
         self.extension = '.' + extension
-                
+
     def add_files(self, list_name, files, root='', path='', extension=''):
         if type(files) == dict:
             for key in files.keys():
@@ -22,7 +22,7 @@ class Builder:
                 getattr(self, list_name).append((_file, root + path + _file + extension))
         elif type(files) == str:
             getattr(self, list_name).append((files, root + path + files + extension))
-            
+
     def read_file(self, _file):
         f = open(_file, 'r')
         ret = []
@@ -42,7 +42,7 @@ class Builder:
         finally:
             built_file.close()
         print '** Succesfully created "' + file_name + '" file. **'
-    
+
     def add_comment(self, compressed_file):
         try:
             os.remove(compressed_file)
@@ -56,7 +56,7 @@ class Builder:
             compressed_built_file.close()
 
     def create_minified_file(self):
-        uncompressed_file = self.build_folder + self.file_name + self.extension 
+        uncompressed_file = self.build_folder + self.file_name + self.extension
         compressed_file = self.build_folder + self.file_name + '.' + self.minify_posfix + self.extension
         self.add_comment(compressed_file)
         os.system('java -jar Assets/yui.jar --warn --charset utf8 %(uncompressed)s >> %(compressed)s' % {
@@ -64,7 +64,7 @@ class Builder:
             'compressed': compressed_file
         })
         print '** Succesfully created minified file. **'
-        
+
     def build(self, file_name, files, root='Source/'):
         self.file_name = file_name
         try:
@@ -73,14 +73,14 @@ class Builder:
             # ok the folder might be still there
             pass
         self.add_files('javascript_files', files, root=root, extension=self.extension)
-        
+
         print 'Starting to build ' + file_name + ' files...'
         self.create_built_file()
         self.create_minified_file()
         print ''
-        
+
         self.javascript_files = []
-    
+
 if __name__ == '__main__':
     builder = Builder()
     builder.build('Meio.Mask', (
@@ -91,4 +91,4 @@ if __name__ == '__main__':
         'Meio.Mask.Regexp',
         'Meio.Mask.Extras',
     ))
-    
+
