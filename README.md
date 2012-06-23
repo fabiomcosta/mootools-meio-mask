@@ -22,7 +22,7 @@ You can create your own customized build by editing the modules included in the 
 Dependencies
 ------------
 
-The only dependency is Element.Forms, which you can grab at [http://mootools.net/more/].
+The only dependency is Element.Forms, which you can grab at http://mootools.net/more/.
 
 Run the Tests
 -------------
@@ -31,27 +31,27 @@ You can easily run the tests on your default browser by using `make run`.
 
 How to use
 ----------
-	<html>
-		<head>
-			<!--include mootools library and meioMask plugin -->
-			<script type="text/javascript" src="mootools-core-1.3.0.js" charset="utf-8"></script>
-			<!-- Just Element.Form is needed -->
-			<script type="text/javascript" src="mootools-more-1.3.0.1.js" charset="utf-8"></script>
-		</head>
-	
-		<body>
-			<form>
-				<label for="cpf">Time Mask:</label>
-				<input type="text" name="time" data-meiomask="fixed.time" />
-			</form>
+    <html>
+        <head>
+            <!-- include mootools library and meioMask plugin -->
+            <script src="mootools-core-1.3.0.js"></script>
+            <!-- Just Element.Form is needed -->
+            <script src="mootools-more-1.3.0.1.js"></script>
+        </head>
 
-			<script type="text/javascript" >
-				$$('input').each(function(input){
-					input.meiomask(input.get('data-meiomask'));
-				});
-			</script>
-		</body>
-	</html>
+        <body>
+            <form>
+                <label for="time">Time Mask:</label>
+                <input type="text" id="time" name="time" data-meiomask="fixed.time" />
+            </form>
+
+            <script>
+                $$('input').each(function(input) {
+                    input.meiomask(input.get('data-meiomask'));
+                });
+            </script>
+        </body>
+    </html>
 
 Demos
 -----
