@@ -20,182 +20,182 @@ provides: [Meio.Mask.Reverse]
 
 Meio.Mask.Reverse = new Class({
 
-	Extends: Meio.Mask,
+    Extends: Meio.Mask,
 
-	options: {
-		autoSetSize: false,
-		autoEmpty: false,
-		alignText: true,
-		symbol: '',
-		precision: 2,
-		decimal: ',',
-		thousands: '.',
-		maxLength: 18
-	},
+    options: {
+        autoSetSize: false,
+        autoEmpty: false,
+        alignText: true,
+        symbol: '',
+        precision: 2,
+        decimal: ',',
+        thousands: '.',
+        maxLength: 18
+    },
 
-	initialize: function(options){
-		this.parent(options);
-		var thousandsChar = this.options.thousands,
-			escapedThousandsChar = thousandsChar.escapeRegExp(),
-			escapedDecimalChar = this.options.decimal.escapeRegExp();
-		this.maxlength = this.options.maxLength;
-		this.reThousands = new RegExp('^(-?[^\\D'+ escapedThousandsChar +']+)(\\d{3})');
-		this.reRemoveLeadingZeros = /^0+(.*)$/;
-		this.reDecimalNumber = /^[\d+-]$/;
-		this.thousandsReplaceStr = '$1' + thousandsChar + '$2';
-		this.reThousandsReplace = new RegExp(escapedThousandsChar, 'g');
-		this.reCleanup = new RegExp('[' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
-		this.reRemoveNonNumbers = new RegExp('[^\\d' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
-	},
+    initialize: function(options){
+        this.parent(options);
+        var thousandsChar = this.options.thousands,
+            escapedThousandsChar = thousandsChar.escapeRegExp(),
+            escapedDecimalChar = this.options.decimal.escapeRegExp();
+        this.maxlength = this.options.maxLength;
+        this.reThousands = new RegExp('^(-?[^\\D'+ escapedThousandsChar +']+)(\\d{3})');
+        this.reRemoveLeadingZeros = /^0+(.*)$/;
+        this.reDecimalNumber = /^[\d+\-]$/;
+        this.thousandsReplaceStr = '$1' + thousandsChar + '$2';
+        this.reThousandsReplace = new RegExp(escapedThousandsChar, 'g');
+        this.reCleanup = new RegExp('[' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
+        this.reRemoveNonNumbers = new RegExp('[^\\d' + escapedThousandsChar + escapedDecimalChar + ']', 'g');
+    },
 
-	link: function(element){
-		this.parent(element);
-		if (this.options.alignText) this.element.setStyle('text-align', 'right');
-		var elementValue = this.element.get('value');
-		if (elementValue === '' && !this.options.autoEmpty){
-			this.element.set('value', this.forceMask(elementValue, false));
-		}
-		return this;
-	},
+    link: function(element){
+        this.parent(element);
+        if (this.options.alignText) this.element.setStyle('text-align', 'right');
+        var elementValue = this.element.get('value');
+        if (elementValue === '' && !this.options.autoEmpty){
+            this.element.set('value', this.forceMask(elementValue, false));
+        }
+        return this;
+    },
 
-	focus: function(e, o){
-		var element = this.element,
-			elValue = element.get('value');
-		if (this.options.autoEmpty){
-			if (elValue === '') element.set('value', this.mask(elValue));
-		} else {
-			element.set('value', this.getValue(elValue, true));
-		}
-		this.parent(e, o);
-	},
+    focus: function(e, o){
+        var element = this.element,
+            elValue = element.get('value');
+        if (this.options.autoEmpty){
+            if (elValue === '') element.set('value', this.mask(elValue));
+        } else {
+            element.set('value', this.getValue(elValue, true));
+        }
+        this.parent(e, o);
+    },
 
-	blur: function(e, o){
-		this.parent(e, o);
-		var element = this.element,
-			value = this.getValue(element.get('value'));
-		if (this.options.autoEmpty && this.mask(value) == this.mask()) value = '';
-		element.set('value', value);
-	},
+    blur: function(e, o){
+        this.parent(e, o);
+        var element = this.element,
+            value = this.getValue(element.get('value'));
+        if (this.options.autoEmpty && this.mask(value) == this.mask()) value = '';
+        element.set('value', value);
+    },
 
-	keypress: function(e, o){
-		if (this.ignore) return true;
-		e.preventDefault();
+    keypress: function(e, o){
+        if (this.ignore) return true;
+        e.preventDefault();
 
-		var state = this.getCurrentState(e, o), elementValue = state.value;
-		
-		if (!this.testEvents(elementValue, state._char, e.code, o.isRemoveKey)) return true;
-		elementValue = this.forceMask(elementValue, true);
+        var state = this.getCurrentState(e, o), elementValue = state.value;
 
-		var forcePositive = state._char === '+';
-		var isNegative = this.isNegative(elementValue);
-		elementValue = forcePositive ? isNegative ? elementValue.substring(1) : elementValue : elementValue;
-		
-		this.element.set('value', elementValue).setCaretPosition(elementValue.length);
+        if (!this.testEvents(elementValue, state._char, e.code, o.isRemoveKey)) return true;
+        elementValue = this.forceMask(elementValue, true);
 
-		return this.parent();
-	},
+        var forcePositive = state._char === '+';
+        var isNegative = this.isNegative(elementValue);
+        elementValue = forcePositive ? isNegative ? elementValue.substring(1) : elementValue : elementValue;
 
-	testEvents: function(elementValue, _char, code, isRemoveKey){
-		var args = [this.element, code, _char];
-		if (!isRemoveKey){
-			var elementValueLength = this.getValue(elementValue, false).length;
-			if (!(this.reDecimalNumber).test(_char) || (this.maxlength && elementValueLength > this.maxlength)){
-				this.fireEvent('invalid', args);
-				return false;
-			}
-			this.fireEvent('valid', args);
-		}
-		return true;
-	},
+        this.element.set('value', elementValue).setCaretPosition(elementValue.length);
 
-	paste: function(e, o){
-		var element = this.element;
-		var elValue = element.get('value');
-		element.set('value', (elValue = this.forceMask(elValue, true))).setCaretPosition(elValue.length);
-		return true;
-	},
+        return this.parent();
+    },
 
-	forceMask: function(str, applySymbol){
-		var negative = str.contains('-');
-		str = this.cleanup(str);
-		var precision = this.options.precision;
-		var zeros = precision + 1 - str.length;
-		if (zeros > 0) str = this.zeroize(str, zeros);
-		if (precision){
-			var decimalIndex = str.length - precision;
-			str = str.substring(0, decimalIndex) + this.options.decimal + str.substring(decimalIndex);
-		}
-		var value = this.getValue(this.maskThousands(str), applySymbol);
-		return this.negativize(value, negative);
-	},
+    testEvents: function(elementValue, _char, code, isRemoveKey){
+        var args = [this.element, code, _char];
+        if (!isRemoveKey){
+            var elementValueLength = this.getValue(elementValue, false).length;
+            if (!(this.reDecimalNumber).test(_char) || (this.maxlength && elementValueLength > this.maxlength)){
+                this.fireEvent('invalid', args);
+                return false;
+            }
+            this.fireEvent('valid', args);
+        }
+        return true;
+    },
 
-	cleanup: function(str){
-		str = str.replace(this.reRemoveNonNumbers, '').replace(this.reCleanup, '');
-		return this.getValue(str).replace(this.reRemoveLeadingZeros, '$1');
-	},
+    paste: function(e, o){
+        var element = this.element;
+        var elValue = element.get('value');
+        element.set('value', (elValue = this.forceMask(elValue, true))).setCaretPosition(elValue.length);
+        return true;
+    },
 
-	mask: function(str){
-		str = this.unmask(str || '0').replace('.', this.options.decimal);
-		return this.getValue(this.maskThousands(str), true);
-	},
+    forceMask: function(str, applySymbol){
+        var negative = str.contains('-');
+        str = this.cleanup(str);
+        var precision = this.options.precision;
+        var zeros = precision + 1 - str.length;
+        if (zeros > 0) str = this.zeroize(str, zeros);
+        if (precision){
+            var decimalIndex = str.length - precision;
+            str = str.substring(0, decimalIndex) + this.options.decimal + str.substring(decimalIndex);
+        }
+        var value = this.getValue(this.maskThousands(str), applySymbol);
+        return this.negativize(value, negative);
+    },
 
-	unmask: function(str){
-		return this.toNumber(this.getValue(str));
-	},
+    cleanup: function(str){
+        str = str.replace(this.reRemoveNonNumbers, '').replace(this.reCleanup, '');
+        return this.getValue(str).replace(this.reRemoveLeadingZeros, '$1');
+    },
 
-	toNumber: function(str){
-		var negative = this.isNegative(str);
-		str = str.replace(this.reRemoveNonNumbers, '');
-		if (!isFinite(str)){
-			if (this.options.thousands) str = str.replace(this.reThousandsReplace, '');
-			var decimalChar = this.options.decimal;
-			if (decimalChar) str = str.replace(decimalChar, '.');
-		}
-		var number = str.toFloat().toFixed(this.options.precision);
-		return this.negativize(number, negative);
-	},
+    mask: function(str){
+        str = this.unmask(str || '0').replace('.', this.options.decimal);
+        return this.getValue(this.maskThousands(str), true);
+    },
 
-	getValue: function(str, applySymbol){
-		var negative = this.isNegative(str);
-		str = negative ? str.substring(1) : str;
-		var symbol = this.options.symbol;
-		var value = (str.substring(0, symbol.length) === symbol) ?
-			applySymbol ? str : str.substring(symbol.length) :
-			applySymbol ? symbol + str : str;
-		return this.negativize(value, negative);
-	},
+    unmask: function(str){
+        return this.toNumber(this.getValue(str));
+    },
 
-	maskThousands: function(str){
-		if (this.options.thousands){
-			while (this.reThousands.test(str)) str = str.replace(this.reThousands, this.thousandsReplaceStr);
-		}
-		return str;
-	},
+    toNumber: function(str){
+        var negative = this.isNegative(str);
+        str = str.replace(this.reRemoveNonNumbers, '');
+        if (!isFinite(str)){
+            if (this.options.thousands) str = str.replace(this.reThousandsReplace, '');
+            var decimalChar = this.options.decimal;
+            if (decimalChar) str = str.replace(decimalChar, '.');
+        }
+        var number = str.toFloat().toFixed(this.options.precision);
+        return this.negativize(number, negative);
+    },
 
-	zeroize: function(str, zeros){
-		while (zeros--) str = '0' + str;
-		return str;
-	},
-	
-	isNegative : function(str) {
-		return str.indexOf('-') == 0;
-	},
-	
-	negativize : function(str, negative) {
-		return negative ? '-' + str : str;
-	},
+    getValue: function(str, applySymbol){
+        var negative = this.isNegative(str);
+        str = negative ? str.substring(1) : str;
+        var symbol = this.options.symbol;
+        var value = (str.substring(0, symbol.length) === symbol) ?
+            applySymbol ? str : str.substring(symbol.length) :
+            applySymbol ? symbol + str : str;
+        return this.negativize(value, negative);
+    },
 
-	shouldFocusNext: function(){
-		return this.getValue(this.element.get('value'), false).length >= this.options.maxLength;
-	}
+    maskThousands: function(str){
+        if (this.options.thousands){
+            while (this.reThousands.test(str)) str = str.replace(this.reThousands, this.thousandsReplaceStr);
+        }
+        return str;
+    },
+
+    zeroize: function(str, zeros){
+        while (zeros--) str = '0' + str;
+        return str;
+    },
+
+    isNegative : function(str) {
+        return str.indexOf('-') === 0;
+    },
+
+    negativize : function(str, negative) {
+        return negative ? '-' + str : str;
+    },
+
+    shouldFocusNext: function(){
+        return this.getValue(this.element.get('value'), false).length >= this.options.maxLength;
+    }
 });
 
 Meio.Mask.createMasks('Reverse', {
-    'Integer'        : {precision: 0, maxLength: 18},
-    'IntegerUs'        : {precision: 0, maxLength: 18, thousands: ',', decimal: '.'},
-    'Decimal'        : { },
-    'DecimalUs'        : {thousands: ',', decimal: '.'},
-    'Reais'            : {symbol: 'R$ '},
-    'Euro'            : {symbol: '€ '},
+    'Integer'       : {precision: 0, maxLength: 18},
+    'IntegerUs'     : {precision: 0, maxLength: 18, thousands: ',', decimal: '.'},
+    'Decimal'       : { },
+    'DecimalUs'     : {thousands: ',', decimal: '.'},
+    'Reais'         : {symbol: 'R$ '},
+    'Euro'          : {symbol: '€ '},
     'Dollar'        : {symbol: 'US$ ', thousands: ',', decimal: '.'}
 });
