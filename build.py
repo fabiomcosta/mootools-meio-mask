@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import os, re
-from zipfile import ZipFile, BadZipfile
+import os
+import re
+
 
 class Builder:
 
@@ -47,7 +48,7 @@ class Builder:
         try:
             os.remove(compressed_file)
         except os.error:
-            pass # might have been yet removed
+            pass  # might have been yet removed
         compressed_built_file = open(compressed_file, 'w+')
         try:
             compressed_built_file.write(re.search(r'\/\*(.*?)\*\/', ''.join(self.read_file(self.javascript_files[0][1])), re.S | re.U).group(0))
@@ -91,4 +92,3 @@ if __name__ == '__main__':
         'Meio.Mask.Regexp',
         'Meio.Mask.Extras',
     ))
-
