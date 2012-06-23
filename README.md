@@ -14,7 +14,7 @@ If you are using version 1.x, you'll need version 1.2.4 or greater of mootools-c
 Building
 --------
 
-Just do `make` and a Build folder will be created cointaining the complete library for debugging/development and the minified file for
+Just run `make` and a Build folder will be created cointaining the complete library for debugging/development and the minified file for
 use in production.
 
 You can create your own customized build by editing the modules included in the built file in the build.py script.
