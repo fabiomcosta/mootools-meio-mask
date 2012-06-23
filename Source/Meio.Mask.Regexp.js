@@ -20,60 +20,60 @@ provides: [Meio.Mask.Regexp]
 
 Meio.Mask.Regexp = new Class({
 
-	Extends : Meio.Mask,
+    Extends : Meio.Mask,
 
-	options: {
-		regex: null
-	},
+    options: {
+        regex: null
+    },
 
-	initialize : function(element, options){
-		this.parent(element, options);
-		this.regex = new RegExp(this.options.regex);
-	},
+    initialize : function(element, options){
+        this.parent(element, options);
+        this.regex = new RegExp(this.options.regex);
+    },
 
-	keypress: function(e, o){
-		if (this.ignore) return true;
-		e.preventDefault();
+    keypress: function(e, o){
+        if (this.ignore) return true;
+        e.preventDefault();
 
-		var state = this.getCurrentState(e, o);
-		var args = [this.element, state._char, e.code];
+        var state = this.getCurrentState(e, o);
+        var args = [this.element, state._char, e.code];
 
-		if (!this.regex.test(state.value)){
-			this.fireEvent('invalid', args);
-		} else {
-			this.element.set('value', state.value).setCaretPosition(state.start + (o.isRemoveKey ? 0 : 1));
-			this.fireEvent('valid', args);
-		}
+        if (!this.regex.test(state.value)){
+            this.fireEvent('invalid', args);
+        } else {
+            this.element.set('value', state.value).setCaretPosition(state.start + (o.isRemoveKey ? 0 : 1));
+            this.fireEvent('valid', args);
+        }
 
-		return true;
-	},
+        return true;
+    },
 
-	paste: function(e, o){
-		var masked = this.applyMask(this.element.get('value'), true);
-		this.element.set('value', masked.value).setCaretPosition(masked.index);
-	},
+    paste: function(e, o){
+        var masked = this.applyMask(this.element.get('value'), true);
+        this.element.set('value', masked.value).setCaretPosition(masked.index);
+    },
 
-	applyMask: function(str, fireEvent){
-		var oldValue = '', curValue;
-		for (var i = 1; i <= str.length; i++){
-			curValue = str.substring(0, i);
-			if (!this.regex.test(curValue)){
-				if (fireEvent) this.fireEvent('invalid', [this.element, str.charAt(i), str.charCodeAt(i)]);
-				break;
-			}
-			oldValue = curValue;
-		}
-		return {value: oldValue, index: i};
-	},
+    applyMask: function(str, fireEvent){
+        var oldValue = '', curValue;
+        for (var i = 1; i <= str.length; i++){
+            curValue = str.substring(0, i);
+            if (!this.regex.test(curValue)){
+                if (fireEvent) this.fireEvent('invalid', [this.element, str.charAt(i), str.charCodeAt(i)]);
+                break;
+            }
+            oldValue = curValue;
+        }
+        return {value: oldValue, index: i};
+    },
 
-	mask: function(str){
-		return this.applyMask(str).value;
-	}
+    mask: function(str){
+        return this.applyMask(str).value;
+    }
 
 });
 
 Meio.Mask.createMasks('Regexp', {
-	'Ip'		: {regex: /^(?:\d{0,3}\.){0,3}(?:\d{0,3})?$/},
-	'Ipv6'		: {regex: /^(?:[\da-fA-F]{0,4}\:){0,7}([\da-fA-F]{0,4})?$/},
-	'Email'		: {regex: /^[\w.!#$%&'*+=?~^_`{|}\/-]*@?[.\w-]*$/}
+    'Ip'        : {regex: /^(?:\d{0,3}\.){0,3}(?:\d{0,3})?$/},
+    'Ipv6'      : {regex: /^(?:[\da-fA-F]{0,4}\:){0,7}([\da-fA-F]{0,4})?$/},
+    'Email'     : {regex: /^[\w.!#$%&'*+=?~\^_`{|}\/\-]*@?[.\w\-]*$/}
 });
