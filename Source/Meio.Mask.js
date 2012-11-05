@@ -154,7 +154,7 @@ provides: [Meio.Mask]
         blur: function(e, o){
             var element = this.element;
             if (e && element.retrieve('meiomask:focusvalue') != element.get('value')){
-                element.fireEvent('change');
+                element.fireEvent('change', e);
             }
         },
 
