@@ -50,7 +50,7 @@ Meio.Mask.Reverse = new Class({
 
     link: function(element){
         this.parent(element);
-        if (this.options.alignText) this.element.setStyle('text-align', 'right');
+        if (this.options.alignText) this.element.setStyle('direction', 'rtl');
         var elementValue = this.element.get('value');
         if (elementValue === '' && !this.options.autoEmpty){
             this.element.set('value', this.forceMask(elementValue, false));
