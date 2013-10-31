@@ -56,7 +56,7 @@ How to use
 Demos
 -----
 
-You can see it at this fiddle http://jsfiddle.net/fabiomcosta/8TFvp/252/ or
+You can see it at this fiddle http://jsfiddle.net/fabiomcosta/8TFvp/751/ or
 inside the project at Specs/user/index.html.
 
 Credits
