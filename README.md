@@ -31,27 +31,29 @@ You can easily run the tests on your default browser by using `make run`.
 
 How to use
 ----------
-    <html>
-        <head>
-            <!-- include mootools library and meioMask plugin -->
-            <script src="mootools-core-1.3.0.js"></script>
-            <!-- Just Element.Form is needed -->
-            <script src="mootools-more-1.3.0.1.js"></script>
-        </head>
+```html
+<html>
+    <head>
+        <!-- include mootools library and meioMask plugin -->
+        <script src="mootools-core-1.3.0.js"></script>
+        <!-- Just Element.Form is needed -->
+        <script src="mootools-more-1.3.0.1.js"></script>
+    </head>
 
-        <body>
-            <form>
-                <label for="time">Time Mask:</label>
-                <input type="text" id="time" name="time" data-meiomask="fixed.time" />
-            </form>
+    <body>
+        <form>
+            <label for="time">Time Mask:</label>
+            <input type="text" id="time" name="time" data-meiomask="fixed.time" />
+        </form>
 
-            <script>
-                $$('input').each(function(input) {
-                    input.meiomask(input.get('data-meiomask'));
-                });
-            </script>
-        </body>
-    </html>
+        <script>
+            $$('input').each(function(input) {
+                input.meiomask(input.get('data-meiomask'));
+            });
+        </script>
+    </body>
+</html>
+```
 
 Demos
 -----
